@@ -76,6 +76,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             shipsafe<span>.</span>
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
+            <a href="#product">The report</a>
             <a href="#how">How it works</a>
             <a href="#security">Security</a>
             <a href="#pricing">Pricing</a>
@@ -110,6 +111,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
           inert={!isMenuOpen}
           style={isMenuOpen ? { display: "flex" } : undefined}
         >
+          <a href="#product" onClick={closeMenu}>The report</a>
           <a href="#how" onClick={closeMenu}>
             How it works
           </a>
