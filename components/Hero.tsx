@@ -1,17 +1,24 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+
 interface HeroProps {
   onOpenAssessment: () => void;
 }
 
 export default function Hero({ onOpenAssessment }: HeroProps) {
+  const heroRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const previewRise = useTransform(scrollYProgress, [0, 1], [0, -45]);
   const handleAssessmentClick = (e: React.MouseEvent) => {
     e.preventDefault();
     onOpenAssessment();
   };
 
   return (
-    <section className="hero">
+    <section className="hero" ref={heroRef}>
       <div className="glow glow-left" aria-hidden="true"></div>
       <div className="glow glow-right" aria-hidden="true"></div>
       <div className="container hero-grid">
@@ -19,11 +26,11 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
           <p className="eyebrow animate">
             <span className="eyebrow-dash"></span> APPLICATION SECURITY
           </p>
-          <h1 className="animate delay-1">
+          <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
             Know the risks
             <br />
             before you <em>ship.</em>
-          </h1>
+          </motion.h1>
           <p className="hero-sub animate delay-2">
             Identify security issues in your application, understand their impact,
             and get clear steps to resolve them.
@@ -47,7 +54,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
           </div>
         </div>
 
-        <div className="preview-wrap animate delay-2">
+        <motion.div className="preview-wrap" style={reduceMotion ? undefined : { y: previewRise }}>
           <div className="preview-halo" aria-hidden="true"></div>
           <div className="preview">
             <div className="preview-top">
@@ -145,7 +152,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
           <div className="floating-label" aria-hidden="true">
             <span>✓</span> Clear findings. Actionable fixes.
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
