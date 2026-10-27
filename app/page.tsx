@@ -12,6 +12,7 @@ import AssessmentDialog from "@/components/AssessmentDialog";
 import ReportExperience from "@/components/ReportExperience";
 import ValueSection from "@/components/ValueSection";
 import ScrollProgress from "@/components/ScrollProgress";
+import LandingScrollReset from "@/components/LandingScrollReset";
 import FinalCTA from "@/components/FinalCTA";
 
 export default function Home() {
@@ -47,6 +48,7 @@ export default function Home() {
 
   return (
     <>
+      <LandingScrollReset />
       <ScrollProgress />
       <Header onOpenAssessment={() => setIsAssessmentOpen(true)} />
       <main id="main">
