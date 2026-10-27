@@ -9,6 +9,10 @@ import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import AssessmentDialog from "@/components/AssessmentDialog";
+import ReportExperience from "@/components/ReportExperience";
+import ValueSection from "@/components/ValueSection";
+import ScrollProgress from "@/components/ScrollProgress";
+import FinalCTA from "@/components/FinalCTA";
 
 export default function Home() {
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
@@ -43,6 +47,7 @@ export default function Home() {
 
   return (
     <>
+      <ScrollProgress />
       <Header onOpenAssessment={() => setIsAssessmentOpen(true)} />
       <main id="main">
         <Hero onOpenAssessment={() => setIsAssessmentOpen(true)} />
@@ -50,11 +55,14 @@ export default function Home() {
           <div className="divider"></div>
         </div>
         <HowItWorks />
+        <ValueSection />
+        <ReportExperience onOpenAssessment={() => setIsAssessmentOpen(true)} />
         <SecuritySection />
         <PricingSection onOpenAssessment={() => setIsAssessmentOpen(true)} />
         <FaqSection />
+        <FinalCTA onOpenAssessment={() => setIsAssessmentOpen(true)} />
       </main>
-      <Footer />
+      <Footer onOpenAssessment={() => setIsAssessmentOpen(true)} />
       <AssessmentDialog
         isOpen={isAssessmentOpen}
         onClose={() => setIsAssessmentOpen(false)}
