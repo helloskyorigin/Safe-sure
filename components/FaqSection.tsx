@@ -1,47 +1,59 @@
+"use client";
+
+import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Plus } from "lucide-react";
+
+const faqs = [
+  {
+    question: "Do I need a ShipSafe account?",
+    answer: "No separate ShipSafe signup is planned. Source access will still need explicit authorization through the connection provider.",
+  },
+  {
+    question: "Will ShipSafe modify my application?",
+    answer: "The intended assessment is read-only. You review and apply any suggested changes yourself. Live scanning is not connected to this preview yet.",
+  },
+  {
+    question: "What exactly is free?",
+    answer: "The planned free overview shows counts grouped by severity. The proposed $19 one-time report adds evidence, affected locations, possible impact and suggested fixes.",
+  },
+  {
+    question: "Does a clean report guarantee safety?",
+    answer: "No. Automated analysis is limited by its rules, available data and context. Findings can be incomplete or require verification.",
+  },
+  {
+    question: "Is the $19 payment available now?",
+    answer: "Not yet. The site is a pre-launch preview. Checkout and scanning will be enabled after technical and security testing.",
+  },
+];
+
 export default function FaqSection() {
-  const faqs = [
-    {
-      question: "Do I need a ShipSafe account?",
-      answer:
-        "No separate ShipSafe signup is planned. Source access still needs explicit authorization through the connection provider.",
-    },
-    {
-      question: "Will ShipSafe modify my application?",
-      answer:
-        "No. The initial assessment is designed around read-only permissions. Any recommended fixes are reviewed and applied by you.",
-    },
-    {
-      question: "What exactly is free?",
-      answer:
-        "The assessment overview shows potential issue counts grouped by severity. The $19 report unlocks the details and suggested fixes for those findings.",
-    },
-    {
-      question: "Does a clean report guarantee safety?",
-      answer:
-        "No. Automated tools have limited coverage. ShipSafe will describe what has and has not been checked.",
-    },
-  ];
+  const [open, setOpen] = useState<number | null>(0);
+  const reduceMotion = useReducedMotion();
 
   return (
     <section id="faq" className="section bordered faq-section">
       <div className="container faq-grid">
-        <div className="reveal visible">
-          <p className="eyebrow">GOOD TO KNOW</p>
-          <h2>
-            Straight answers.
-            <br />
-            No fine print.
-          </h2>
-        </div>
+        <div className="reveal visible"><p className="eyebrow">GOOD TO KNOW</p><h2>Straight answers.<br/>No fine print.</h2><p className="faq-intro">Details that help you decide, without a maze of fine print.</p></div>
         <div className="faq-list reveal visible">
           {faqs.map((faq, index) => (
-            <details key={index}>
-              <summary>
-                {faq.question}
-                <span aria-hidden="true">+</span>
-              </summary>
-              <p>{faq.answer}</p>
-            </details>
+            <div className={"faq-entry " + (open === index ? "expanded" : "")} key={faq.question}>
+              <h3>
+                <button className="faq-trigger" type="button" onClick={() => setOpen(open === index ? null : index)}
+                  aria-expanded={open === index} aria-controls={"faq-answer-" + index}>
+                  <span>{faq.question}</span><motion.span className="faq-plus" aria-hidden="true" animate={{ rotate: open === index ? 45 : 0 }} transition={{ duration: reduceMotion ? 0 : .25 }}><Plus size={20}/></motion.span>
+                </button>
+              </h3>
+              <AnimatePresence initial={false}>
+                {open === index && (
+                  <motion.div key="content" id={"faq-answer-" + index} initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }} exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
+                    transition={{ duration: reduceMotion ? 0 : .34, ease: "easeInOut" }} style={{ overflow: "hidden" }}>
+                    <p className="faq-answer">{faq.answer}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           ))}
         </div>
       </div>
