@@ -1,37 +1,52 @@
-# ShipSafe (Next.js)
+# ShipSafe
 
-ShipSafe is a developer-first application security assessment product, rewritten as a modern **Next.js App Router** application.
+ShipSafe is a developer-first application security product in **pre-launch development**. This repository contains a Next.js 15 App Router marketing website, an illustrative report explorer and informational legal pages.
 
-## Overview
+## What is included
 
-ShipSafe helps developers understand application security risks, why they matter, and how to fix them with clear, actionable application security assessments.
+- Premium responsive white/off-white marketing page
+- Scroll-linked progress indicator, subtle hero parallax, spring-like cards, hover details and scroll reveals
+- Interactive illustrative report: switch between a free severity overview and three example detailed findings
+- Animated and keyboard-accessible FAQ, mobile navigation and accessible assessment-preview dialog
+- Sections explaining the planned workflow, product value, trust principles and one-time $19 pricing
+- Public routes: **/privacy**, **/terms**, **/refunds**, **/security**, **/contact**
+- Reduced-motion support and defensive visibility rules to avoid blank animated content
 
-### Features & Architecture
+## What is not implemented
 
-- **Next.js 15 App Router**: Built with modular React server and client components in `app/` and `components/`.
-- **Navigation & Sticky Header**: Responsive navigation header with scroll detection, mobile slide-out drawer, accessible keyboard navigation, and skip links.
-- **Hero & Interactive 3D Report Card**: Realistic 3D perspective security assessment preview showcasing severity indicators (Critical, High, Medium, Low), potential findings, and evidence tags.
-- **Process & Security by Design**: Three-step workflow visualization and trust architecture items highlighting read-only source access, evidence-backed findings, and explicit scope limits.
-- **Pricing & FAQ**: One-time $19 detailed report pricing card and native interactive FAQ accordion.
-- **Pre-Launch Assessment Dialog**: Accessible dialog informing users about read-only security scans and product launch status with clean backdrop blur and keyboard dismissal.
+**The product does not yet scan applications or collect payments.** Repository authorization, real scanning, storing reports, checkout, purchase validation and private support are not connected. The sample finding counts and examples are labeled as illustrative; no visual demo should be mistaken for a real security report.
 
-### Development
+The "Assess your application" buttons deliberately open a pre-launch informational dialog. Legal pages describe the current state and must be reviewed once final operator details, provider configuration, private contact methods and data-handling processes are known.
 
-Run the development server on port 3000:
+## Run locally
+
+Use Node.js 20+.
 
 ```sh
+npm install
 npm run dev
 ```
 
-Build for production:
+Visit http://localhost:3000
+
+## Verify before deploying
 
 ```sh
+npm run typecheck
 npm run build
-npm start
 ```
 
-### Design Principles
+Visual QA checklist: test at **320px, 375px, 430px, 768px, 1024px and 1440px** widths. Check that every hero element is visible, product demo tabs work, FAQ and mobile menu respond to keyboard/touch, legal links resolve, and no horizontal overflow is present. Also test reduced-motion mode.
 
-- White professional visual system with typography powered by Inter font.
-- Fully responsive across desktop, tablet, and mobile breakpoints.
-- Accessible interactions with reduced-motion support and ARIA attributes.
+## Architecture
+
+- `app/page.tsx` assembles the landing page
+- `app/globals.css` carries the original design foundation
+- `app/enhancements.css` contains the interactive experience and legal visual styles
+- `components/ReportExperience.tsx` implements the sample report explorer
+- `components/ScrollProgress.tsx`, `ValueSection.tsx`, `FinalCTA.tsx` provide the visual enhancements
+- `components/LegalPage.tsx` is the shared legal template
+
+## Launch blockers
+
+Before accepting real security assessments or payments: implement least-privilege authorization, isolated untrusted-code analysis, accurate scan coverage/evidence, secrets redaction, source retention limits, payment confirmation, and private support/security reporting. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
