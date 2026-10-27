@@ -1,34 +1,78 @@
 import type { Metadata } from "next";
-import LegalPage from "@/components/LegalPage";
+import Link from "next/link";
+import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Security Practices | ShipSafe",
-  description: "ShipSafe's current product status, responsible security principles and planned safeguards.",
+  title: "Security & Responsible Use | ShipSafe",
+  description: "ShipSafe's security commitments, assessment scope, responsible-use requirements, reporting boundaries and current service status.",
 };
+
+const sections: LegalSection[] = [
+  { id: "status", title: "Current security scope" },
+  { id: "permissions", title: "Authorization and permissions" },
+  { id: "scanning", title: "Safe assessment design" },
+  { id: "secrets", title: "Secrets, retention and reports" },
+  { id: "limitations", title: "Accuracy and limitations" },
+  { id: "reporting", title: "Reporting a security issue" },
+  { id: "incidents", title: "Incident readiness and changes" },
+];
 
 export default function SecurityPage() {
   return (
-    <LegalPage eyebrow="TRUST / SECURITY" title="Security practices." lead="A security product should be precise about what it actually protects, measures and promises.">
-      <h2>1. Current stage</h2>
-      <p>ShipSafe currently serves a landing page and interactive illustrative examples. There is no production scanning engine, source-code integration or paid reporting backend connected to this website. The example findings do not represent live scans.</p>
-      <h2>2. Intended access boundaries</h2>
-      <p>The planned assessment flow will use explicit authorization and the minimum permissions reasonably needed to inspect a selected application. The product is designed for read-only assessment rather than making changes to your code. Implementation and security verification are required before launch.</p>
-      <h2>3. Planned safeguards</h2>
-      <ul>
-        <li>Isolate analysis of untrusted application content.</li>
-        <li>Avoid executing submitted application scripts by default.</li>
-        <li>Mask potential credentials in reports and diagnostic logs.</li>
-        <li>Minimize source-code retention and document deletion windows.</li>
-        <li>Make security findings traceable to evidence and describe coverage limitations.</li>
-        <li>Unlock any paid report only after server-verified payment.</li>
-      </ul>
-      <p>These are engineering requirements, not a claim that an unlaunched backend is already compliant or certified.</p>
-      <h2>4. Responsible use</h2>
-      <p>Future assessment functionality will be intended only for applications users own or are authorized to evaluate. We will not advertise security grades as proof of comprehensive protection.</p>
-      <h2>5. Vulnerability reports</h2>
-      <p>Do not publish exploit details, personal data, tokens or vulnerable private endpoints in public GitHub issues. A private security-reporting channel is not yet published; it must be provided before broader production rollout. You can use the <a href="/contact">contact page</a> for non-sensitive questions.</p>
-      <h2>6. Updates</h2>
-      <p>This page will be revised alongside implementation, independent validation and the introduction of live scanning and payments.</p>
+    <LegalPage
+      eyebrow="TRUST / SECURITY"
+      title="Security practices."
+      lead="Security claims should match the system that actually exists. Learn the principles guiding ShipSafe and the boundaries of its current preview."
+      sections={sections}
+      summary={[
+        "The current site is a marketing preview. No production source-code scanning or GitHub authorization is active.",
+        "The planned assessment will prioritize explicit authorization, least privilege and evidence-based findings.",
+        "No certification, zero-risk guarantee or private vulnerability-reporting inbox is claimed.",
+      ]}
+    >
+      <section id="status" className="legal-section">
+        <h2>Current security scope</h2>
+        <p>ShipSafe currently provides a public website, an interactive illustrative report and informational pages. The example vulnerability counts and technical fixes are demonstration material. A production scanner, authorization flow, customer report storage and payment processor have not been activated.</p>
+        <p>This page documents current boundaries and future engineering requirements. It does not claim SOC 2, ISO 27001, a completed penetration test, an audit certification or any other third-party security attestation.</p>
+      </section>
+      <section id="permissions" className="legal-section">
+        <h2>Authorization and permissions</h2>
+        <p>The planned workflow requires an explicit, user-initiated connection to an application the user is entitled to assess. Where access to a source repository is needed, the intended design is to request selected-resource read permissions rather than unrestricted access or write permission.</p>
+        <p>Users must own the application or have demonstrable authorization for the relevant assessment. Access to a public website or open-source project is not, by itself, permission to conduct disruptive or intrusive testing.</p>
+      </section>
+      <section id="scanning" className="legal-section">
+        <h2>Safe assessment design</h2>
+        <p>Prior to launch, the scanning implementation must be reviewed for the risks created by handling untrusted code and network responses. The engineering baseline includes:</p>
+        <ul>
+          <li>Isolated processing environments with appropriate time, memory and network restrictions.</li>
+          <li>No arbitrary execution of a customer's project installation or build scripts as part of a passive assessment.</li>
+          <li>Controls to avoid accessing internal network services, localhost resources and cloud metadata endpoints.</li>
+          <li>Request throttling, bounded scan scope and explicit confirmation for any deeper active tests.</li>
+          <li>Rules and dependency advisories that have traceable sources and identifiable version or configuration evidence.</li>
+        </ul>
+        <p>These are implementation and validation requirements. They should not be interpreted as deployed security features until the real scan service has been built and tested.</p>
+      </section>
+      <section id="secrets" className="legal-section">
+        <h2>Secrets, retention and reports</h2>
+        <p>A production assessment should avoid logging or reproducing complete credentials in user-facing reports. Findings should mask suspected secrets, restrict report access to the entitled recipient and state whether sensitive content is stored at all.</p>
+        <p>Before enabling source access, ShipSafe must set and publish retention, access revocation and deletion rules for code, scan artifacts, diagnostic logs and paid reports. There is no current repository ingestion or customer-report database in the public preview.</p>
+      </section>
+      <section id="limitations" className="legal-section">
+        <h2>Accuracy and limitations</h2>
+        <p>Automated findings may be false positives, low impact in context or incomplete. Some categories of vulnerability require manual testing, application credentials, active interaction or deeper system access. Severity should be supported by evidence, not inflated to increase sales.</p>
+        <p>No security assessment can establish that an application is free of all security risks. A completed scan, when available, should clearly disclose what was checked, which targets and versions were covered, what could not be assessed and which items require review.</p>
+      </section>
+      <section id="reporting" className="legal-section">
+        <h2>Reporting a security issue</h2>
+        <p><strong>Do not publish sensitive vulnerability reports in public GitHub issues.</strong> Public issues are appropriate only for non-sensitive bugs and product feedback. Never post exploit details, credentials, customer information or vulnerable private endpoints there.</p>
+        <p>A dedicated private vulnerability-reporting method must be enabled and published before ShipSafe handles customer source code or accepts payments. We do not invent a security email address or claim an unverified private inbox exists today. See <Link href="/contact">Contact</Link> for the currently available public feedback channel.</p>
+      </section>
+      <section id="incidents" className="legal-section">
+        <h2>Incident readiness and changes</h2>
+        <p>Before handling sensitive data, ShipSafe must establish incident triage, response ownership, a private communication channel, log-review practices and applicable regulatory reporting procedures. Response guarantees and certification statements will only be displayed once supported by actual operating procedures.</p>
+        <p>Material changes to access permissions, hosting, scan coverage, report retention or payments should be reflected in the <Link href="/privacy">privacy notice</Link>, <Link href="/terms">terms</Link> and this page before the affected functionality goes live.</p>
+        <p className="legal-note"><strong>Security is not a badge.</strong> ShipSafe's aim is accurate, explainable application security guidance—not misleading scores, false guarantees or unverified compliance claims.</p>
+      </section>
     </LegalPage>
   );
 }
