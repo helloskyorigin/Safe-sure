@@ -65,7 +65,8 @@ export function isAssessmentSnapshot(value: unknown, expectedId: string): value 
       shortText(event.message, 300))) return false;
   if (value.progress !== undefined) {
     const p = value.progress;
-    if (!record(p) || !Number.isInteger(p.done) || !Number.isInteger(p.total) ||
+    if (!record(p) || typeof p.done !== "number" || typeof p.total !== "number" ||
+      !Number.isInteger(p.done) || !Number.isInteger(p.total) ||
       (p.done as number) < 0 || (p.total as number) < 1 ||
       (p.done as number) > (p.total as number) || (p.total as number) > 1000) return false;
   }
