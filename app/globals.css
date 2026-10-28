@@ -16,7 +16,8 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Smooth movement is enabled only for deliberate section clicks. */
+  scroll-behavior: auto;
   scroll-padding-top: 88px;
 }
 
