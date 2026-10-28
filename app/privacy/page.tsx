@@ -34,7 +34,7 @@ export default function PrivacyPage() {
     >
       <section id="scope" className="legal-section">
         <h2>Scope and service status</h2>
-        <p>This privacy notice covers the ShipSafe public website and its current interactive product demonstrations. ShipSafe is a software project, not a representation that a separate company has been incorporated. The website currently explains a planned application-security assessment service, but the GitHub authorization, scan engine, report delivery and paid checkout are not operational.</p>
+        <p>This privacy notice covers the ShipSafe public website and its current interactive product demonstrations. ShipSafe is a software project, not a representation that a separate company has been incorporated. The website currently explains a planned application-security assessment service, but GitHub authorization, live scan processing and authenticated report delivery are not operational.</p>
         <p>Clicking “Assess your application” opens an informational dialog. It does not authorize access to repositories, ingest application code, collect a payment or generate a real security result. The displayed findings and severity counts are examples.</p>
       </section>
       <section id="data" className="legal-section">
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
         <h2>Changes and contact</h2>
         <p>This notice is reviewed when the website's behavior changes. Material changes to collected data, processing purposes, service providers or user controls should be published before the affected functionality becomes available, with an updated revision date.</p>
         <p>For general non-sensitive questions visit <Link href="/contact">Contact</Link>. Security-specific information is available in our <Link href="/security">security practices</Link>. Do not share secret credentials or private code through public channels.</p>
-        <p className="legal-note"><strong>Current status:</strong> ShipSafe is an operational website preview, not a live code-auditing or paid-report service. This policy describes the implementation at the date shown above.</p>
+        <p className="legal-note"><strong>Current status:</strong> ShipSafe is an operational website preview, not a live code-auditing service. This policy describes the implementation at the date shown above.</p>
       </section>
     </LegalPage>
   );
