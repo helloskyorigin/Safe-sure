@@ -62,3 +62,41 @@ test("mobile and desktop scanning UI has no horizontal overflow", async ({ brows
     await context.close();
   }
 });
+
+
+test("live progress and stage statuses follow the real stream, never a fake timer", async ({ page }) => {
+  const runId = "12345678-1234-4321-9999-123456789012";
+  const stageNames = ["access", "secrets", "dependencies", "patterns", "evidence"];
+  await page.addInitScript(({ id, keys }) => {
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+      if (typeof input !== "string" || input !== "/api/scan/public")
+        return nativeFetch(input, init);
+      const encode = new TextEncoder();
+      const timestamp = new Date().toISOString();
+      const snapshot = {
+        runId: id, target: { name: "acme/testapp" }, status: "running", updatedAt: timestamp,
+        checks: keys.map((key, i) => ({ key, status: i === 0 ? "complete" : i === 1 ? "running" : "queued" })),
+        events: [], progress: { done: 1, total: 5 },
+      };
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(encode.encode(JSON.stringify({ type: "snapshot", snapshot }) + "\n"));
+          window.setTimeout(() => {
+            controller.enqueue(encode.encode(JSON.stringify({ type: "error", message: "Upstream disconnected." }) + "\n"));
+            controller.close();
+          }, 4000);
+        },
+      });
+      return Promise.resolve(new Response(stream, { status: 200, headers: { "content-type": "application/x-ndjson" } }));
+    };
+  }, { id: runId, keys: stageNames });
+  await page.goto("/assess/scanning?repo=acme%2Ftestapp");
+  await expect(page.getByRole("heading", { name: "Scanning your app" })).toBeVisible();
+  await expect(page.getByRole("progressbar", { name: "Assessment progress" })).toHaveAttribute("aria-valuenow", "20");
+  await expect(page.locator(".scan-check-status")).toHaveText(["Done", "Scanning", "Waiting", "Waiting", "Waiting"]);
+  await expect(page.getByText("1 of 5 checks")).toBeVisible();
+  await expect(page.getByText("Upstream disconnected.")).toBeVisible({ timeout: 8000 });
+  await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
+  await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
+});
