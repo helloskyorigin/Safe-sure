@@ -7,7 +7,7 @@ import {
   AlertCircle, ArrowLeft, ArrowRight, ArrowUpRight, BookOpenCheck, Check,
   CheckCircle2, ChevronDown, CircleDashed, ClipboardCheck, ClipboardCopy,
   Code2, Download, FileCode2, FileSearch, Filter, Fingerprint, Github,
-  Info, LockKeyhole, Printer, RefreshCw, Search, ShieldAlert, ShieldCheck,
+  GitBranch, Info, LockKeyhole, Printer, RefreshCw, Search, ShieldAlert, ShieldCheck,
   ShieldQuestion, Sparkles, Terminal, X,
 } from "lucide-react";
 import {
