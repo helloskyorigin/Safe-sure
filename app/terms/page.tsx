@@ -3,8 +3,8 @@ import Link from "next/link";
 import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Terms of Use | ShipSafe",
-  description: "The conditions for visiting ShipSafe, using its interactive demonstrations and understanding the scope of future assessments.",
+  title: "Terms of Use | Secuvora",
+  description: "The conditions for visiting Secuvora, using its interactive demonstrations and understanding the scope of future assessments.",
 };
 
 const sections: LegalSection[] = [
@@ -24,7 +24,7 @@ export default function TermsPage() {
     <LegalPage
       eyebrow="POLICY / TERMS"
       title="Terms of use."
-      lead="A straightforward explanation of what ShipSafe offers today, how the preview may be used and what to expect before the service goes live."
+      lead="A straightforward explanation of what Secuvora offers today, how the preview may be used and what to expect before the service goes live."
       sections={sections}
       summary={[
         "Read-only public source scanning is available. Private scanning and owner-scoped encrypted seven-day reports are conditional on GitHub App and database configuration.",
@@ -34,7 +34,7 @@ export default function TermsPage() {
     >
       <section id="agreement" className="legal-section">
         <h2>About these terms</h2>
-        <p>These terms apply to access to the ShipSafe website and its publicly available product demonstrations. “ShipSafe” means the project presented on this website; this wording does not assert that a separately incorporated company exists. Additional operator identification and private support details will be published before handling sensitive application data.</p>
+        <p>These terms apply to access to the Secuvora website and its publicly available product demonstrations. “Secuvora” means the project presented on this website; this wording does not assert that a separately incorporated company exists. Additional operator identification and private support details will be published before handling sensitive application data.</p>
         <p>By using this preview, you agree to use it lawfully and respect the restrictions below. If you do not agree, you should not use the website. Where mandatory legal rights apply, nothing here is intended to remove them.</p>
       </section>
       <section id="availability" className="legal-section">
@@ -59,8 +59,8 @@ export default function TermsPage() {
       </section>
       <section id="ownership" className="legal-section">
         <h2>Intellectual property</h2>
-        <p>ShipSafe's original brand presentation, content, illustrations and interface are part of the project. Third-party components, libraries, trademarks and materials remain subject to their respective licenses and rights. Access to the website does not transfer ownership of any intellectual property.</p>
-        <p>Future application submissions will remain the responsibility of their respective owners. ShipSafe fetches public repository code only when a public scan is requested. In a configured private flow, it reads only repositories the signed-in user is authorized to select through a GitHub App and does not request the user's GitHub password.</p>
+        <p>Secuvora's original brand presentation, content, illustrations and interface are part of the project. Third-party components, libraries, trademarks and materials remain subject to their respective licenses and rights. Access to the website does not transfer ownership of any intellectual property.</p>
+        <p>Future application submissions will remain the responsibility of their respective owners. Secuvora fetches public repository code only when a public scan is requested. In a configured private flow, it reads only repositories the signed-in user is authorized to select through a GitHub App and does not request the user's GitHub password.</p>
       </section>
       <section id="third-party" className="legal-section">
         <h2>External services</h2>
