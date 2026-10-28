@@ -220,16 +220,16 @@ export default function ScanningConsole() {
   const hasSource = Boolean(source);
   const isFailure = load.type === "error" || load.type === "invalid" || load.type === "unavailable" ||
     snapshot?.status === "failed" || snapshot?.status === "cancelled";
-  const isFinishing = snapshot?.status === "completed" && Boolean(savedId);
+  const isFinishing = snapshot?.status === "completed";
   const latestRunning = checks.find(check => check.status === "running");
   const liveDescription = latestRunning
     ? displayNames[latestRunning.key]
-    : snapshot?.status === "completed" ? "Opening your full report…"
+     : snapshot?.status === "completed" ? (savedId ? "Opening your full report…" : "Preparing your full report…")
     : load.type === "loading" ? "Connecting to the scanner…"
     : snapshot?.status === "queued" ? "Waiting for the scanner…"
     : "Analyzing your repository…";
   const stateLabel = isFailure ? "Scan interrupted" :
-    isFinishing ? "Opening results" : ongoing ? "Live scanning" :
+    isFinishing ? (savedId ? "Opening results" : "Finalizing report") : ongoing ? "Live scanning" :
     snapshot?.status === "completed" ? "Finalizing report" : "Awaiting repository";
   const message = load.type === "error" ? load.message :
     load.type === "invalid" ? "Repository or run reference is invalid." :
@@ -289,7 +289,7 @@ export default function ScanningConsole() {
 
           <div className="scan-visual-bottom">
             <h1 id="scan-heading">{isFailure ? "Scan interrupted" :
-              isFinishing ? "Opening your results" :
+              isFinishing ? (savedId ? "Opening your results" : "Finalizing your report") :
               hasSource ? "Scanning your app" : "Ready to scan"}</h1>
             <p className="scan-repo-name">{source?.name || "No repository selected"}</p>
             {!isFailure && <p className="scan-current-action" aria-live="polite">
@@ -345,7 +345,7 @@ export default function ScanningConsole() {
                 <Square size={13}/>{cancelBusy ? "Cancelling…" : "Cancel scan"}
               </button>
             ) : isFinishing ? (
-              <p className="scan-finishing"><FileCheck2 size={16}/> Your full report is opening…</p>
+              <p className="scan-finishing"><FileCheck2 size={16}/>{savedId ? "Your full report is opening…" : "Preparing your full report…"}</p>
             ) : (
               <Link href="/assess" className="scan-primary-link"><Github size={17}/> Scan a public repository <ArrowRight size={17}/></Link>
             )}
