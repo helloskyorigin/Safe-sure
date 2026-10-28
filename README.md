@@ -95,4 +95,4 @@ Before broad private or commercial usage: confirm real Github App installation, 
 
 ### Scanner v2: evidence-backed security assessment
 
-Secuvora uses 12 curated source/config detector families, selected Terraform/GitHub Actions rules, exact-version npm/PyPI OSV advisory checks, redacted file/line evidence, rule IDs, confidence and actual file/line/package scope metrics. This is bounded static analysis, not an exhaustive SAST/DAST scanner or certification. See [Scanner v2: detection scope, precision limits and tests](docs/scanner-v2-evidence.md).
+Secuvora uses 14 curated source/config detector families, selected Terraform/GitHub Actions rules, two explicit AI agent integration safety-bypass checks, exact-version npm/PyPI OSV advisory checks, redacted file/line evidence, rule IDs, confidence and actual file/line/package scope metrics. This is bounded static analysis, not an exhaustive SAST/DAST scanner or certification. See [Scanner v2: detection scope, precision limits and tests](docs/scanner-v2-evidence.md).
