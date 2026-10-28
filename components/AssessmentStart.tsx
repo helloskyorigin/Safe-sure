@@ -1,253 +1,117 @@
 "use client";
 
 import Link from "next/link";
-import PrivateRepoConnector from "@/components/PrivateRepoConnector";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import {
-  ArrowLeft, ArrowRight, ArrowUpRight, Check, CheckCircle2,
-  ChevronDown, ChevronRight, Code2, FileSearch, Github, GitBranch,
-  Info, KeyRound, Layers3, LockKeyhole, ScanSearch, ShieldCheck, X,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Github, Globe2, LockKeyhole, ShieldCheck } from "lucide-react";
+import PrivateRepoConnector from "@/components/PrivateRepoConnector";
 
-const easer = [0.22, 1, 0.36, 1] as const;
-
-const stages = [
-  { number: "01", title: "Connect application", description: "Authorize a selected application on GitHub.", icon: Github },
-  { number: "02", title: "Run assessment", description: "Analyze available code, dependencies and security signals.", icon: ScanSearch },
-  { number: "03", title: "Understand results", description: "See severity, evidence and fixes together—with no paywall.", icon: FileSearch },
-] as const;
-
-const checks = [
-  { icon: KeyRound, title: "Potential exposed secrets", description: "Look for patterns that suggest credentials were placed in source code." },
-  { icon: Layers3, title: "Vulnerable dependencies", description: "Compare supported package versions against published advisories." },
-  { icon: Code2, title: "Application security patterns", description: "Review supported source and configuration patterns for security concerns." },
-] as const;
+type AccessMode = "public" | "private";
 
 export default function AssessmentStart() {
-  const reducedMotion = useReducedMotion();
   const router = useRouter();
+  const reducedMotion = useReducedMotion();
+  const [mode, setMode] = useState<AccessMode | null>(null);
   const [publicRepo, setPublicRepo] = useState("");
-  const [publicError, setPublicError] = useState("");
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [demoOpen, setDemoOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [error, setError] = useState("");
+  const panelRef = useRef<HTMLDivElement>(null);
 
+  // Return from GitHub OAuth should open the private selector, not the choice screen.
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (dialogOpen && !dialog.open) dialog.showModal();
-    if (!dialogOpen && dialog.open) dialog.close();
-  }, [dialogOpen]);
+    const query = new URLSearchParams(window.location.search);
+    if (query.has("connected") || query.has("auth_error")) setMode("private");
+  }, []);
 
-  const entrance = (delay: number) => ({
-    initial: { opacity: 1, y: reducedMotion ? 0 : 16 },
+  function choose(next: AccessMode) {
+    setMode(current => current === next ? current : next);
+    setError("");
+  }
+
+  function submitPublic(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const value = publicRepo.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
+    const match = /^(?:https:\/\/github\.com\/)?([A-Za-z0-9-]{1,39})\/([A-Za-z0-9_.-]{1,100})$/i.exec(value);
+    if (!match || match[1].startsWith("-") || !/^[a-zA-Z0-9]/.test(match[2])) {
+      setError("Enter a valid GitHub URL, for example github.com/owner/repo.");
+      return;
+    }
+    setError("");
+    router.push("/assess/scanning?repo=" + encodeURIComponent(match[1] + "/" + match[2]));
+  }
+
+  const entrance = reducedMotion ? {} : {
+    initial: { opacity: 0, y: 16 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: reducedMotion ? 0 : .75, delay: reducedMotion ? 0 : delay, ease: easer },
-  });
+    transition: { duration: .55, ease: [0.22, 1, 0.36, 1] as const },
+  };
 
   return (
-    <div className="assess-page">
-      <a href="#assess-main" className="skip-link">Skip to assessment</a>
-      <header className="assess-header">
+    <div className="assess-page connect-page">
+      <a href="#connect-main" className="skip-link">Skip to repository connection</a>
+      <header className="assess-header connect-header">
         <div className="assess-container assess-header-inner">
           <Link href="/" className="brand" aria-label="ShipSafe home">shipsafe<span>.</span></Link>
-          <span className="assess-header-center"><span className="assess-header-dot" /> APPLICATION SECURITY</span>
-          <Link href="/" className="assess-back"><ArrowLeft size={15} /> <span>Back to website</span></Link>
+          <span className="connect-header-mark"><span/> APPLICATION SECURITY</span>
+          <Link href="/" className="assess-back"><ArrowLeft size={16}/> <span>Back</span></Link>
         </div>
       </header>
 
-      <main id="assess-main">
-        <div className="assess-container">
-          <div className="assess-progress" aria-label="Assessment progress">
-            {stages.map((step, index) => (
-              <div key={step.number} className={"assess-progress-step " + (index === 0 ? "current" : "future")}
-                aria-current={index === 0 ? "step" : undefined}>
-                <span className="assess-progress-circle">{step.number}</span>
-                <span className="assess-progress-label">{step.title}</span>
-                {index < stages.length - 1 && <span className="assess-progress-connector" aria-hidden="true" />}
-              </div>
-            ))}
+      <main id="connect-main" className="connect-main">
+        <motion.div className="connect-content" {...entrance}>
+          <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
+          <h1>What are we <em>scanning?</em></h1>
+          <p className="connect-subtitle">Choose how to access your repository.</p>
+
+          <div className="connect-choices" role="group" aria-label="Repository visibility">
+            <button type="button" className={"connect-choice" + (mode === "public" ? " selected" : "")}
+              aria-pressed={mode === "public"} onClick={() => choose("public")}>
+              <span className="connect-choice-icon"><Globe2 size={24} strokeWidth={1.8}/></span>
+              <span className="connect-choice-copy"><strong>Public repository</strong><small>Paste a GitHub link</small></span>
+              <span className="connect-choice-end">{mode === "public" ? <Check size={19}/> : <ArrowRight size={18}/>}</span>
+            </button>
+            <button type="button" className={"connect-choice" + (mode === "private" ? " selected" : "")}
+              aria-pressed={mode === "private"} onClick={() => choose("private")}>
+              <span className="connect-choice-icon"><LockKeyhole size={23} strokeWidth={1.8}/></span>
+              <span className="connect-choice-copy"><strong>Private repository</strong><small>Connect GitHub and select a repo</small></span>
+              <span className="connect-choice-end">{mode === "private" ? <Check size={19}/> : <ArrowRight size={18}/>}</span>
+            </button>
           </div>
 
-          <div className="assess-hero-grid">
-            <div className="assess-left">
-              <motion.div {...entrance(.03)}>
-                <p className="assess-eyebrow"><span /> STEP 01 OF 03 · CONNECTION</p>
-                <h1>Better security<br />starts with <em>clarity.</em></h1>
-                <p className="assess-lead">Choose the application you&apos;re preparing to ship. ShipSafe is designed to explain potential security risks before they become bigger problems.</p>
-              </motion.div>
-
-              <motion.section aria-labelledby="assess-card-title" className="assess-connect-card" {...entrance(.14)}>
-                <div className="assess-card-top">
-                  <div className="assess-github-icon"><Github size={26} strokeWidth={1.8}/></div>
-                  <span className="assess-pill"><span /> PUBLIC SCANNING ACTIVE</span>
-                </div>
-                <h2 id="assess-card-title">Connect your application</h2>
-                <p className="assess-card-description">Paste a public repository to scan without signing in, or authorize selected private repositories through a configured GitHub App.</p>
-                <form className="assess-live-form" onSubmit={event => {
-                  event.preventDefault();
-                  const raw = publicRepo.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
-                  const m = /^(?:https:\/\/github\.com\/)?([A-Za-z0-9-]{1,39})\/([A-Za-z0-9_.-]{1,100})$/i.exec(raw);
-                  if (!m) { setPublicError("Enter a public GitHub repo: owner/repo or https://github.com/owner/repo"); return; }
-                  setPublicError("");
-                  router.push("/assess/scanning?repo=" + encodeURIComponent(m[1] + "/" + m[2]));
-                }}>
-                  <label htmlFor="assess-public-repo">Public GitHub repository</label>
-                  <div className="assess-repo-input"><Github size={19}/><input id="assess-public-repo" type="text" required autoComplete="off" spellCheck={false}
-                    value={publicRepo} onChange={event => { setPublicRepo(event.target.value); setPublicError(""); }}
-                    placeholder="owner/repository" aria-invalid={!!publicError} aria-describedby="public-repo-note"/></div>
-                  <p id="public-repo-note" className="assess-availability"><Info size={14}/> Real public-source scan. No GitHub account required; only public code, pinned versions and supported security rules are checked.</p>
-                  {publicError && <p role="alert" className="assess-public-error">{publicError}</p>}
-                  <button className="assess-primary" type="submit"><ScanSearch size={19}/><span>Scan public repository</span><ArrowRight size={18}/></button>
+          <AnimatePresence mode="wait" initial={false}>
+            {mode && <motion.div key={mode} ref={panelRef} className="connect-panel" id="connect-panel"
+              initial={reducedMotion ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reducedMotion ? undefined : { opacity: 0, y: -7 }}
+              transition={{ duration: reducedMotion ? 0 : .25 }}>
+              {mode === "public" ? (
+                <form onSubmit={submitPublic} className="connect-public-form">
+                  <label htmlFor="connect-repo-url">GitHub repository URL</label>
+                  <div className="connect-url-field">
+                    <Github size={20}/>
+                    <input id="connect-repo-url" name="repository" value={publicRepo}
+                      onChange={event => { setPublicRepo(event.target.value); setError(""); }}
+                      placeholder="github.com/owner/repo" autoCapitalize="off" autoComplete="off"
+                      spellCheck={false} aria-invalid={!!error} aria-describedby={error ? "connect-url-error" : undefined}
+                      required autoFocus/>
+                  </div>
+                  {error && <p className="connect-error" role="alert" id="connect-url-error">{error}</p>}
+                  <button type="submit" className="connect-submit">
+                    Scan repository <ArrowRight size={18}/>
+                  </button>
                 </form>
-                <div className="assess-or-separator"><span/> OR PRIVATE REPOSITORY <span/></div>
-                <PrivateRepoConnector onUnavailable={() => setDialogOpen(true)}/>
-                <div className="assess-card-divider"/>
-                <div className="assess-assurances" aria-label="Connection principles">
-                  <span><ShieldCheck size={16}/> Read-only by design</span>
-                  <span><LockKeyhole size={16}/> Select access</span>
-                  <span><CheckCircle2 size={16}/> No signup for public repos</span>
-                </div>
-                <button type="button" className="assess-permissions-trigger" aria-expanded={detailsOpen} aria-controls="assess-permissions"
-                  onClick={() => setDetailsOpen(value => !value)}>
-                  What access will ShipSafe request?
-                  <motion.span animate={{ rotate: detailsOpen ? 180 : 0 }} transition={{ duration: reducedMotion ? 0 : .24 }}><ChevronDown size={17}/></motion.span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {detailsOpen && (
-                    <motion.div id="assess-permissions" className="assess-permissions" key="permissions"
-                      initial={reducedMotion ? false : { height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={reducedMotion ? undefined : { height: 0, opacity: 0 }}
-                      transition={{ duration: reducedMotion ? 0 : .32 }}
-                      style={{ overflow: "hidden" }}>
-                      <div className="assess-permissions-inner">
-                        <div><Check size={15}/><p><strong>Repository contents: read</strong><span>Inspect the selected application&apos;s supported code and configuration.</span></p></div>
-                        <div><Check size={15}/><p><strong>Metadata: read</strong><span>GitHub automatically provides basic repository metadata to GitHub Apps.</span></p></div>
-                        <div><Check size={15}/><p><strong>No write access requested</strong><span>ShipSafe will not edit files, create commits or change your settings.</span></p></div>
-                        <p className="assess-permissions-note">These are proposed GitHub App permissions. The actual installation page will provide the authoritative permission list when integration launches.</p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.section>
+              ) : <PrivateRepoConnector/>}
+            </motion.div>}
+          </AnimatePresence>
 
-              <div className="assess-scan-preview">
-                <span className="assess-scan-preview-icon"><ScanSearch size={19}/></span>
-                <div><strong>Explore the inspection console</strong><p>Try the inspection interface without starting a real repository scan.</p></div>
-                <Link href="/assess/scanning" aria-label="Preview scanning workspace"><ArrowRight size={18}/></Link>
-              </div>
-
-              <motion.div className="assess-microtrust" {...entrance(.24)}>
-                <div className="assess-microtrust-icon"><ShieldCheck size={19}/></div>
-                <p><strong>You're always in control.</strong><br/>Public scanning reads only publicly available code. Private repository access, when enabled, will require explicit GitHub authorization.</p>
-              </motion.div>
-            </div>
-
-            <motion.aside className="assess-right" aria-label="Assessment journey illustration" {...entrance(.22)}>
-              <div className="assess-journey-card">
-                <div className="assess-journey-head"><span>HOW YOUR ASSESSMENT FLOWS</span><span className="assess-preview-tag">DESIGN PREVIEW</span></div>
-                <div className="assess-journey-stage">
-                  <span className="assess-stage-icon"><Github size={19}/></span>
-                  <div><strong>Your application</strong><p>Selected by you</p></div>
-                  <span className="assess-stage-status">NOT CONNECTED</span>
-                </div>
-                <div className="assess-journey-path" aria-hidden="true"><span/><span/><span/></div>
-                <div className="assess-journey-stage">
-                  <span className="assess-stage-icon assess-stage-muted"><ScanSearch size={19}/></span>
-                  <div><strong>Security assessment</strong><p>Evidence-backed checks</p></div>
-                  <span className="assess-stage-number">02</span>
-                </div>
-                <div className="assess-journey-path" aria-hidden="true"><span/><span/><span/></div>
-                <div className="assess-journey-stage">
-                  <span className="assess-stage-icon assess-stage-muted"><FileSearch size={19}/></span>
-                  <div><strong>Clear findings</strong><p>Full findings · Free access</p></div>
-                  <span className="assess-stage-number">03</span>
-                </div>
-                <div className="assess-journey-note"><Info size={14}/><span>No assessment is running. This visual only explains the intended workflow.</span></div>
-              </div>
-              <div className="assess-clarity-panel">
-                <span className="assess-clarity-icon"><GitBranch size={19}/></span>
-                <div><strong>Security that makes sense.</strong><p>Potential findings, why they matter, and practical next steps—not another complicated dashboard.</p></div>
-              </div>
-            </motion.aside>
-          </div>
-        </div>
-
-        <section className="assess-below" aria-labelledby="assess-checks-title">
-          <div className="assess-container">
-            <div className="assess-below-heading">
-              <div><span className="assess-small-label">A CLEARER WAY FORWARD</span><h2 id="assess-checks-title">What comes after<br/>connection?</h2></div>
-              <button type="button" className="assess-flow-toggle" onClick={() => setDemoOpen(value => !value)} aria-expanded={demoOpen} aria-controls="assess-flow-details">
-                {demoOpen ? "Hide walkthrough" : "Explore the flow"} <ArrowUpRight size={16}/>
-              </button>
-            </div>
-            <div className="assess-steps-grid">
-              {stages.map((step, i) => (
-                <motion.article key={step.number} className="assess-step-card"
-                  initial={{ opacity: 1, y: reducedMotion ? 0 : 18 }}
-                  whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                  transition={{ delay: reducedMotion ? 0 : i * .09, duration: reducedMotion ? 0 : .6, ease: easer }}>
-                  <div className="assess-step-top"><span className="assess-step-icon"><step.icon size={23}/></span><span>{step.number} / 03</span></div>
-                  <h3>{step.title}</h3><p>{step.description}</p>
-                  <div className="assess-step-line" aria-hidden="true"/>
-                </motion.article>
-              ))}
-            </div>
-            <AnimatePresence initial={false}>
-              {demoOpen && <motion.div className="assess-flow-details" id="assess-flow-details" key="flow"
-                initial={reducedMotion ? false : { opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={reducedMotion ? undefined : { opacity: 0, height: 0 }}
-                transition={{ duration: reducedMotion ? 0 : .36 }}
-                style={{ overflow: "hidden" }}>
-                <div className="assess-flow-inner"><span className="assess-flow-symbol"><Info size={18}/></span>
-                  <div><strong>Preview of the planned assessment flow</strong><p>After authorization, the application selector will show only the repositories made available through the GitHub App. A real scan will then report what was checked, errors or unsupported checks, and severity counts based on actual findings. Full reports will be available without a payment gate. None of these backend steps is simulated as completed on this screen.</p></div>
-                </div>
-              </motion.div>}
-            </AnimatePresence>
-          </div>
-        </section>
-
-        <section className="assess-checks-section" aria-labelledby="assess-security-checks">
-          <div className="assess-container">
-            <div className="assess-checks-heading"><p className="assess-small-label">BUILT FOR MEANINGFUL SIGNALS</p><h2 id="assess-security-checks">What will ShipSafe look for?</h2><p>Initial coverage will be defined by the real analysis engines and their supported ecosystems. No claim of complete vulnerability coverage.</p></div>
-            <div className="assess-checks-grid">
-              {checks.map(item => <article key={item.title} className="assess-check"><span><item.icon size={20}/></span><h3>{item.title}</h3><p>{item.description}</p></article>)}
-            </div>
-          </div>
-        </section>
+          <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only scanning <span/> Full results, free</p>
+        </motion.div>
       </main>
 
-      <footer className="assess-footer">
-        <div className="assess-container assess-footer-inner">
-          <div><Link href="/" className="brand">shipsafe<span>.</span></Link><p>Know the risks before you ship.</p></div>
-          <nav aria-label="Assessment footer"><Link href="/privacy">Privacy</Link><Link href="/security">Security</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link></nav>
-        </div>
-        <div className="assess-container assess-footnote">© 2026 ShipSafe · Pre-launch assessment experience</div>
+      <footer className="connect-footer">
+        <span>© 2026 ShipSafe</span>
+        <nav aria-label="Legal links"><Link href="/privacy">Privacy</Link><Link href="/security">Security</Link></nav>
       </footer>
-
-      <dialog ref={dialogRef} className="assess-modal" aria-labelledby="assess-modal-title" aria-describedby="assess-modal-description"
-        onClose={() => setDialogOpen(false)}
-        onClick={event => { if (event.target === dialogRef.current) setDialogOpen(false); }}>
-        <div className="assess-modal-inner">
-          <button type="button" className="assess-modal-close" onClick={() => setDialogOpen(false)} aria-label="Close dialog"><X size={18}/></button>
-          <span className="assess-modal-symbol"><Github size={24}/></span>
-          <p className="assess-small-label">CONNECTION STATUS</p>
-          <h2 id="assess-modal-title">GitHub connection is coming soon.</h2>
-          <p id="assess-modal-description">Public GitHub source scanning is available above. Private repository access still requires a GitHub App integration and is not yet available. This button does not request your GitHub credentials.</p>
-          <div className="assess-modal-list">
-            <span><CheckCircle2 size={16}/> Selected repositories, not blanket access</span>
-            <span><CheckCircle2 size={16}/> Read-only application analysis</span>
-            <span><CheckCircle2 size={16}/> Full evidence and fixes included for free</span>
-          </div>
-          <button type="button" className="assess-primary" onClick={() => setDialogOpen(false)}>Understood <ArrowRight size={18}/></button>
-          <Link href="/security" className="assess-modal-link" onClick={() => setDialogOpen(false)}>Read our security approach <ChevronRight size={15}/></Link>
-        </div>
-      </dialog>
     </div>
   );
 }
