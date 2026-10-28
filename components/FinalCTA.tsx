@@ -12,9 +12,9 @@ export default function FinalCTA({ onOpenAssessment }: { onOpenAssessment: () =>
           <div className="cta-orbit" aria-hidden="true"><span/><span/></div>
           <span className="final-eyebrow"><ShieldCheck size={15}/> SECURITY, WITHOUT THE GUESSWORK</span>
           <h2 id="final-cta-title">Ship with more<br/><em>confidence.</em></h2>
-          <p>A clear free overview, with detailed remediation guidance available in a one-time $19 report.</p>
+          <p>From the initial overview to evidence, file locations and practical fix steps—full report details included.</p>
           <button type="button" className="button button-dark final-button" onClick={onOpenAssessment}>Assess your application <ArrowUpRight size={17}/></button>
-          <small>No ShipSafe account planned · No recurring charges</small>
+          <small>No separate ShipSafe signup planned · No report paywall</small>
         </motion.div>
       </div>
     </section>
