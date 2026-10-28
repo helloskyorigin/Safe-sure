@@ -101,3 +101,14 @@ test("result UI has no pricing, locked patches or false source links in sample",
   await expect(page.getByRole("button", { name: /Save PDF/i })).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
 });
+
+
+test("printable free report includes all findings and coverage, not only selected issue", async ({ page }) => {
+  await page.goto("/assess/results");
+  await expect(page.locator(".result-print-all")).toBeHidden();
+  await page.emulateMedia({ media: "print" });
+  await expect(page.locator(".result-print-all")).toBeVisible();
+  await expect(page.locator(".result-print-all article")).toHaveCount(6);
+  await expect(page.locator(".result-print-all").getByText("Coverage and scope")).toBeVisible();
+  await expect(page.locator(".result-toolbar")).toBeHidden();
+});
