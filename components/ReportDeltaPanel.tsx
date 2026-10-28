@@ -116,8 +116,8 @@ export default function ReportDeltaPanel({ report, source }: { report: Assessmen
       </> :
         <div className="delta-baseline">
           <History size={23}/>
-          <div><strong>Your first verified baseline</strong>
-            <p>Run the agent again after changing your code. Secuvora will compare real findings across saved reports for this repository.</p>
+          <div><strong>No earlier saved scan to compare</strong>
+            <p>Run the agent again after changing your code. Secuvora compares real findings against another saved report for the same repository.</p>
             <p className="delta-data-note">{source === "public"
               ? "Public report history stays in this browser for up to 30 days."
               : "Private comparisons require authorized, retained reports in your GitHub session."}</p>
