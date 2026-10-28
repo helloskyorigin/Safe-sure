@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const pages = [
   { href: "/privacy", title: "Privacy policy", desc: "What is processed when you visit Secuvora, what is not collected and your choices.", icon: Fingerprint, section: "DATA" },
-  { href: "/terms", title: "Terms of use", desc: "How the public preview may be used and what authorized assessments will require.", icon: BookOpen, section: "TERMS" },
+  { href: "/terms", title: "Terms of use", desc: "Acceptable use, scanning authorization and the limitations of real public reports.", icon: BookOpen, section: "TERMS" },
   { href: "/refunds", title: "Pricing & billing", desc: "Full report access without a paywall, current billing status and user protections.", icon: CreditCard, section: "BILLING" },
   { href: "/security", title: "Security practices", desc: "Security principles, assessment limits and responsible vulnerability reporting.", icon: ShieldCheck, section: "TRUST" },
   { href: "/contact", title: "Contact & support", desc: "Where to send non-sensitive feedback and how private channels will be introduced.", icon: Headphones, section: "SUPPORT" },
@@ -24,7 +24,7 @@ export default function LegalCenter() {
         <p className="eyebrow">SECUVORA / TRUST & TRANSPARENCY</p>
         <h1>Clarity is part<br/>of security.</h1>
         <p className="legal-center-lead">Everything you need to know about the current website, the planned service and our approach to handling security information—organized without legal-page clutter.</p>
-        <div className="legal-center-meta">Five published documents <span>·</span> Reviewed 27 October 2026</div>
+        <div className="legal-center-meta">Five published documents <span>·</span> Reviewed 28 October 2026</div>
         <div className="legal-center-grid">
           {pages.map(({ href, title, desc, icon: Icon, section }, i) => (
             <Link key={href} className="legal-center-card" href={href}>
@@ -35,7 +35,7 @@ export default function LegalCenter() {
             </Link>
           ))}
         </div>
-        <div className="legal-center-foot"><ShieldCheck size={18}/><p>Secuvora is currently a public product preview. These pages describe the present implementation and will be updated before live scanning or payment collection begins.</p></div>
+        <div className="legal-center-foot"><ShieldCheck size={18}/><p>Secuvora is currently a public product preview. Real public-source scanning is available. These pages describe today's bounded service; private GitHub access still requires configuration. Billing is not enabled.</p></div>
       </main>
       <footer className="legal-footer"><div className="container legal-footer-inner"><Link href="/" className="brand">secuvora<span>.</span></Link><nav aria-label="Footer legal navigation">{pages.map(item => <Link href={item.href} key={item.href}>{item.title}</Link>)}</nav></div></footer>
     </div>
