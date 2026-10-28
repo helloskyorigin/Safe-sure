@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getGithubSession } from "@/lib/github-auth";
 import { deleteUserReport, durableStoreConfigured, fetchUserReport } from "@/lib/durable-reports";
+import { isAllowedMutationOrigin } from "@/lib/api-request-guards";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,9 +27,8 @@ export async function GET(_request: Request, context: Params) {
 }
 
 export async function DELETE(request: Request, context: Params) {
-  const site = request.headers.get("sec-fetch-site");
-  if (site && site !== "same-origin" && site !== "none")
-    return NextResponse.json({ error: "Cross-site request denied." }, { status: 403, headers });
+  if (!isAllowedMutationOrigin(request))
+    return NextResponse.json({ error: "Cross-origin request denied." }, { status: 403, headers });
   const auth = await authenticatedId(context);
   if (!auth) return NextResponse.json({ error: "Not authorized." }, { status: 401, headers });
   if (!durableStoreConfigured()) return NextResponse.json({ error: "Report storage not configured." }, { status: 503, headers });
