@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   Activity, ArrowLeft, ArrowRight, ArrowUpRight, Check, CheckCheck,
-  CircleAlert, CircleCheck, CircleDashed, Clock3, Code2, Fingerprint,
+  CircleAlert, CircleCheck, CircleDashed, Clock3, Code2, FileSearch, Fingerprint,
   GitBranch, Github, KeyRound, Layers3, LockKeyhole, OctagonX,
   PauseCircle, Radar, RefreshCw, ScanLine, ShieldCheck, ShieldQuestion,
   Square, TerminalSquare,
