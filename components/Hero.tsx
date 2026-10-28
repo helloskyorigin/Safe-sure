@@ -37,7 +37,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
           </p>
           <div className="hero-action animate delay-3">
             <a
-              href="#assessment"
+              href="/assess"
               onClick={handleAssessmentClick}
               data-start
               className="button button-dark button-primary"
