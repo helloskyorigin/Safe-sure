@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { isAssessmentReport } from "@/lib/report-contract";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   Activity, ArrowLeft, ArrowRight, ArrowUpRight, Check, CheckCheck,
@@ -91,9 +92,83 @@ export default function ScanningConsole() {
   const [cancelBusy, setCancelBusy] = useState(false);
   const [actionError, setActionError] = useState("");
   const runRef = useRef<string | null>(null);
+  const localAbortRef = useRef<AbortController | null>(null);
+  const [localReportId, setLocalReportId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Runs are accepted only from a future verified connection flow.
+    const params = new URLSearchParams(window.location.search);
+    const publicRepo = params.get("repo");
+    if (publicRepo) {
+      if (!/^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9_.-]{1,100}$/.test(publicRepo)) {
+        setLoad({ type: "invalid" }); return;
+      }
+      let stopped = false;
+      const controller = new AbortController();
+      localAbortRef.current = controller;
+      setLoad({ type: "loading" });
+      setLocalReportId(null);
+      async function streamPublicScan() {
+        try {
+          const response = await fetch("/api/scan/public", {
+            method: "POST", cache: "no-store", credentials: "same-origin",
+            signal: controller.signal, headers: { "content-type": "application/json" },
+            body: JSON.stringify({ repo: publicRepo }),
+          });
+          if (!response.ok) {
+            const payload = await response.json().catch(() => ({})) as { error?: string };
+            throw new Error(payload.error || "Scan request failed (HTTP " + response.status + ").");
+          }
+          if (!response.body) throw new Error("The scanner returned no event stream.");
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let pending = "", sawReport = false, lastId = "";
+          function handle(line: string) {
+            if (!line.trim() || stopped) return;
+            const packet: unknown = JSON.parse(line);
+            if (!packet || typeof packet !== "object" || !("type" in packet)) return;
+            const event = packet as { type: string; snapshot?: unknown; report?: unknown; message?: unknown };
+            if (event.type === "snapshot" && event.snapshot && typeof event.snapshot === "object" &&
+              "runId" in event.snapshot && typeof event.snapshot.runId === "string" &&
+              isAssessmentSnapshot(event.snapshot, event.snapshot.runId)) {
+              lastId = event.snapshot.runId;
+              setLoad({ type: "live", snapshot: event.snapshot });
+            }
+            if (event.type === "error") throw new Error(typeof event.message === "string" ? event.message : "The scan failed.");
+            if (event.type === "report") {
+              if (!lastId || !isAssessmentReport(event.report, lastId)) throw new Error("The scanner returned an invalid report.");
+              try {
+                sessionStorage.setItem("shipsafe:report:" + lastId, JSON.stringify(event.report));
+              } catch {
+                throw new Error("Could not keep the report in this browser tab. Free tab storage or allow session storage and scan again.");
+              }
+              sawReport = true;
+              setLocalReportId(lastId);
+            }
+          }
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            pending += decoder.decode(value, { stream: true });
+            if (pending.length > 3_000_000) throw new Error("Scan stream exceeded the size limit.");
+            const chunks = pending.split("\n");
+            pending = chunks.pop() || "";
+            for (const line of chunks) handle(line);
+          }
+          if (pending.trim()) handle(pending);
+          if (!sawReport) throw new Error("The scan ended without a verified complete report.");
+        } catch (error) {
+          if (stopped) return;
+          const message = controller.signal.aborted ? "Scan cancelled. No report was created." :
+            error instanceof Error ? error.message : "Scan failed.";
+          setLoad({ type: "error", message });
+        } finally {
+          if (localAbortRef.current === controller) localAbortRef.current = null;
+        }
+      }
+      void streamPublicScan();
+      return () => { stopped = true; controller.abort(); if (localAbortRef.current === controller) localAbortRef.current = null; };
+    }
+    // Private run statuses require a separate authenticated job backend.
     const raw = new URLSearchParams(window.location.search).get("run");
     if (!raw) {
       setLoad({ type: "idle" });
@@ -173,6 +248,12 @@ export default function ScanningConsole() {
   const SelectedIcon = icons[selected];
 
   async function cancelAssessment() {
+    if (localAbortRef.current) {
+      localAbortRef.current.abort();
+      localAbortRef.current = null;
+      setLoad({ type: "error", message: "Scan cancelled. No report was created." });
+      return;
+    }
     if (!snapshot || !["running", "queued"].includes(snapshot.status) || cancelBusy || !runRef.current) return;
     setCancelBusy(true);
     setActionError("");
@@ -241,7 +322,7 @@ export default function ScanningConsole() {
           <section className="scan-visual" aria-labelledby="scan-visual-title">
             <div className="scan-panel-top">
               <span><Radar size={16}/> INSPECTION ENGINE</span>
-              <span className="scan-panel-ref">{snapshot?.target.name || "NO SOURCE CONNECTED"}</span>
+              <span className="scan-panel-ref">{snapshot?.target.name || new URLSearchParams(typeof window === "undefined" ? "" : window.location.search).get("repo") || "NO SOURCE CONNECTED"}</span>
             </div>
 
             <div className={"scan-orbit-scene "+(running ? "is-active" : "")} aria-hidden="true">
@@ -294,13 +375,17 @@ export default function ScanningConsole() {
                 </div>
                 <p>{snapshot?.progress ? snapshot.progress.done + " of " + snapshot.progress.total + " worker-reported units complete" : "No progress data received — percentages are never guessed."}</p>
               </div>
-              {snapshot && (snapshot.status === "running" || snapshot.status === "queued") ? (
+              {localReportId && snapshot?.status === "completed" ? (
+                <Link className="scan-primary-link" href={"/assess/results?local=" + encodeURIComponent(localReportId)}>
+                  <FileSearch size={17}/> View full real results <ArrowRight size={17}/>
+                </Link>
+              ) : snapshot && (snapshot.status === "running" || snapshot.status === "queued") ? (
                 <button type="button" disabled={cancelBusy} className="scan-cancel" onClick={() => void cancelAssessment()}>
                   <Square size={13}/>{cancelBusy ? "Sending request…" : "Cancel assessment"}
                 </button>
               ) : (
                 <Link className="scan-primary-link" href="/assess">
-                  <Github size={17}/> Connect an application <ArrowRight size={17}/>
+                  <Github size={17}/> Scan a public repository <ArrowRight size={17}/>
                 </Link>
               )}
               {actionError && <p className="scan-action-error" role="alert">{actionError}</p>}
@@ -374,7 +459,7 @@ export default function ScanningConsole() {
         </section>
 
         <section className="scan-footer-cta">
-          <div><p className="scan-eyebrow">THE NEXT MILESTONE</p><h2>From inspection to action.</h2><p>When real scanning is connected, completed assessment data will lead to a free severity overview and optional detailed findings—not a generated success screen.</p></div>
+          <div><p className="scan-eyebrow">THE NEXT MILESTONE</p><h2>From inspection to action.</h2><p>Public-repository scans now generate real static findings and full reports. Private-repository authorization and deeper runtime testing remain separate future capabilities.</p></div>
           <Link href="/assess">Return to connection <ArrowUpRight size={17}/></Link>
         </section>
       </main>
