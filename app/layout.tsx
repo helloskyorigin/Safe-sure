@@ -12,11 +12,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Secuvora — Your on-demand security agent",
+  title: "Secuvora — AI Security Agent in development",
   description:
-    "Secuvora is an on-demand automated security agent for GitHub repositories. It investigates supported source patterns, potential credentials, configuration risks and OSV dependency advisories, with evidence-based, free reports. This release uses deterministic security rules and OSV vulnerability intelligence; model-based reasoning is not enabled.",
+    "Secuvora is building an AI-native security agent for developers. Its current free beta already investigates GitHub repositories with real read-only source rules and OSV vulnerability intelligence. Model-based AI reasoning is planned, not yet live.",
   openGraph: {
-    title: "Secuvora — Your on-demand security agent",
+    title: "Secuvora — AI Security Agent in development",
     description: "An evidence-backed security agent for developers. Read-only source analysis, published vulnerability intelligence and actionable findings, free.",
     type: "website",
   },
