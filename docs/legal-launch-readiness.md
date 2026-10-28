@@ -1,19 +1,19 @@
 # Secuvora — Legal and trust launch checklist
 
-**Prepared:** 27 October 2026  
-**Scope:** Current marketing website and planned free full security assessment report.  
+**Prepared:** 28 October 2026  
+**Scope:** Marketing website, operational read-only public repository scanning, and optional unconfigured private repository features.  
 **Important:** The published policy pages accurately describe the site's current pre-launch functionality. They are not a substitute for confirming actual business facts or obtaining legal advice.
 
 ## Current website: completed
 
 - [x] Public, responsive Privacy Policy, Terms of Use, Payments & Refunds, Security Practices and Contact pages.
 - [x] Central Legal Center and cross-linked footer/navigation.
-- [x] Clear disclosures that scan, repository authorization and checkout are **not currently operational**.
+- [x] Clear distinction: real bounded public scanning is implemented; private repository authorization requires operator configuration; checkout is not enabled.
 - [x] No fabricated certification, registered company, private support address, performance claim or refund transaction.
 - [x] Descriptions of routine hosting metadata, third-party links, demo data and limitations.
 - [x] Navigation, print styling, section links and plain-language summaries.
 
-## Before accepting real application scans (not yet complete)
+## Before activating private scans or accepting sensitive customer data (not yet complete)
 
 1. **Operator identity.** Specify the actual person or registered entity acting as seller/controller, legal or business name as applicable, an authentic business address/contact and applicable legal jurisdiction. Do not describe the business as incorporated if it is not.
 2. **Private channels.** Establish and test a working support email or private request portal for privacy, report access and security issues; add a responsible vulnerability disclosure route. Public GitHub issues are *not* a safe private reporting channel.

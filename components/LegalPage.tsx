@@ -25,7 +25,7 @@ const related = [
 ];
 
 export default function LegalPage({
-  eyebrow, title, lead, sections, summary, children, updated = "27 October 2026",
+  eyebrow, title, lead, sections, summary, children, updated = "28 October 2026",
 }: Props) {
   return (
     <div className="legal-site">
@@ -37,7 +37,7 @@ export default function LegalPage({
         </div>
       </header>
 
-      <main id="main" className="legal-main container">
+      <main id="main" className="legal-main container" tabIndex={-1}>
         <nav className="legal-breadcrumbs" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><span>{title}</span></nav>
         <div className="legal-heading">
           <p className="eyebrow">{eyebrow}</p>
@@ -54,6 +54,19 @@ export default function LegalPage({
           <ul>{summary.map(item => <li key={item}><CheckCircle2 size={17} aria-hidden="true"/><span>{item}</span></li>)}</ul>
         </div>
 
+        <nav aria-label="Policy sections on smaller screens" className="legal-mobile-outline">
+          <details>
+            <summary>In this document <span>{sections.length} sections</span></summary>
+            <ol>
+              {sections.map((section, i) => <li key={section.id}>
+                <a href={"#" + section.id}>
+                  <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  {section.title}
+                </a>
+              </li>)}
+            </ol>
+          </details>
+        </nav>
         <div className="legal-grid">
           <aside className="legal-aside">
             <nav aria-label="On this page" className="legal-toc">

@@ -369,3 +369,78 @@ html{scroll-padding-top:86px}
   .legal-section h2{break-after:avoid}
   .legal-content a{color:#000;text-decoration:underline}
 }
+
+
+/* SECUVORA RESPONSIVE QA / shared marketing + policy experience.
+   The same accessible navigation works at 320px, tablet and wide desktop. */
+.legal-mobile-outline{display:none}
+.legal-site,.legal-site main,.legal-content,.legal-section,.legal-quick,.legal-center{min-width:0}
+.legal-content p,.legal-content li,.legal-content a,.legal-center-card p,.legal-contact-card p,
+.legal-quick li,.legal-breadcrumbs{overflow-wrap:anywhere}
+.legal-content .legal-section{scroll-margin-top:40px}
+.legal-site :is(a,button,summary):focus-visible{outline:3px solid #3e76b7;outline-offset:3px}
+.legal-related a,.legal-footer nav a{display:inline-flex;align-items:center;min-height:36px}
+.legal-center-card:focus-visible{transform:none;outline:3px solid #427fc3;outline-offset:4px}
+.legal-site .legal-content a{word-break:normal}
+.legal-site .legal-breadcrumbs>span:last-child{min-width:0;overflow-wrap:anywhere}
+@media(min-width:701px) and (max-width:1100px){
+ .legal-grid{grid-template-columns:minmax(198px,238px) minmax(0,1fr);gap:clamp(22px,3.2vw,38px)}
+ .legal-aside{padding:17px;top:18px}
+ .legal-main{width:min(100% - 56px,1200px)}
+ .legal-footer-inner{align-items:flex-start}
+ .legal-footer nav{justify-content:flex-end}
+ .legal-heading h1{font-size:clamp(52px,6.7vw,78px)}
+ .legal-center-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ .legal-site .legal-main,.legal-center{width:calc(100% - 40px)}
+ .legal-grid{grid-template-columns:minmax(0,1fr)!important;gap:20px}
+ .legal-aside .legal-toc,.legal-aside-divider{display:none}
+ .legal-aside{padding:10px 14px;background:#f7faff}
+ .legal-actions{justify-content:space-between;gap:4px}
+ .legal-actions button{min-height:44px;flex:1;justify-content:center}
+ .legal-mobile-outline{display:block;margin:22px 0 4px}
+ .legal-mobile-outline details{border:1px solid #dce6f3;border-radius:12px;background:#f6f9fe;overflow:hidden}
+ .legal-mobile-outline summary{cursor:pointer;min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+   font-size:13px;font-weight:750;color:#274969;padding:14px 17px;list-style:none}
+ .legal-mobile-outline summary::-webkit-details-marker{display:none}
+ .legal-mobile-outline summary::after{content:"+";font-size:19px;font-weight:400;color:#5b7ea7}
+ .legal-mobile-outline details[open] summary::after{content:"−"}
+ .legal-mobile-outline summary span{margin-left:auto;font-size:10px;color:#7b90aa;font-weight:650}
+ .legal-mobile-outline ol{list-style:none;padding:4px 9px 11px;margin:0;border-top:1px solid #e0eaf5;display:grid;gap:2px}
+ .legal-mobile-outline a{display:flex;align-items:center;gap:11px;padding:11px 9px;min-height:42px;
+   border-radius:8px;color:#4e6684;font-size:12px;line-height:1.35;font-weight:600}
+ .legal-mobile-outline a span{color:#8aa0ba;font-size:10px;flex:none}
+ .legal-mobile-outline a:hover,.legal-mobile-outline a:focus-visible{background:#eaf2fb}
+ .legal-content .legal-section{scroll-margin-top:14px}
+ .legal-center h1{overflow-wrap:normal;word-break:normal}
+ .legal-center-card{min-height:0}
+ .legal-footer nav{gap:5px 17px}
+ .legal-footer nav a{min-height:40px}
+ .legal-related>div{display:flex;flex-wrap:wrap;gap:6px 14px}
+ .legal-related a{min-height:42px}
+ .legal-quick{max-width:100%;overflow:hidden}
+ .legal-end .button{min-height:46px;display:inline-flex;align-items:center;justify-content:center}
+}
+@media(max-width:380px){
+ .legal-site .legal-main,.legal-center{width:calc(100% - 28px)}
+ .legal-nav{height:67px}
+ .legal-nav-inner{gap:8px}
+ .legal-back{gap:4px;font-size:10px}
+ .legal-heading h1{font-size:clamp(38px,12.5vw,46px);letter-spacing:-.065em}
+ .legal-center h1{font-size:clamp(42px,13vw,52px);letter-spacing:-.07em}
+ .legal-quick{padding:15px}
+ .legal-quick ul{margin-top:11px}
+ .legal-quick li{font-size:12px;line-height:1.65}
+ .legal-center-grid{gap:10px}
+ .legal-center-card{padding:19px}
+ .legal-contact-card{flex-direction:column}
+ .legal-metadata{max-width:100%}
+ .legal-breadcrumbs{gap:7px;margin-bottom:26px}
+}
+@media(prefers-reduced-motion:reduce){
+ .legal-site :is(a,button,details,summary),.legal-center-card{animation:none!important;transition:none!important;transform:none!important}
+}
+@media print{
+ .legal-mobile-outline{display:none!important}
+}

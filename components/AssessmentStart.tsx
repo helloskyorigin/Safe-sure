@@ -40,12 +40,6 @@ export default function AssessmentStart() {
     router.push("/assess/scanning?repo=" + encodeURIComponent(match[1] + "/" + match[2]));
   }
 
-  const entrance = reducedMotion ? {} : {
-    initial: { opacity: 0, y: 16 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: .55, ease: [0.22, 1, 0.36, 1] as const },
-  };
-
   return (
     <div className="assess-page connect-page">
       <a href="#connect-main" className="skip-link">Skip to repository connection</a>
@@ -61,7 +55,7 @@ export default function AssessmentStart() {
       </header>
 
       <main id="connect-main" className="connect-main">
-        <motion.div className="connect-content" {...entrance}>
+        <div className="connect-content">
           <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
           <h1>Which repository should your <em>agent inspect?</em></h1>
           <p className="connect-subtitle">Choose a repository. Secuvora investigates supported source risks, checks vulnerable dependencies and connects findings to evidence and fixes—without changing your code.</p>
@@ -108,7 +102,7 @@ export default function AssessmentStart() {
           </AnimatePresence>
 
           <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only agent analysis <span/> Full results, free</p>
-        </motion.div>
+        </div>
       </main>
 
       <footer className="connect-footer">
