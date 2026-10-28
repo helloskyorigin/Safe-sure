@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("homepage begins at the hero and ignores late non-user scroll restoration", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: /Meet your security agent/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Meet Secuvora./i })).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeLessThan(15);
 
   // Simulate an embedded preview restoring a stale scroll position after hydration.
@@ -22,7 +22,7 @@ test("mobile first paint shows hero and supports real touch scrolling", async ({
   const context = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
   const page = await context.newPage();
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: /Meet your security agent/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Meet Secuvora./i })).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeLessThan(15);
   // Verify the client-side restoration guard is ready before dispatching a real user-intent event.
   await page.waitForFunction(() => document.documentElement.dataset.shipsafeScrollGuard === "active");
