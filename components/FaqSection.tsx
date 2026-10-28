@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     question: "Is the agent powered by AI models yet?",
-    answer: "Not in the current beta. Secuvora is an AI-security-agent product in development; the live analysis uses deterministic security rules and OSV vulnerability intelligence. Model-based reasoning is planned, not represented as already running.",
+    answer: "Not yet. Secuvora currently uses real, deterministic security checks and OSV vulnerability intelligence to produce evidence-backed findings. Model-powered reasoning is planned; no report is presented as AI-verified.",
   },
   {
     question: "Does the agent guarantee my code is secure?",
