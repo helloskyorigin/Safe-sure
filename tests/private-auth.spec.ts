@@ -20,10 +20,9 @@ test("private source and saved report APIs fail closed before GitHub authenticat
 
 test("private assessment only advertises real GitHub installation when configured", async ({ page }) => {
   await page.goto("/assess");
-  const privateButton = page.getByRole("button", { name: "Connect with GitHub" });
-  await expect(privateButton).toBeVisible();
-  await privateButton.click();
-  await expect(page.getByRole("dialog", { name: /GitHub connection is coming soon/i })).toBeVisible();
+  await page.getByRole("button", { name: /Private repository/i }).click();
+  await expect(page.getByText(/Private GitHub access isn't configured/i)).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
 test("saved reports screen never fabricates history without login", async ({ page }) => {
