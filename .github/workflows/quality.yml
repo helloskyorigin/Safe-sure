@@ -1,4 +1,4 @@
-name: ShipSafe quality checks
+name: Secuvora quality checks
 
 on:
   push:
