@@ -1,58 +1,93 @@
 import { test, expect } from "@playwright/test";
 
-test("main landing CTA opens the assessment connection screen", async ({ page }) => {
+test("landing assessment CTA opens exactly two choices without unnecessary fields", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator(".hero-action").getByRole("link", { name: /Assess your application/i }).click();
   await expect(page).toHaveURL(/\/assess$/);
-  await expect(page.getByRole("heading", { level: 1, name: /Better security starts with clarity/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Connect your application" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /What are we scanning/i })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
+  await expect(page.getByRole("button", { name: /Public repository/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Private repository/i })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: /GitHub repository URL/i })).toHaveCount(0);
+  await expect(page.getByText(/Explore the flow|What comes after connection|What will ShipSafe look for/i)).toHaveCount(0);
 });
 
-test("permissions disclosure and GitHub connection status are honest and interactive", async ({ page }) => {
+test("public choice reveals one URL field, validates, then opens scanning", async ({ page }) => {
   await page.goto("/assess");
-  const permission = page.getByRole("button", { name: /What access will ShipSafe request/i });
-  await expect(permission).toHaveAttribute("aria-expanded", "false");
-  await permission.click();
-  await expect(permission).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText("Repository contents: read")).toBeVisible();
-
-  await page.getByRole("button", { name: "Connect with GitHub" }).click();
-  const dialog = page.getByRole("dialog", { name: /GitHub connection is coming soon/i });
-  await expect(dialog).toBeVisible();
-  await expect(dialog.getByText(/Private repository access still requires a GitHub App integration/i)).toBeVisible();
-  await dialog.getByRole("button", { name: /Understood/i }).click();
-  await expect(dialog).not.toBeVisible();
+  const publicChoice = page.getByRole("button", { name: /Public repository/i });
+  await publicChoice.click();
+  await expect(publicChoice).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
+  await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://evil.example/my/repo");
+  await page.getByRole("button", { name: "Scan repository" }).click();
+  await expect(page.getByRole("alert")).toContainText("Enter a valid GitHub URL");
+  await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://github.com/vercel/ms");
+  await page.getByRole("button", { name: "Scan repository" }).click();
+  await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 
-test("workflow walkthrough toggles and reports no fabricated scan", async ({ page }) => {
+test("private choice only shows its connection state when GitHub is unconfigured", async ({ page }) => {
+  await page.route("**/api/auth/github/status", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ configured: false, connected: false, login: null }),
+  }));
   await page.goto("/assess");
-  await expect(page.getByText("NOT CONNECTED")).toBeVisible();
-  await expect(page.getByText(/No assessment is running/i)).toBeVisible();
-  const walkthrough = page.getByRole("button", { name: /Explore the flow/i });
-  await walkthrough.click();
-  await expect(page.getByText("Preview of the planned assessment flow")).toBeVisible();
-  await page.getByRole("button", { name: /Hide walkthrough/i }).click();
-  await expect(page.getByText("Preview of the planned assessment flow")).not.toBeVisible();
+  const privateChoice = page.getByRole("button", { name: /Private repository/i });
+  await privateChoice.click();
+  await expect(privateChoice).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText(/Private GitHub access isn't configured/i)).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toHaveCount(0);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
-test("mobile connection view fits viewport, can scroll and navigate back", async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
-  const page = await context.newPage();
+test("private connected account selects a real authorized repo and continues to scan", async ({ page }) => {
+  await page.route("**/api/auth/github/status", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ configured: true, connected: true, login: "founder" }),
+  }));
+  await page.route("**/api/github/repositories", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ repositories: [
+      { fullName: "founder/alpha", private: true },
+      { fullName: "founder/beta", private: true },
+      { fullName: "founder/open", private: false },
+    ] }),
+  }));
   await page.goto("/assess");
-  await expect(page.getByRole("heading", { name: /Better security starts with clarity/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Connect with GitHub" })).toBeVisible();
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  expect(overflow).toBeLessThanOrEqual(1);
-  await page.getByRole("link", { name: /Back to website/i }).click();
-  await expect(page).toHaveURL(/\/$/);
-  await context.close();
+  await page.getByRole("button", { name: /Private repository/i }).click();
+  await expect(page.getByText(/Connected as/)).toBeVisible();
+  const select = page.getByRole("combobox", { name: "Choose repository" });
+  await expect(select.locator("option")).toHaveCount(2);
+  await select.selectOption("founder/beta");
+  await page.getByRole("button", { name: "Scan repository" }).click();
+  await expect(page).toHaveURL(/\/assess\/scanning\?private=founder%2Fbeta/);
 });
 
-test("small-screen assessment does not overflow at 320px", async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 320, height: 740 }, isMobile: true, hasTouch: true });
-  const page = await context.newPage();
-  await page.goto("/assess");
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  expect(overflow).toBeLessThanOrEqual(1);
-  await context.close();
+test("returning from GitHub OAuth opens private choice automatically", async ({ page }) => {
+  await page.route("**/api/auth/github/status", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ configured: true, connected: false, login: null }),
+  }));
+  await page.goto("/assess?connected=1");
+  await expect(page.getByRole("button", { name: /Private repository/i })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("link", { name: /Continue with GitHub/i })).toBeVisible();
+});
+
+test("mobile connection fits at 320, 375 and 430px with both flows", async ({ browser }) => {
+  for (const width of [320, 375, 430]) {
+    const context = await browser.newContext({ viewport: { width, height: 812 }, isMobile: true, hasTouch: true });
+    const page = await context.newPage();
+    await page.goto("/assess");
+    await page.getByRole("button", { name: /Public repository/i }).click();
+    await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
+    let overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    expect(overflow, "public mode overflow at " + width).toBeLessThanOrEqual(1);
+    await page.getByRole("button", { name: /Private repository/i }).click();
+    await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toHaveCount(0);
+    overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    expect(overflow, "private mode overflow at " + width).toBeLessThanOrEqual(1);
+    await page.getByRole("link", { name: "Back" }).click();
+    await expect(page).toHaveURL(/\/$/);
+    await context.close();
+  }
 });
