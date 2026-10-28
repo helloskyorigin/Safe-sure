@@ -74,8 +74,7 @@ export default function AssessmentDialog({ isOpen, onClose }: AssessmentDialogPr
         <p className="eyebrow">PRODUCT PREVIEW</p>
         <h2 id="dialog-title">The security agent is available for public repositories.</h2>
         <p id="dialog-copy">
-          You&apos;re viewing Secuvora&apos;s landing page. Source-code authorization and
-          scanning are not connected yet. No application data has been accessed.
+          Select a public GitHub repository to run the read-only security agent. Private access requires configured GitHub App authorization.
         </p>
         <button
           type="button"
