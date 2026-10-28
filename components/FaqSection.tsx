@@ -34,8 +34,8 @@ export default function FaqSection() {
   return (
     <section id="faq" className="section bordered faq-section">
       <div className="container faq-grid">
-        <div className="reveal visible"><p className="eyebrow">GOOD TO KNOW</p><h2>Straight answers.<br/>No fine print.</h2><p className="faq-intro">Details that help you decide, without a maze of fine print.</p></div>
-        <div className="faq-list reveal visible">
+        <div className=""><p className="eyebrow">GOOD TO KNOW</p><h2>Straight answers.<br/>No fine print.</h2><p className="faq-intro">Details that help you decide, without a maze of fine print.</p></div>
+        <div className="faq-list ">
           {faqs.map((faq, index) => (
             <div className={"faq-entry " + (open === index ? "expanded" : "")} key={faq.question}>
               <h3>
