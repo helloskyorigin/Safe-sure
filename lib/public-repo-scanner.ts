@@ -1,6 +1,8 @@
 import type { AssessmentReport, CoverageItem, ReportFinding, Severity } from "@/lib/report-contract";
 import type { AssessmentCheck, AssessmentSnapshot, CheckKey } from "@/lib/assessment-contract";
 import { randomUUID } from "node:crypto";
+import { analyzeSourceDetailed } from "@/lib/source-security-engine";
+export { analyzeSource } from "@/lib/source-security-engine";
 
 type Source = { path: string; content: string };
 type Dependency = { name: string; version: string; ecosystem: "npm" | "PyPI"; path: string };
@@ -53,81 +55,6 @@ async function download(url: string, signal: AbortSignal, limit: number, opts: R
   return new TextDecoder().decode(data);
 }
 
-function finding(
-  id: string, title: string, severity: Severity, category: string, file: string, line: number,
-  overview: string, evidence: string, impact: string, steps: string[], verification: string, limits: string,
-): ReportFinding {
-  return { id, title, severity, category, confidence: "medium", location: { path: file, line },
-    overview, evidence: evidence.slice(0, 1100), redacted: true, whyItMatters: impact,
-    steps, verification, limitations: limits };
-}
-
-export function analyzeSource(files: Source[]): ReportFinding[] {
-  const out: ReportFinding[] = [];
-  const counts = new Map<string, number>();
-  for (const file of files) {
-    if (!CODE.test(file.path)) continue;
-    for (const [index, line] of file.content.split(/\r?\n/).entries()) {
-      if (out.length >= FINDING_LIMIT) return out;
-      if (line.length > 1200 || /^\s*(?:\/\/|#|\*|\/\*)/.test(line)) continue;
-      function add(rule: string, title: string, severity: Severity, category: string, overview: string,
-        impact: string, steps: string[], verification: string, limits: string, safeExcerpt?: string) {
-        const n = counts.get(rule) || 0;
-        if (n >= 6) return;
-        counts.set(rule, n + 1);
-        out.push(finding("SRC-" + String(out.length + 1).padStart(3, "0"), title, severity, category,
-          file.path, index + 1, overview,
-          (index + 1) + "  " + (safeExcerpt || "[SENSITIVE SOURCE LINE REDACTED]"),
-          impact, steps, verification, limits));
-      }
-      if (/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/.test(line)) {
-        add("privatekey", "Private key marker in source", "high", "Potential secret",
-          "A private-key boundary marker was found in source.",
-          "An exposed valid private key could allow unauthorized access.",
-          ["Confirm whether this is active key material.", "Rotate or revoke it if exposed.", "Use a secure secret store and check repository history."],
-          "Verify old credentials are disabled and no key material is delivered to users.",
-          "A pattern match does not establish that the key is valid or usable.");
-      } else if (/(?:api[_-]?key|(?:client[_-]?)?secret|access[_-]?token|auth[_-]?token|password)\s*[:=]\s*["'][^"']{16,}["']/i.test(line) &&
-        !/(?:process\.env|import\.meta\.env|os\.environ|example|placeholder|dummy|your[_-]?key)/i.test(line)) {
-        add("secret", "Possible hardcoded credential", "high", "Potential secret",
-          "A credential-like string literal was found. Its value is never included in this report.",
-          "If an active token is exposed in code, attackers may misuse its privileges.",
-          ["Verify whether the match is a real token.", "Rotate it if exposed.", "Move replacements to protected server-side secrets.", "Review commit history and published assets."],
-          "Confirm the old token is revoked and no credentials appear in distributed source.",
-          "Source patterns cannot prove that the value is active or externally exposed.");
-      } else if (/rejectUnauthorized\s*:\s*false|verify\s*=\s*False|verify\s*:\s*false/.test(line)) {
-        add("tls", "TLS verification override", "high", "Transport security",
-          "Code may bypass TLS certificate checks.",
-          "When enabled, certificate bypass can permit interception of secure connections.",
-          ["Trace the network call.", "Restore certificate verification.", "Test with valid and invalid certificates."],
-          "Confirm the actual connection rejects invalid certificates.",
-          "The override might be test-only or unreachable.");
-      } else if (/\beval\s*\(|\bnew\s+Function\s*\(/.test(line)) {
-        add("eval", "Dynamic code execution sink", "medium", "Code injection",
-          "A runtime evaluation primitive was found.",
-          "Untrusted input sent to dynamic evaluation can cause code injection.",
-          ["Trace data reaching the evaluation.", "Avoid dynamic execution or strictly constrain inputs.", "Test untrusted input paths."],
-          "Confirm untrusted inputs cannot reach an evaluation sink.",
-          "eval usage alone is not an exploitable vulnerability.", "[DYNAMIC EVALUATION CALL FOUND]");
-      } else if (/dangerouslySetInnerHTML\s*=/.test(line)) {
-        add("html", "HTML injection sink needs review", "medium", "Browser injection",
-          "Source includes an HTML rendering sink.",
-          "Unsanitized user-controlled HTML may enable XSS.",
-          ["Trace content sources.", "Prefer safe text rendering.", "Apply suitable sanitization and tests where HTML is required."],
-          "Test that crafted HTML cannot execute untrusted scripts.",
-          "Sanitized or constant HTML can be safe.", "[HTML RENDERING SINK FOUND]");
-      } else if (/^\s*DEBUG\s*=\s*True\b/.test(line) && /settings\.py$/.test(file.path)) {
-        add("debug", "Django debug flag enabled", "low", "Configuration",
-          "A Django settings module enables DEBUG.",
-          "If this setting reaches production, error pages may expose internal details.",
-          ["Turn off debug in production settings.", "Check environment overrides.", "Inspect production error responses."],
-          "Verify deployed DEBUG is disabled and sensitive tracebacks are not served.",
-          "This may be a development-only settings file.", "DEBUG = True");
-      }
-    }
-  }
-  return out;
-}
 export function parseDependencies(files: Source[]) {
   const deps: Dependency[] = [];
   const seen = new Set<string>();
@@ -275,7 +202,8 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   if (!files.length) throw new ScanError("GitHub source files could not be retrieved.", 502);
   send("access","complete","Loaded "+files.length+" source files at commit "+sha.slice(0,12));
   send("secrets","running","Inspecting source for potential secrets and unsafe patterns");
-  const findings = analyzeSource(files);
+  const analyzed = analyzeSourceDetailed(files);
+  const findings = analyzed.findings;
   send("secrets","complete","Source patterns reviewed. Findings remain candidates until verified");
   send("dependencies","running","Reading dependency versions and consulting OSV");
   const deps = parseDependencies(files);
@@ -290,19 +218,19 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   send("patterns","running","Finalizing source-pattern coverage");
   send("patterns","complete","Static review finished (no application code executed)");
   send("evidence","running","Compiling evidence and explicit scan limitations");
-  incomplete ||= deps.truncated || osvPartial;
+  incomplete ||= deps.truncated || osvPartial || analyzed.truncated;
   const coverage: CoverageItem[] = [
     { id:"access", label:"Public source snapshot", status:"complete",
       note:files.length+" of "+eligible.length+" eligible files loaded at "+sha+". "+(incomplete?"Some files or checks were omitted by safety limits.":"Other file formats were outside this scan's scope.") },
-    { id:"secrets", label:"Credential-like source patterns", status:"complete", note:"Static candidate matching only; values are redacted and token validity is not tested." },
+    { id:"secrets", label:"Credential-like source patterns", status:"complete", note:"High-signal provider token and credential-pattern review. Secret values are redacted; token validity is never tested." },
     { id:"dependencies", label:"Pinned npm/PyPI dependency advisories", status:!deps.deps.length?"skipped":osvFailed?"failed":"complete",
       note: deps.deps.length ? deps.deps.length+" pinned package versions checked against OSV." : "No supported pinned versions were available." },
-    { id:"patterns", label:"Supported static code/config rules", status:"complete", note:"Potential TLS overrides, eval, HTML sinks and Django debug are checked; exploitability is not established." },
+    { id:"patterns", label:"Supported static code/config rules", status:"complete", note:analyzed.inspectedLines+" eligible code/config lines inspected against "+analyzed.rulesRun+" high-signal rules. Matching is syntactic, not complete taint analysis." },
     { id:"runtime", label:"Runtime and authenticated penetration testing", status:"skipped", note:"Not performed. This scan does not run untrusted code or visit deployed app endpoints." },
   ];
-  if (incomplete) coverage.push({ id:"limits", label:"Exhaustive repository coverage", status:"skipped", note:"File count, source size or advisory limits prevented a full repository review." });
+  if (incomplete) coverage.push({ id:"limits", label:"Exhaustive repository coverage", status:"skipped", note:"File count, finding caps, source size or advisory limits prevented a full repository review." });
   send("evidence","complete","Produced "+findings.length+" potential findings and coverage disclosures");
   return { runId, appName:target, revision:sha, finishedAt:new Date().toISOString(), findings, coverage,
-    scopeNote:"Read-only "+(privateToken ? "authorized private" : "public")+" source scan pinned to "+sha.slice(0,12)+". Static patterns and pinned-package OSV advisories only. No runtime testing, exploit verification or security guarantee."+
+    scopeNote:"Read-only "+(privateToken ? "authorized private" : "public")+" source scan pinned to "+sha.slice(0,12)+". Curated source/config rules and pinned-package OSV advisories only. No runtime testing, exploit verification or security guarantee."+
       (incomplete?" Some supported content was omitted by safety limits.":"") };
 }
