@@ -292,3 +292,10 @@
  .result-nav-actions .result-nav-back:last-child span{display:none}
  .result-nav-actions{gap:12px}
 }
+
+
+/* Developer export toolbar stays usable at 320px with four real-report actions. */
+@media(max-width:500px){
+ .result-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .result-toolbar button{min-height:42px;white-space:normal}
+}

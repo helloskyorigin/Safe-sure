@@ -70,7 +70,13 @@ export async function deleteUserReport(userId: number, id: string) {
 export async function enforceSharedQuota(scope: string, max: number) {
   const safe = scope.replace(/[^a-zA-Z0-9:_-]/g, "").slice(0, 120);
   const windowId = Math.floor(Date.now() / (RATE_LIMIT_TTL * 1000));
-  const count = await redis("INCR", "shipsafe:quota:v1:" + safe + ":" + windowId);
-  if (count === 1) await redis("EXPIRE", "shipsafe:quota:v1:" + safe + ":" + windowId, 120);
-  return typeof count === "number" && count <= max;
+  // INCR + EXPIRE as separate REST calls can leave a never-expiring key if the
+  // worker dies between them. One Lua command is atomic across all workers.
+  const script = "local n=redis.call('INCR',KEYS[1]); " +
+    "if n==1 then redis.call('EXPIRE',KEYS[1],ARGV[1]); end; return n";
+  const count = await redis("EVAL", script, 1,
+    "shipsafe:quota:v1:" + safe + ":" + windowId, RATE_LIMIT_TTL * 2);
+  if (typeof count !== "number" || !Number.isSafeInteger(count) || count < 1)
+    throw new Error("Invalid quota counter result.");
+  return count <= max;
 }

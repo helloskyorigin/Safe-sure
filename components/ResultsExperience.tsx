@@ -16,6 +16,7 @@ import {
 import { githubSourceUrl, priorityFindings, remediationMarkdown } from "@/lib/report-presentation";
 import { loadPublicReport } from "@/lib/browser-report-history";
 import ReportDeltaPanel from "@/components/ReportDeltaPanel";
+import { reportToSarif } from "@/lib/report-sarif";
 
 type ReportState =
   | { kind: "loading" }
@@ -155,9 +156,13 @@ export default function ResultsExperience() {
   const reviewedCount = active?.steps.filter((_, i) => reviewed[active.id + ":" + i]).length || 0;
   const sourceUrl = active && report && !isSample ? githubSourceUrl(report, active.location.path, active.location.line) : null;
 
-  function saveExport(kind: "json" | "plan") {
+  function saveExport(kind: "json" | "plan" | "sarif") {
     if (!report) return;
-    if (kind === "json") {
+    if (kind === "sarif") {
+      if (isSample) return; // Never expose fictional sample findings as a code-scanning artifact.
+      downloadText("secuvora-security-results.sarif", JSON.stringify(reportToSarif(report), null, 2),
+        "application/sarif+json;charset=utf-8");
+    } else if (kind === "json") {
       const result = isSample
         ? { ...report, sample: true, notice: "Fictional demonstration, not a security scan." }
         : { ...report, notice: "Limited source-level scan. Findings require context and verification." };
@@ -167,7 +172,8 @@ export default function ResultsExperience() {
       downloadText(isSample ? "secuvora-sample-fix-plan.md" : "secuvora-fix-plan.md",
         remediationMarkdown(report, isSample), "text/markdown;charset=utf-8");
     }
-    setExportFeedback(kind === "json" ? "JSON report downloaded" : "Fix plan downloaded");
+    setExportFeedback(kind === "sarif" ? "SARIF file downloaded" :
+      kind === "json" ? "JSON report downloaded" : "Fix plan downloaded");
     window.setTimeout(() => setExportFeedback(""), 2300);
   }
 
@@ -229,6 +235,9 @@ export default function ResultsExperience() {
             <button type="button" onClick={() => window.print()} className="result-action-secondary">
               <Printer size={16}/> Save PDF
             </button>
+            {!isSample && <button type="button" onClick={() => saveExport("sarif")} className="result-action-secondary">
+              <Code2 size={16}/> Export SARIF
+            </button>}
             <button type="button" onClick={() => saveExport("json")} className="result-action-primary">
               <Download size={16}/> {isSample ? "Export example" : "Export JSON"}
             </button>
