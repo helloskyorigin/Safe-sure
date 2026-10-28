@@ -33,3 +33,17 @@ test("mobile first paint shows hero and supports real touch scrolling", async ({
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 3000 }).toBeGreaterThan(300);
   await context.close();
 });
+
+
+test("Secuvora shows confident AI-agent positioning without beta or launch-only language", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: /Your AI security agent/i })).toBeVisible();
+  await expect(page.locator(".hero .eyebrow")).toContainText("AI SECURITY AGENT");
+  await expect(page.locator(".hero-sub")).toContainText("Secuvora examines credentials, dependencies");
+  await expect(page).toHaveTitle("Secuvora — AI Security Agent for Developers");
+  await expect(page.locator("body")).not.toContainText(/\bbeta\b|not just before launch|before you ship/i);
+  await expect(page.locator(".final-eyebrow")).toHaveText(/YOUR AI SECURITY AGENT/);
+  await page.goto("/assess");
+  await expect(page.locator(".connect-header-mark")).toContainText("SECUVORA · SECURITY AGENT");
+  await expect(page.locator("body")).not.toContainText(/\bbeta\b|not just before launch|before you ship/i);
+});
