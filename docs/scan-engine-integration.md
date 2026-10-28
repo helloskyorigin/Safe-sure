@@ -1,4 +1,4 @@
-# ShipSafe — Inspection console and scan-engine contract
+# Secuvora — Inspection console and scan-engine contract
 
 ## What shipped
 
