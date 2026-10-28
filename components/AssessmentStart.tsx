@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import PrivateRepoConnector from "@/components/PrivateRepoConnector";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -85,7 +86,7 @@ export default function AssessmentStart() {
                   <span className="assess-pill"><span /> PUBLIC SCANNING ACTIVE</span>
                 </div>
                 <h2 id="assess-card-title">Connect your application</h2>
-                <p className="assess-card-description">Paste a public GitHub repository to run an actual bounded, read-only source security scan. Private repository connection requires a future GitHub App.</p>
+                <p className="assess-card-description">Paste a public repository to scan without signing in, or authorize selected private repositories through a configured GitHub App.</p>
                 <form className="assess-live-form" onSubmit={event => {
                   event.preventDefault();
                   const raw = publicRepo.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
@@ -103,12 +104,7 @@ export default function AssessmentStart() {
                   <button className="assess-primary" type="submit"><ScanSearch size={19}/><span>Scan public repository</span><ArrowRight size={18}/></button>
                 </form>
                 <div className="assess-or-separator"><span/> OR PRIVATE REPOSITORY <span/></div>
-                <button className="assess-primary" type="button" onClick={() => setDialogOpen(true)}>
-                  <Github size={20} aria-hidden="true"/>
-                  <span>Connect with GitHub</span>
-                  <ArrowRight size={18} aria-hidden="true"/>
-                </button>
-                <p className="assess-availability"><Info size={14}/> Private GitHub App connection is not enabled yet. Public repository scanning above is functional.</p>
+                <PrivateRepoConnector onUnavailable={() => setDialogOpen(true)}/>
                 <div className="assess-card-divider"/>
                 <div className="assess-assurances" aria-label="Connection principles">
                   <span><ShieldCheck size={16}/> Read-only by design</span>
