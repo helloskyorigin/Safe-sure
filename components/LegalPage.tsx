@@ -32,8 +32,8 @@ export default function LegalPage({
       <a href="#legal-body" className="skip-link">Skip to policy</a>
       <header className="legal-nav">
         <div className="container legal-nav-inner">
-          <Link href="/" className="brand" aria-label="ShipSafe homepage">shipsafe<span>.</span></Link>
-          <Link href="/" className="legal-back"><ArrowLeft size={16} aria-hidden="true"/> Back to ShipSafe</Link>
+          <Link href="/" className="brand" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
+          <Link href="/" className="legal-back"><ArrowLeft size={16} aria-hidden="true"/> Back to Secuvora</Link>
         </div>
       </header>
 
@@ -79,10 +79,10 @@ export default function LegalPage({
 
       <footer className="legal-footer">
         <div className="container legal-footer-inner">
-          <div><Link className="brand" href="/">shipsafe<span>.</span></Link><p>Application security, explained clearly.</p></div>
+          <div><Link className="brand" href="/">secuvora<span>.</span></Link><p>Application security, explained clearly.</p></div>
           <nav aria-label="Footer legal links">{related.map(item => <Link key={item.href} href={item.href}>{item.label}</Link>)}</nav>
         </div>
-        <div className="container legal-footer-bottom">© 2026 ShipSafe · Product information, policies and security principles.</div>
+        <div className="container legal-footer-bottom">© 2026 Secuvora · Product information, policies and security principles.</div>
       </footer>
     </div>
   );
