@@ -34,7 +34,7 @@ test("full remediation is interactive and export works without payment", async (
   await page.getByRole("button", { name: /Export example/i }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe("secuvora-sample-full-report.json");
-  await expect(page.getByText(/Full findings, evidence and fixes included/)).toBeVisible();
+  await expect(page.getByText(/All available findings and fix guidance included/)).toBeVisible();
 });
 
 test("coverage openly distinguishes complete and skipped checks", async ({ page }) => {
