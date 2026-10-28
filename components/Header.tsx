@@ -90,7 +90,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark top-cta"
           >
-            Run security agent <span aria-hidden="true">↗</span>
+            Start free scan <span aria-hidden="true">↗</span>
           </a>
           <button
             id="menu-toggle"
@@ -133,7 +133,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark"
           >
-            Run security agent <span aria-hidden="true">↗</span>
+            Start free scan <span aria-hidden="true">↗</span>
           </a>
         </nav>
       </header>
