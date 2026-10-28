@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 
 type Source = { path: string; content: string };
 type Dependency = { name: string; version: string; ecosystem: "npm" | "PyPI"; path: string };
-type TreeEntry = { path: string; type: string; size?: number };
+type TreeEntry = { path: string; type: string; size?: number; sha?: string };
 type Progress = (value: AssessmentSnapshot) => void;
 const FILE_LIMIT = 65;
 const SOURCE_LIMIT = 120_000;
@@ -207,7 +207,8 @@ async function osvScan(deps: Dependency[], signal: AbortSignal) {
   return { findings, partial };
 }
 
-export async function scanPublicRepository(input: string, signal: AbortSignal, emit: Progress): Promise<AssessmentReport> {
+export async function scanPublicRepository(input: string, signal: AbortSignal, emit: Progress,
+  privateToken?: string): Promise<AssessmentReport> {
   const { owner, repo } = parsePublicRepo(input);
   const target = owner + "/" + repo;
   const runId = randomUUID();
@@ -222,10 +223,11 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
       progress: { done: checks.filter(c => ["complete","skipped","failed"].includes(c.status)).length, total: 5 } });
   };
   const ghHeaders = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "ShipSafe-PublicSourceScanner/1.0",
-    ...(process.env.GITHUB_TOKEN ? { Authorization: "Bearer " + process.env.GITHUB_TOKEN } : {}) };
+    ...(privateToken ? { Authorization: "Bearer " + privateToken } : process.env.GITHUB_TOKEN ? { Authorization: "Bearer " + process.env.GITHUB_TOKEN } : {}) };
   send("access","running","Verifying public repository and pinning source revision");
   const meta = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo, signal, 150_000, { headers: ghHeaders })) as { private?: boolean; default_branch?: string; size?: number };
-  if (meta.private || !meta.default_branch) throw new ScanError("Repository must be public.", 403);
+  if ((!privateToken && meta.private) || !meta.default_branch) throw new ScanError("Repository is private or unauthorized.", 403);
+  if (privateToken && !meta.private) throw new ScanError("Select a private repository for this flow. Public repositories use the public scanner.", 400);
   if (!/^[a-zA-Z0-9_./-]{1,140}$/.test(meta.default_branch) || meta.default_branch.includes("..")) throw new ScanError("Unsupported branch name.", 422);
   if ((meta.size || 0) > 100_000) throw new ScanError("Repository is too large for the limited public scanner.", 413);
   const commit = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo+"/commits/"+encodeURIComponent(meta.default_branch), signal, 150_000, { headers: ghHeaders })) as {
@@ -244,9 +246,24 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   // Bounded concurrency. Only source on a trusted, fixed GitHub raw host is retrieved.
   for (let i=0; i<chosen.length; i+=5) {
     const group = await Promise.allSettled(chosen.slice(i,i+5).map(async x => {
-      const path = x.path.split("/").map(encodeURIComponent).join("/");
-      const content = await download("https://raw.githubusercontent.com/"+owner+"/"+repo+"/"+sha+"/"+path, signal,
-        MANIFEST.test(x.path)?MANIFEST_LIMIT:SOURCE_LIMIT);
+      let content: string;
+      if (privateToken) {
+        // Private repository file contents must stay on the authenticated GitHub
+        // REST API, never unauthenticated raw.githubusercontent.com.
+        const blob = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo+
+          "/git/blobs/"+encodeURIComponent(x.sha || ""), signal,
+          Math.ceil((MANIFEST.test(x.path)?MANIFEST_LIMIT:SOURCE_LIMIT) * 1.6) + 1000, { headers: ghHeaders })) as {
+            content?: unknown; encoding?: unknown; size?: unknown;
+          };
+        if (blob.encoding !== "base64" || typeof blob.content !== "string" ||
+          typeof blob.size !== "number" || blob.size > (MANIFEST.test(x.path)?MANIFEST_LIMIT:SOURCE_LIMIT))
+          throw new ScanError("GitHub blob did not meet source limits.", 413);
+        content = Buffer.from(blob.content.replace(/\s/g, ""), "base64").toString("utf8");
+      } else {
+        const path = x.path.split("/").map(encodeURIComponent).join("/");
+        content = await download("https://raw.githubusercontent.com/"+owner+"/"+repo+"/"+sha+"/"+path, signal,
+          MANIFEST.test(x.path)?MANIFEST_LIMIT:SOURCE_LIMIT);
+      }
       if (content.includes("\0")) throw new ScanError("Binary source excluded.");
       return { path: x.path, content };
     }));
@@ -286,6 +303,6 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   if (incomplete) coverage.push({ id:"limits", label:"Exhaustive repository coverage", status:"skipped", note:"File count, source size or advisory limits prevented a full repository review." });
   send("evidence","complete","Produced "+findings.length+" potential findings and coverage disclosures");
   return { runId, appName:target, revision:sha, finishedAt:new Date().toISOString(), findings, coverage,
-    scopeNote:"Read-only public source scan pinned to "+sha.slice(0,12)+". Static patterns and pinned-package OSV advisories only. No runtime testing, exploit verification or security guarantee."+
+    scopeNote:"Read-only "+(privateToken ? "authorized private" : "public")+" source scan pinned to "+sha.slice(0,12)+". Static patterns and pinned-package OSV advisories only. No runtime testing, exploit verification or security guarantee."+
       (incomplete?" Some supported content was omitted by safety limits.":"") };
 }
