@@ -24,6 +24,8 @@ test("mobile first paint shows hero and supports real touch scrolling", async ({
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.getByRole("heading", { name: /Know the risks/i })).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeLessThan(15);
+  // Verify the client-side restoration guard is ready before dispatching a real user-intent event.
+  await page.waitForFunction(() => document.documentElement.dataset.shipsafeScrollGuard === "active");
   await page.evaluate(() => {
     window.dispatchEvent(new Event("touchstart"));
     window.scrollTo({ top: 550, behavior: "instant" });
