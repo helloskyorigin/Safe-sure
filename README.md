@@ -38,6 +38,22 @@ npm run build
 
 Visual QA checklist: test at **320px, 375px, 430px, 768px, 1024px and 1440px** widths. Check that every hero element is visible, product demo tabs work, FAQ and mobile menu respond to keyboard/touch, legal links resolve, and no horizontal overflow is present. Also test reduced-motion mode.
 
+## Assessment entry screen
+
+The second product screen is now available at **/assess**. Landing CTAs navigate there, rather than opening the old informational popup.
+
+- Responsive application connection experience with step indicators and a clearly labeled assessment-flow illustration.
+- Interactive disclosure for the planned read-only GitHub App permissions.
+- Accessible GitHub connection-status dialog, and a collapsible explanation of the planned scan → result sequence.
+- No fake scan progress, invented customer findings, or false connection state.
+- Tests cover landing navigation, permissions, dialog, illustrative flow, Android-sized viewport and 320px overflow.
+
+**Important launch dependency:** The ShipSafe GitHub App has not been registered/configured within the running application. The /assess screen is a production-buildable frontend, **not an active GitHub integration**. To enable real repository selection and scans later, implement GitHub App installation and verified callback/user authorization, least-privilege tokens, private analysis workers and secure session/report state. Do not trust an unverified GitHub installation_id callback parameter. Until then, the connect button explains the status and accesses no repositories.
+
+Official integration references:
+- https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/about-the-setup-url
+- https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app
+
 ## Architecture
 
 - `app/page.tsx` assembles the landing page
