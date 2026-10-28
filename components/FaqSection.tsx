@@ -15,15 +15,15 @@ const faqs = [
   },
   {
     question: "What exactly is free?",
-    answer: "The planned free overview shows counts grouped by severity. The proposed $19 one-time report adds evidence, affected locations, possible impact and suggested fixes.",
+    answer: "When scanning launches, the full report is planned to be available without payment: severity counts, affected files, evidence, impact, remediation and verification steps.",
   },
   {
     question: "Does a clean report guarantee safety?",
     answer: "No. Automated analysis is limited by its rules, available data and context. Findings can be incomplete or require verification.",
   },
   {
-    question: "Is the $19 payment available now?",
-    answer: "Not yet. The site is a pre-launch preview. Checkout and scanning will be enabled after technical and security testing.",
+    question: "Can I view the full report right now?",
+    answer: "You can explore the complete fictional example report now. Actual results will become available only after the real scanner and verified access are connected.",
   },
 ];
 
