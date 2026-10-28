@@ -65,7 +65,7 @@ test("reduced-motion readers see everything without hidden content or delayed ef
   const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 375, height: 812 } });
   const page = await context.newPage();
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "How ShipSafe works" })).toBeAttached();
+  await expect(page.getByRole("heading", { name: "How your security agent works" })).toBeAttached();
   expect(await page.locator("body.landing-motion-active").count()).toBe(0);
   const target = page.locator("#how .section-heading");
   await expect(target).toHaveCSS("opacity", "1");
