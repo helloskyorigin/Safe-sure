@@ -24,15 +24,15 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> AUTOMATED SECURITY AGENT
+            <span className="eyebrow-dash"></span> AI SECURITY AGENT · BETA
           </p>
           <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
-            Meet your security agent.
+            Meet Secuvora.
             <br />
-            <em>Know every risk.</em>
+            <em>Your AI security agent.</em>
           </motion.h1>
           <p className="hero-sub animate delay-2">
-            Connect a GitHub repository whenever you want. Secuvora's automated agent investigates supported code, credentials, dependencies and configurations—then explains the evidence and next fixes.
+            Your security agent for any stage of development. Today's beta investigates source code, credentials, dependencies and configurations using real rules and published advisories. Model-powered reasoning is coming next.
           </p>
           <div className="hero-action animate delay-3">
             <a
