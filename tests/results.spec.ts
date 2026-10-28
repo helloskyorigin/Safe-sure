@@ -40,7 +40,7 @@ test("full remediation is interactive and export works without payment", async (
 test("coverage openly distinguishes complete and skipped checks", async ({ page }) => {
   await page.goto("/assess/results");
   await page.getByRole("button", { name: /Show coverage/i }).click();
-  await expect(page.getByText("Authenticated runtime testing")).toBeVisible();
+  await expect(page.locator(".result-coverage-list").getByText("Authenticated runtime testing", { exact: true })).toBeVisible();
   await expect(page.locator(".result-coverage-tag").filter({ hasText: "skipped" })).toBeVisible();
   await expect(page.getByText("Illustrative source and configuration review.", { exact: false })).toBeVisible();
 });
