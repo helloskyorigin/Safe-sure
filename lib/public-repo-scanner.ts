@@ -97,41 +97,95 @@ export function parseDependencies(files: Source[]) {
 }
 
 async function osvScan(deps: Dependency[], signal: AbortSignal) {
-  const body = JSON.stringify({ queries: deps.map(d => ({ package: { ecosystem: d.ecosystem, name: d.name }, version: d.version })) });
+  // OSV querybatch returns *IDs*, not severity or fix versions. Always look up
+  // original advisory records before making vulnerability-specific claims.
+  const body = JSON.stringify({ queries: deps.map(d => ({
+    package: { ecosystem: d.ecosystem, name: d.name }, version: d.version,
+  })) });
   const data = parseJson(await download("https://api.osv.dev/v1/querybatch", signal, 2_000_000, {
     method: "POST", body, headers: { "content-type": "application/json" },
   })) as { results?: { vulns?: { id: string }[]; next_page_token?: string }[] };
-  if (!Array.isArray(data.results) || data.results.length !== deps.length) throw new ScanError("Invalid OSV response.", 502);
-  const matches = new Map<string, Dependency>(); let partial = false;
+  if (!Array.isArray(data.results) || data.results.length !== deps.length)
+    throw new ScanError("Invalid OSV batch response.", 502);
+
+  const matches: { id: string; dep: Dependency }[] = [];
+  const seen = new Set<string>();
+  let partial = false;
   data.results.forEach((result, index) => {
     if (result.next_page_token) partial = true;
-    for (const vuln of result.vulns || []) if (/^[A-Za-z0-9_.-]{4,90}$/.test(vuln.id) && !matches.has(vuln.id))
-      matches.set(vuln.id, deps[index]);
+    for (const vuln of result.vulns || []) {
+      if (!/^[A-Za-z0-9_.-]{4,90}$/.test(vuln.id)) { partial = true; continue; }
+      const item = deps[index];
+      const key = vuln.id + "|" + item.ecosystem.toLowerCase() + "|" + item.name.toLowerCase() + "|" + item.version;
+      if (!seen.has(key)) { seen.add(key); matches.push({ id: vuln.id, dep: item }); }
+    }
   });
-  if (matches.size > 12) partial = true;
-  const findings: ReportFinding[] = [];
-  for (const [id, dep] of [...matches].slice(0, 12)) {
-    try {
-      const v = parseJson(await download("https://api.osv.dev/v1/vulns/" + encodeURIComponent(id), signal, 700_000)) as {
-        summary?: string; details?: string; database_specific?: { severity?: string };
+  if (matches.length > 12) partial = true;
+  const results: (ReportFinding | null)[] = [];
+  // Bound external calls to avoid accidental OSV overload and request timeouts.
+  for (let start = 0; start < Math.min(matches.length, 12); start += 4) {
+    const group = matches.slice(start, start + 4);
+    const batch = await Promise.allSettled(group.map(async ({ id, dep }) => {
+      const record = parseJson(await download("https://api.osv.dev/v1/vulns/" +
+        encodeURIComponent(id), signal, 700_000)) as {
+        id?: string; summary?: string; details?: string;
+        database_specific?: { severity?: string };
+        affected?: {
+          package?: { ecosystem?: string; name?: string };
+          ecosystem_specific?: { severity?: string };
+          database_specific?: { severity?: string };
+          ranges?: { type?: string; events?: { fixed?: string }[] }[];
+        }[];
       };
-      const priority = v.database_specific?.severity?.toUpperCase();
-      const severity: Severity = priority === "CRITICAL" ? "critical" : priority === "HIGH" ? "high" : priority === "LOW" ? "low" : "medium";
-      const link = "https://osv.dev/vulnerability/" + id;
-      findings.push({
-        id: "OSV-" + String(findings.length+1).padStart(3,"0"),
-        severity, title: "OSV advisory " + id + " matches " + dep.name,
-        category: "Dependency advisory", confidence: "high", location: { path: dep.path },
-        overview: dep.name + "@" + dep.version + " matches published advisory " + id + " in the OSV database.",
-        whyItMatters: (v.summary || v.details || "The installed version matches a published security advisory.").slice(0, 850),
-        evidence: dep.name + "@" + dep.version + " · " + id + " · " + link, redacted: false,
-        steps: ["Review the original advisory: " + link, "Check whether the affected code path is reachable.", "Upgrade to a fixed version or implement a documented mitigation.", "Retest and verify the resolved dependency tree."],
-        verification: "Confirm the installed version no longer matches the advisory and assess runtime reachability.",
-        limitations: "An advisory match does not confirm exploitability. When OSV provides no usable numerical score, displayed severity is a triage estimate.",
-      });
-    } catch (e) { if (signal.aborted) throw e; partial = true; }
+      if (record.id !== id) throw new ScanError("OSV returned an unexpected advisory.", 502);
+      const affected = (record.affected || []).filter(entry =>
+        entry.package?.name?.toLowerCase() === dep.name.toLowerCase() &&
+        entry.package?.ecosystem?.toLowerCase() === dep.ecosystem.toLowerCase());
+      // Cross-check individual vulnerable package identity; never attach a
+      // fix or severity belonging to another affected package.
+      if (!affected.length) throw new ScanError("OSV package mismatch.", 502);
+      const category = [
+        ...affected.map(a => a.ecosystem_specific?.severity || a.database_specific?.severity),
+        record.database_specific?.severity,
+      ].find(x => typeof x === "string" && /^(critical|high|medium|moderate|low)$/i.test(x))?.toUpperCase();
+      const severity: Severity = category === "CRITICAL" ? "critical" :
+        category === "HIGH" ? "high" : category === "LOW" ? "low" : "medium";
+      const ranked = category ? "Publisher-reported severity: " + category + "." :
+        "Severity: medium (ShipSafe triage estimate; publisher rating not provided).";
+      const fixed = [...new Set(affected.flatMap(a => (a.ranges || [])
+        .filter(r => r.type === "ECOSYSTEM" || r.type === "SEMVER")
+        .flatMap(r => (r.events || []).map(e => e.fixed)
+          .filter((v): v is string => typeof v === "string" && /^[0-9][A-Za-z0-9.+_-]{0,60}$/.test(v)))))];
+      const advisory = "https://osv.dev/vulnerability/" + encodeURIComponent(id);
+      const fixedNote = fixed.length ? " Reported fixed version event" +
+        (fixed.length === 1 ? ": " : "s: ") + fixed.slice(0, 3).join(", ") + "." : "";
+      const overview = dep.name + "@" + dep.version + " returned an exact-version match for OSV advisory " + id + ".";
+      return {
+        id: "OSV-" + randomUUID().slice(0, 8) + "-" + id.slice(0, 24),
+        ruleId: "OSV-MATCH", ruleEngine: "OSV published advisory",
+        severity, confidence: "high" as const, category: "Dependency advisory",
+        title: "Advisory " + id + " affects " + dep.name + "@" + dep.version,
+        location: { path: dep.path },
+        overview, whyItMatters: (record.summary || record.details || "A published advisory matches this version.").slice(0, 850),
+        evidence: "OSV " + id + " | " + dep.ecosystem + "/" + dep.name + "@" + dep.version +
+          " | " + ranked + fixedNote + " " + advisory,
+        redacted: false,
+        steps: ["Read advisory details: " + advisory,
+          "Confirm this package version is present in the deployment lockfile and evaluate whether affected code paths are reachable.",
+          fixed.length
+            ? "Review the advisory's fixed-version event(s): " + fixed.slice(0, 3).join(", ") + ". Select a compatible supported release."
+            : "Upgrade to a vendor-patched version or apply a verified mitigation after reviewing the advisory.",
+          "Run dependency and regression tests, then rescan the resolved versions."],
+        verification: "Confirm the resolved installed version no longer returns this OSV advisory and test the affected feature.",
+        limitations: "An exact advisory match establishes affected-version evidence, not runtime reachability or exploitation. " + ranked,
+      } satisfies ReportFinding;
+    }));
+    batch.forEach(item => {
+      if (item.status === "fulfilled") results.push(item.value);
+      else { partial = true; if (signal.aborted) throw new ScanError("Scan cancelled.",408); }
+    });
   }
-  return { findings, partial };
+  return { findings: results.filter((v): v is ReportFinding => v !== null), partial };
 }
 
 export async function scanPublicRepository(input: string, signal: AbortSignal, emit: Progress,
