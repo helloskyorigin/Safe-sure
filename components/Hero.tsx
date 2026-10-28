@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { RefreshCw } from "lucide-react";
 
 interface HeroProps {
   onOpenAssessment: () => void;
@@ -56,13 +55,6 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
 
         <motion.div className="preview-wrap" style={reduceMotion ? undefined : { y: previewRise }}>
           <div className="preview-halo" aria-hidden="true"></div>
-          <div className="continuous-security-badge" role="note" aria-label="Continuous Security is coming soon">
-            <span className="continuous-security-icon" aria-hidden="true"><RefreshCw size={17}/></span>
-            <span className="continuous-security-copy">
-              <strong>Continuous Security</strong>
-              <small>COMING SOON</small>
-            </span>
-          </div>
           <div className="preview">
             <div className="preview-top">
               <strong className="preview-brand">
