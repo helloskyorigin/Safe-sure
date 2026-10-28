@@ -3,8 +3,8 @@ import Link from "next/link";
 import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | ShipSafe",
-  description: "Read how ShipSafe's website handles technical data, what is not collected, your choices and what changes when assessments launch.",
+  title: "Privacy Policy | Secuvora",
+  description: "Read how Secuvora's website handles technical data, what is not collected, your choices and what changes when assessments launch.",
 };
 
 const sections: LegalSection[] = [
@@ -24,28 +24,28 @@ export default function PrivacyPage() {
     <LegalPage
       eyebrow="POLICY / PRIVACY"
       title="Privacy policy."
-      lead="A transparent account of what happens when you visit ShipSafe, which data we do not yet collect, and how this notice will evolve."
+      lead="A transparent account of what happens when you visit Secuvora, which data we do not yet collect, and how this notice will evolve."
       sections={sections}
       summary={[
         "Public repository scanning works without sign-in. Private-source scanning requires the operator to configure GitHub App authorization and encrypted report storage. No payments are collected.",
-        "Public scan source is processed transiently and its report stays in browser session storage. When the private connector is configured, private reports are encrypted at rest for up to seven days, with owner-only retrieval and deletion.",
+        "Public scan source is processed transiently and its report is saved in this browser's local storage for up to 30 days. When the private connector is configured, private reports are encrypted at rest for up to seven days, with owner-only retrieval and deletion.",
         "Your hosting provider may process routine technical request data needed to deliver the website.",
       ]}
     >
       <section id="scope" className="legal-section">
         <h2>Scope and service status</h2>
-        <p>This privacy notice covers the ShipSafe public website and its current interactive product demonstrations. ShipSafe is a software project, not a representation that a separate company has been incorporated. Public repository scanning processes accessible source and pinned dependencies; private GitHub authorization and encrypted server-stored report delivery require deployment-specific credentials and infrastructure to become operational.</p>
+        <p>This privacy notice covers the Secuvora public website and its current interactive product demonstrations. Secuvora is a software project, not a representation that a separate company has been incorporated. Public repository scanning processes accessible source and pinned dependencies; private GitHub authorization and encrypted server-stored report delivery require deployment-specific credentials and infrastructure to become operational.</p>
         <p>The assessment page offers public-source scanning when you enter a GitHub repository address and start a scan. The separate sample results screen remains fictional and clearly labeled. No payment is required. Private GitHub authorization is initiated only if the operator has configured a GitHub App and the user chooses to sign in.</p>
       </section>
       <section id="data" className="legal-section">
         <h2>Information processed</h2>
         <p><strong>When you browse:</strong> your browser connects to the website and its infrastructure. The hosting or network providers may receive IP addresses, user-agent information, requested URLs, timestamps and security logs as part of serving the page and maintaining reliability.</p>
-        <p><strong>What the current app does not request:</strong> a ShipSafe account, your GitHub credentials, payment-card details, contact-form submissions or private repository credentials. When you request a public scan, the server fetches publicly accessible source files and lockfiles. The frontend does not install an analytics or advertising tracker. Scan requests contain the public owner/repository identifier. Report details are returned to the initiating browser tab.</p>
+        <p><strong>What the current app does not request:</strong> a Secuvora account, your GitHub credentials, payment-card details, contact-form submissions or private repository credentials. When you request a public scan, the server fetches publicly accessible source files and lockfiles. The frontend does not install an analytics or advertising tracker. Scan requests contain the public owner/repository identifier. Report details are returned to the initiating browser and saved locally; clearing browser site data deletes them.</p>
         <p><strong>If you submit public feedback:</strong> information in a GitHub issue is processed by GitHub and visible publicly. Only share non-sensitive product feedback. Do not post passwords, personally identifying information or exploit details.</p>
       </section>
       <section id="uses" className="legal-section">
         <h2>How information is used</h2>
-        <p>Technical request information is used by the relevant infrastructure to deliver pages, troubleshoot reliability, maintain site security and respond to abuse. We do not currently use the ShipSafe front end to create personal advertising profiles, sell browsing data or run a marketing mailing list.</p>
+        <p>Technical request information is used by the relevant infrastructure to deliver pages, troubleshoot reliability, maintain site security and respond to abuse. We do not currently use the Secuvora front end to create personal advertising profiles, sell browsing data or run a marketing mailing list.</p>
         <p>For public scanning, the server inspects source patterns and sends pinned package names/versions to the OSV vulnerability database. Source is not intentionally submitted to OSV. Unsupported files are excluded and source code is not executed. We will update this notice for additional features.</p>
       </section>
       <section id="providers" className="legal-section">
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
       </section>
       <section id="cookies" className="legal-section">
         <h2>Cookies and tracking</h2>
-        <p>ShipSafe does not set analytics or advertising cookies. When private GitHub sign-in is configured, it sets strictly functional, encrypted, HttpOnly session and OAuth-state cookies. No tracking consent banner is used for nonexistent advertising trackers. A hosting platform may use strictly operational measures that are outside this site's application code. We will reassess disclosure and consent requirements if tracking or other storage technologies are added.</p>
+        <p>Secuvora does not set analytics or advertising cookies. When private GitHub sign-in is configured, it sets strictly functional, encrypted, HttpOnly session and OAuth-state cookies. No tracking consent banner is used for nonexistent advertising trackers. A hosting platform may use strictly operational measures that are outside this site's application code. We will reassess disclosure and consent requirements if tracking or other storage technologies are added.</p>
       </section>
       <section id="storage" className="legal-section">
         <h2>Storage, security and retention</h2>
@@ -64,18 +64,18 @@ export default function PrivacyPage() {
       </section>
       <section id="rights" className="legal-section">
         <h2>Your choices and rights</h2>
-        <p>You can browse without submitting information to a ShipSafe user account. Where applicable law gives you rights to access, correction, erasure, grievance redressal or other controls over personal information, the applicable operator must provide a suitable private request channel and verify requests where necessary.</p>
+        <p>You can browse without submitting information to a Secuvora user account. Where applicable law gives you rights to access, correction, erasure, grievance redressal or other controls over personal information, the applicable operator must provide a suitable private request channel and verify requests where necessary.</p>
         <p>At present, there is no private data-rights inbox advertised on the site. Please do not submit sensitive requests through public issues. A private privacy and support contact method must be configured and published before private source access, payment details or customer accounts are enabled. The current <Link href="/contact">contact page</Link> explains available non-sensitive feedback channels.</p>
       </section>
       <section id="international" className="legal-section">
         <h2>International visitors</h2>
-        <p>ShipSafe may be viewed from different locations. Technical requests can be processed where the website host and network providers operate. We will disclose actual hosting regions, relevant processors and any cross-border processing mechanisms before the launch of data-intensive services. Applicable local laws continue to govern where relevant.</p>
+        <p>Secuvora may be viewed from different locations. Technical requests can be processed where the website host and network providers operate. We will disclose actual hosting regions, relevant processors and any cross-border processing mechanisms before the launch of data-intensive services. Applicable local laws continue to govern where relevant.</p>
       </section>
       <section id="changes" className="legal-section">
         <h2>Changes and contact</h2>
         <p>This notice is reviewed when the website's behavior changes. Material changes to collected data, processing purposes, service providers or user controls should be published before the affected functionality becomes available, with an updated revision date.</p>
         <p>For general non-sensitive questions visit <Link href="/contact">Contact</Link>. Security-specific information is available in our <Link href="/security">security practices</Link>. Do not share secret credentials or private code through public channels.</p>
-        <p className="legal-note"><strong>Current status:</strong> ShipSafe is an operational website preview, a limited real public-source scanner, not a penetration test or comprehensive security audit. This policy describes the implementation at the date shown above.</p>
+        <p className="legal-note"><strong>Current status:</strong> Secuvora is an operational website preview, a limited real public-source scanner, not a penetration test or comprehensive security audit. This policy describes the implementation at the date shown above.</p>
       </section>
     </LegalPage>
   );
