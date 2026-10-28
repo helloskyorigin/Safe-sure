@@ -13,7 +13,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
   return (
     <section id="pricing" className="section bordered pricing-section">
       <div className="container pricing-grid">
-        <div className="pricing-intro reveal visible">
+        <div className="pricing-intro ">
           <p className="eyebrow">FULL ACCESS, NO PAYWALL</p>
           <h2>
             All the detail,
@@ -29,7 +29,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
           </div>
         </div>
 
-        <div className="price-card reveal visible">
+        <div className="price-card ">
           <div className="price-top">
             <div>
               <small>COMPLETE SECURITY REPORT</small>
