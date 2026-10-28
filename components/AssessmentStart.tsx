@@ -14,7 +14,7 @@ const easer = [0.22, 1, 0.36, 1] as const;
 const stages = [
   { number: "01", title: "Connect application", description: "Authorize a selected application on GitHub.", icon: Github },
   { number: "02", title: "Run assessment", description: "Analyze available code, dependencies and security signals.", icon: ScanSearch },
-  { number: "03", title: "Understand results", description: "See severity counts, with detailed remediation for $19.", icon: FileSearch },
+  { number: "03", title: "Understand results", description: "See severity, evidence and fixes together—with no paywall.", icon: FileSearch },
 ] as const;
 
 const checks = [
@@ -147,7 +147,7 @@ export default function AssessmentStart() {
                 <div className="assess-journey-path" aria-hidden="true"><span/><span/><span/></div>
                 <div className="assess-journey-stage">
                   <span className="assess-stage-icon assess-stage-muted"><FileSearch size={19}/></span>
-                  <div><strong>Clear findings</strong><p>Free overview · $19 detailed report</p></div>
+                  <div><strong>Clear findings</strong><p>Full findings · Free access</p></div>
                   <span className="assess-stage-number">03</span>
                 </div>
                 <div className="assess-journey-note"><Info size={14}/><span>No assessment is running. This visual only explains the intended workflow.</span></div>
@@ -188,7 +188,7 @@ export default function AssessmentStart() {
                 transition={{ duration: reducedMotion ? 0 : .36 }}
                 style={{ overflow: "hidden" }}>
                 <div className="assess-flow-inner"><span className="assess-flow-symbol"><Info size={18}/></span>
-                  <div><strong>Preview of the planned assessment flow</strong><p>After authorization, the application selector will show only the repositories made available through the GitHub App. A real scan will then report what was checked, errors or unsupported checks, and severity counts based on actual findings. The detailed report unlock will require verified payment. None of these backend steps is simulated as completed on this screen.</p></div>
+                  <div><strong>Preview of the planned assessment flow</strong><p>After authorization, the application selector will show only the repositories made available through the GitHub App. A real scan will then report what was checked, errors or unsupported checks, and severity counts based on actual findings. Full reports will be available without a payment gate. None of these backend steps is simulated as completed on this screen.</p></div>
                 </div>
               </motion.div>}
             </AnimatePresence>
@@ -225,7 +225,7 @@ export default function AssessmentStart() {
           <div className="assess-modal-list">
             <span><CheckCircle2 size={16}/> Selected repositories, not blanket access</span>
             <span><CheckCircle2 size={16}/> Read-only application analysis</span>
-            <span><CheckCircle2 size={16}/> Free severity overview before a $19 report</span>
+            <span><CheckCircle2 size={16}/> Full evidence and fixes included for free</span>
           </div>
           <button type="button" className="assess-primary" onClick={() => setDialogOpen(false)}>Understood <ArrowRight size={18}/></button>
           <Link href="/security" className="assess-modal-link" onClick={() => setDialogOpen(false)}>Read our security approach <ChevronRight size={15}/></Link>
