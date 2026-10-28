@@ -90,3 +90,17 @@ test("private scan preserves unauthenticated 401; deletion rejects hostile Origi
   );
   expect(deletion.status()).toBe(403);
 });
+
+test("public scan and logout reject spoofed same-origin Fetch Metadata with hostile Origin", async ({ request }) => {
+  const headers = { origin:"https://attacker.example", "sec-fetch-site":"same-origin" };
+  const scan = await request.post("/api/scan/public", {
+    headers, data:{repo:"vercel/ms"},
+  });
+  expect(scan.status()).toBe(403);
+  expect(scan.headers()["cache-control"]).toContain("no-store");
+
+  const logout = await request.post("/api/auth/github/logout", { headers });
+  expect(logout.status()).toBe(403);
+  expect(logout.headers()["cache-control"]).toContain("no-store");
+  expect(logout.headers()["set-cookie"]).toBeUndefined();
+});
