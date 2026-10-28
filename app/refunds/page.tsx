@@ -24,13 +24,13 @@ export default function RefundsPage() {
       summary={[
         "The complete report experience—including findings, evidence, impact and fixes—is planned to be free.",
         "The current site does not accept payment, collect billing details or issue invoices.",
-        "Sample results are freely viewable, but the live scanning backend is not yet connected.",
+        "Sample results are freely viewable, and public repository source scans can now generate complete reports.",
       ]}
     >
       <section id="current" className="legal-section">
         <h2>Current status</h2>
         <p>ShipSafe is currently a public product preview. You can view a clearly labeled, fictional full-report example at <Link href="/assess/results">Results</Link>, including findings, code locations, evidence, remediation and verification. The example is not an assessment of your application.</p>
-        <p>GitHub authorization, real code analysis, report storage and authenticated delivery have not launched. No customer security data or payment card details are collected through the preview.</p>
+        <p>Read-only public source scanning is available. Private GitHub authorization, durable report storage and authenticated report recovery have not launched. No customer security data or payment card details are collected through the preview.</p>
       </section>
       <section id="free" className="legal-section">
         <h2>Full reports without a paywall</h2>
@@ -39,7 +39,7 @@ export default function RefundsPage() {
       </section>
       <section id="delivery" className="legal-section">
         <h2>Report access and delivery</h2>
-        <p>After the scanning backend is implemented, viewing an actual report will require authorized access to the relevant application and scan run. The system must show whether checks completed, failed or were skipped. Report details must not be fabricated to fill gaps in analysis.</p>
+        <p>A public scan report can be viewed in the same browser tab after it completes, using temporary session storage. There is no durable report recovery service. Future private report access will require verified authorization. The system must show whether checks completed, failed or were skipped. Report details must not be fabricated to fill gaps in analysis.</p>
         <p>A sample report is downloadable from the preview for demonstration purposes, clearly identified as synthetic example data.</p>
       </section>
       <section id="payments" className="legal-section">
