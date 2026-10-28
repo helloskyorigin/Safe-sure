@@ -11,12 +11,12 @@
 
 ## Actual scanner limits (important for an honest demonstration)
 
-- Public GitHub repositories only. Private GitHub App authorization does not exist yet.
+- Public GitHub source scans work by default. A private source flow using GitHub App user OAuth, installed-repository read permissions and private GitHub blobs is implemented but requires real operator configuration.
 - A pinned source revision via GitHub REST + raw content. At most 65 eligible files, with per-file size restrictions and a 55-second request timeout.
 - Supported static source-pattern checks: possible hardcoded credentials/private keys, TLS verification override, dynamic code evaluation, HTML injection sinks, Django DEBUG.
 - Pinned npm package-lock.json and PyPI requirements/Pipfile.lock candidates checked against OSV advisories when reachable.
 - No app code execution, authenticated runtime testing, exploit confirmation, dynamic penetration testing, SOC 2/ISO certification or complete coverage.
-- Source processed transiently during the server request; report saved to **sessionStorage** in the initiating browser tab only. Closing/clearing the browser session removes it. Export JSON to retain a copy.
+- Public reports are held in browser tab sessionStorage. Authorized private reports are encrypted via AES-256-GCM at rest in Upstash Redis and expire after seven days, with owner-scoped access and deletion. This requires operator-provided secret/database credentials.
 - API concurrency and request budgets are **per server instance**, not global. Configure a shared edge/WAF quota, observability and abuse controls before substantial public traffic.
 
 ## Deployment verification
@@ -31,8 +31,8 @@
 
 ## Still required before broad production/private scanning
 
-- Real GitHub App installation and verified per-user, per-repository permissions.
-- Durable authenticated report storage/recovery and user-owned deletion controls.
+- Register and install a real GitHub App with Contents: Read-only, Metadata: Read, OAuth callback and verified operator credentials.
+- Configure the implemented Redis HTTPS store, high-entropy session secret and seven-day retention. Validate actual recovery/deletion against a live database.
 - A shared rate limiter, queue, worker isolation, monitoring/alerts and clear concurrency budgets.
 - Independent security review/penetration test, false-positive tuning and broader scanner coverage.
 - Verified public operator/support/contact details and appropriate privacy/legal review.
