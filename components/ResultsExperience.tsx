@@ -14,6 +14,7 @@ import {
   type AssessmentReport, type ReportFinding, type Severity,
 } from "@/lib/report-contract";
 import { githubSourceUrl, priorityFindings, remediationMarkdown } from "@/lib/report-presentation";
+import { loadPublicReport } from "@/lib/browser-report-history";
 
 type ReportState =
   | { kind: "loading" }
@@ -73,8 +74,7 @@ export default function ResultsExperience() {
     if (localId) {
       if (!/^[0-9a-f-]{36}$/i.test(localId)) { setState({ kind: "invalid" }); return; }
       try {
-        const saved = sessionStorage.getItem("shipsafe:report:" + localId);
-        const value: unknown = saved ? JSON.parse(saved) : null;
+        const value: unknown = loadPublicReport(localId);
         if (!isAssessmentReport(value, localId)) { setState({ kind: "error" }); return; }
         setSelectedId(priorityFindings(value.findings)[0]?.id || "");
         setState({ kind: "live", report: value, source: "public" });
