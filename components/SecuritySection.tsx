@@ -2,7 +2,7 @@ export default function SecuritySection() {
   return (
     <section id="security" className="section bordered">
       <div className="container">
-        <div className="split-heading reveal visible">
+        <div className="split-heading ">
           <div>
             <p className="eyebrow">SECURITY BY DESIGN</p>
             <h2>
@@ -17,7 +17,7 @@ export default function SecuritySection() {
           </p>
         </div>
         <div className="trust-grid">
-          <article className="trust-item reveal visible">
+          <article className="trust-item ">
             <div className="trust-icon">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 2 3 6v6c0 5 3.4 8 9 10 5.6-2 9-5 9-10V6l-9-4Z" />
@@ -30,7 +30,7 @@ export default function SecuritySection() {
               to modify your code.
             </p>
           </article>
-          <article className="trust-item reveal visible">
+          <article className="trust-item ">
             <div className="trust-icon">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8l-5-5H8Z" />
@@ -43,7 +43,7 @@ export default function SecuritySection() {
               unexplained security scores.
             </p>
           </article>
-          <article className="trust-item reveal visible">
+          <article className="trust-item ">
             <div className="trust-icon">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <rect x="5" y="10" width="14" height="11" rx="2" />
