@@ -37,6 +37,9 @@ export type AssessmentReport = {
   findings: ReportFinding[];
   coverage: CoverageItem[];
   scopeNote: string;
+  /** Scanner-verified scope metrics; omitted in older and illustrative reports. */
+  scanMetrics?: { filesInspected: number; eligibleFiles: number; linesInspected: number;
+    dependencyVersions: number; rulesExecuted: number };
 };
 
 const severities = new Set<Severity>(["critical", "high", "medium", "low"]);
@@ -53,6 +56,12 @@ export function isAssessmentReport(value: unknown, runId: string): value is Asse
       (value.revision !== undefined && !str(value.revision, 100))) return false;
   if (!Array.isArray(value.findings) || value.findings.length > 300 ||
       !Array.isArray(value.coverage) || value.coverage.length > 40) return false;
+  if (value.scanMetrics !== undefined) {
+    const m = value.scanMetrics;
+    if (!isObject(m) || !["filesInspected","eligibleFiles","linesInspected","dependencyVersions","rulesExecuted"]
+      .every(key => Number.isSafeInteger(m[key]) && Number(m[key]) >= 0 && Number(m[key]) < 10_000_000)) return false;
+    if (Number(m.filesInspected) > Number(m.eligibleFiles)) return false;
+  }
   const seen = new Set<string>();
   for (const f of value.findings) {
     if (!isObject(f) || !str(f.id, 100) || seen.has(f.id) ||
