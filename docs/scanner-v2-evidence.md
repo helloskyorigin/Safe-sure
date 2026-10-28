@@ -1,4 +1,4 @@
-# ShipSafe Security Scanner v2 — evidence and accuracy contract
+# Secuvora Security Agent Engine v2 — evidence and accuracy contract
 
 ## Implemented inspection
 Read-only source inspection pinned to a GitHub commit SHA. No application code execution, exploitation or credential validity probing.
@@ -13,7 +13,7 @@ Read-only source inspection pinned to a GitHub commit SHA. No application code e
 ## Accuracy boundaries
 - Static matches are candidates, not confirmed vulnerabilities. This engine does not prove exploitability, reachable attack paths, token validity or production exposure.
 - The source detector is rule-based, **not** interprocedural AST-backed dataflow analysis. Context-aware confidence and placeholder exclusion reduce noise but can miss real exposures.
-- Missing publisher severity becomes a labeled ShipSafe triage estimate (medium), not an invented CVSS.
+- Missing publisher severity becomes a labeled Secuvora triage estimate (medium), not an invented CVSS.
 - Fixed-version events are advisory metadata, not guaranteed one-click patches. Always check compatibility and reachability.
 - Caps: 65 eligible files, 75 pinned dependencies, 45 static findings and 12 detailed OSV advisory matches. Other languages/configurations are not exhaustive.
 - This is not a penetration test, formal compliance review or security certification.
