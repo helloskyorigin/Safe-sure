@@ -45,10 +45,8 @@ test("public source scan streams worker snapshots into full report experience", 
   await page.goto("/assess");
   await page.getByRole("textbox", { name: "Public GitHub repository" }).fill("acme/testapp");
   await page.getByRole("button", { name: "Scan public repository" }).click();
-  await expect(page).toHaveURL(/\/assess\/scanning\?repo=acme%2Ftestapp/);
-  await expect(page.getByRole("link", { name: /View full real results/i })).toBeVisible();
-  await page.getByRole("link", { name: /View full real results/i }).click();
-  await expect(page).toHaveURL(/\/assess\/results\?local=/);
+  // No extra click: completed, validated stream must navigate automatically.
+  await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 12000 });
   await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
 });
@@ -66,19 +64,59 @@ test("live source scan integrates GitHub public tree and full report end-to-end"
   await page.goto("/assess");
   await page.getByRole("textbox", { name: "Public GitHub repository" }).fill("vercel/ms");
   await page.getByRole("button", { name: "Scan public repository" }).click();
-  await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
-  await expect.poll(async () => {
-    const state = await page.locator(".scan-state-tag").innerText();
-    return /Assessment finished|Unable to verify/.test(state);
-  }, { timeout: 70_000, message: "Waiting for a terminal real scanning state" }).toBe(true);
-  const state = await page.locator(".scan-state-tag").innerText();
-  if (state.includes("Unable to verify")) {
-    const details = await page.locator(".scan-visual-bottom").innerText();
-    throw new Error("Public source scan failure detail: " + details.slice(0, 1100));
+  // Real GitHub source -> real streamed checks -> auto result without clicking.
+  try {
+    await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 72_000 });
+  } catch (error) {
+    const details = await page.locator(".scan-visual-bottom").innerText().catch(() => "Unavailable");
+    throw new Error("Live scan did not auto-open report. " + details.slice(0, 1100) + " " + String(error).slice(0, 300));
   }
-  await expect(page.getByRole("link", { name: /View full real results/i })).toBeVisible();
-  await page.getByRole("link", { name: /View full real results/i }).click();
   await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toBeVisible();
   await expect(page.getByRole("heading", { name: "vercel/ms" })).toBeVisible();
   await expect(page.getByText(/Read-only public source scan|Static public-source scan/i).first()).toBeVisible();
+});
+
+
+test("failed stream remains on inspection screen and offers an immediate retry", async ({ page }) => {
+  await page.route("**/api/scan/public", route => route.fulfill({
+    status: 200, headers: { "content-type": "application/x-ndjson" },
+    body: JSON.stringify({ type: "error", message: "GitHub returned a rate limit. Try later." }) + "\n",
+  }));
+  await page.goto("/assess/scanning?repo=acme%2Ftestapp");
+  await expect(page.getByText("GitHub returned a rate limit. Try later.")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
+  await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
+  await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toHaveCount(0);
+});
+
+test("invalid or incomplete report never triggers automatic navigation", async ({ page }) => {
+  const id = "12345678-1234-4321-9999-123456789012";
+  const snapshot = { runId: id, target: { name: "acme/testapp" }, status: "completed",
+    updatedAt: "2026-10-28T00:00:00Z", checks: [], events: [], progress: { done: 5, total: 5 } };
+  await page.route("**/api/scan/public", route => route.fulfill({
+    status: 200, headers: { "content-type": "application/x-ndjson" },
+    body: JSON.stringify({ type: "snapshot", snapshot })+"\n"+JSON.stringify({ type: "report", report: { bogus: true } })+"\n",
+  }));
+  await page.goto("/assess/scanning?repo=acme%2Ftestapp");
+  await expect(page.getByText(/invalid report/i)).toBeVisible();
+  await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
+  await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
+});
+
+test("zero real findings is not mislabeled a clean security certificate", async ({ page }) => {
+  const runId = "12345678-1234-4321-9999-123456789012";
+  const snapshot = { runId, target: { name: "example/no-findings" }, status: "completed",
+    updatedAt: "2026-10-28T00:00:00Z", checks: [], events: [], progress: { done: 5, total: 5 } };
+  const report = { ...SAMPLE_REPORT, runId, appName: "example/no-findings", findings: [],
+    scopeNote: "Static public-source scan, limited supported checks." };
+  await page.route("**/api/scan/public", route => route.fulfill({
+    status: 200, headers: { "content-type": "application/x-ndjson" },
+    body: JSON.stringify({ type: "snapshot", snapshot })+"\n"+JSON.stringify({ type: "report", report })+"\n",
+  }));
+  await page.goto("/assess/scanning?repo=example%2Fno-findings");
+  await expect(page).toHaveURL(/\/assess\/results\?local=/);
+  await expect(page.getByText("No candidate findings in the supported checks")).toBeVisible();
+  await expect(page.getByText("No findings flagged by these rules")).toBeVisible();
+  await expect(page.getByText(/does not prove the application is secure/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: /Review coverage/i })).toBeVisible();
 });
