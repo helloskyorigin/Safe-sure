@@ -274,11 +274,11 @@ export default function ResultsExperience() {
                     </div>
 
                     <div className="result-file-location"><div><span className="result-mini-eyebrow">AFFECTED LOCATION</span><code>{active.location.path}{active.location.line ? ":"+active.location.line : ""}</code></div>
-                      <CopyFeedback text={active.location.path+(active.location.line ? ":"+active.location.line : "")} label="Copy sample file location"/>
+                      <CopyFeedback text={active.location.path+(active.location.line ? ":"+active.location.line : "")} label="Copy file location"/>
                     </div>
 
                     <section className="result-detail-section" aria-labelledby="result-evidence"><div className="result-section-title"><Terminal size={18}/><h3 id="result-evidence">Supporting evidence</h3></div>
-                      <div className="result-code"><div className="result-code-head"><span><i/><i/><i/> EVIDENCE EXCERPT</span><span>{active.redacted ? "SENSITIVE VALUES MASKED" : "EXAMPLE"}</span></div><pre><code>{active.evidence}</code></pre></div>
+                      <div className="result-code"><div className="result-code-head"><span><i/><i/><i/> EVIDENCE EXCERPT</span><span>{active.redacted ? "SENSITIVE VALUES MASKED" : (isSample ? "SAMPLE EVIDENCE" : "SOURCE / ADVISORY EVIDENCE")}</span></div><pre><code>{active.evidence}</code></pre></div>
                       {active.redacted && <p className="result-evidence-note"><LockKeyhole size={14}/> Credential or personal values are never displayed in full.</p>}
                     </section>
 
