@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("full report preview shows all findings without a paywall", async ({ page }) => {
   await page.goto("/assess/results");
-  await expect(page.getByRole("heading", { level: 1, name: /Your security report/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Your agent report/i })).toBeVisible();
   await expect(page.getByText("INTERACTIVE SAMPLE")).toBeVisible();
   await expect(page.getByText("6/6")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
@@ -33,7 +33,7 @@ test("full remediation is interactive and export works without payment", async (
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: /Export example/i }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("shipsafe-sample-full-report.json");
+  expect(download.suggestedFilename()).toBe("secuvora-sample-full-report.json");
   await expect(page.getByText(/Full findings, evidence and fixes included/)).toBeVisible();
 });
 
@@ -62,7 +62,7 @@ test("minimal scanning page has no sample-report distraction", async ({ page }) 
   await page.goto("/assess/scanning");
   await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
   await expect(page.getByRole("link", { name: /View full sample/i })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /Scan a public repository/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Start a new investigation/i })).toBeVisible();
 });
 
 test("all results widths avoid horizontal overflow", async ({ browser }) => {
@@ -72,7 +72,7 @@ test("all results widths avoid horizontal overflow", async ({ browser }) => {
     });
     const page = await context.newPage();
     await page.goto("/assess/results");
-    await expect(page.getByRole("heading", { level: 1, name: /Your security report/i })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: /Your agent report/i })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, "results overflow at " + width + "px").toBeLessThanOrEqual(1);
     await context.close();
@@ -85,7 +85,7 @@ test("free fix-plan export includes actual finding remediation and coverage", as
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Fix plan" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("shipsafe-sample-fix-plan.md");
+  expect(download.suggestedFilename()).toBe("secuvora-sample-fix-plan.md");
   const content = await (await import("node:fs/promises")).readFile(await download.path(), "utf8");
   expect(content).toContain("ILLUSTRATIVE SAMPLE - NOT A REAL SCAN");
   expect(content).toContain("Recommended review and remediation");
