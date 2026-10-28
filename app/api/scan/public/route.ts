@@ -3,6 +3,7 @@ import { parsePublicRepo, scanPublicRepository, ScanError } from "@/lib/public-r
 import type { AssessmentSnapshot } from "@/lib/assessment-contract";
 import { createHash } from "node:crypto";
 import { durableStoreConfigured, enforceSharedQuota } from "@/lib/durable-reports";
+import { isAllowedMutationOrigin } from "@/lib/api-request-guards";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,23 +20,11 @@ const recentStarts: number[] = [];
 const jsonHeaders = { "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff" };
 
 export async function POST(req: Request) {
-  // Same-origin requests only; no cookies or private authorization are used.
-  const origin = req.headers.get("origin");
-  const fetchSite = req.headers.get("sec-fetch-site");
-  // Browsers mark same-origin requests even when a hosting reverse proxy
-  // rewrites the internal Request URL (e.g. 127.0.0.1 -> localhost).
-  if (fetchSite && fetchSite !== "same-origin" && fetchSite !== "none")
-    return NextResponse.json({ error: "Cross-origin scan requests are not allowed." }, { status: 403, headers: jsonHeaders });
-  if (origin && fetchSite !== "same-origin") {
-    let allowed = false;
-    try {
-      const source = new URL(origin);
-      const hosts = [new URL(req.url).host, req.headers.get("host"), req.headers.get("x-forwarded-host")];
-      allowed = (source.protocol === "https:" || source.hostname === "localhost" || source.hostname === "127.0.0.1") &&
-        hosts.includes(source.host);
-    } catch { /* Invalid Origin header */ }
-    if (!allowed) return NextResponse.json({ error: "Cross-origin scan requests are not allowed." }, { status: 403, headers: jsonHeaders });
-  }
+  // No private credentials, but browser-origin checks still protect scan capacity.
+  // Validate the Origin itself; do not trust spoofable Fetch Metadata in isolation.
+  if (!isAllowedMutationOrigin(req))
+    return NextResponse.json({ error: "Cross-origin scan requests are not allowed." },
+      { status: 403, headers: jsonHeaders });
   if (Number(req.headers.get("content-length") || 0) > 1600)
     return NextResponse.json({ error: "Invalid request size." }, { status: 413, headers: jsonHeaders });
   let repo: string;
