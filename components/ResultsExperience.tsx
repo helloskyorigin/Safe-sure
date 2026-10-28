@@ -190,7 +190,7 @@ export default function ResultsExperience() {
         <span className="result-nav-label"><span/> SECUVORA AGENT REPORT</span>
         <div className="result-nav-actions">
           <Link href="/assess/history" className="result-nav-back"><HistoryIcon/> <span>History</span></Link>
-          <Link href="/assess" className="result-nav-back"><ArrowLeft size={16}/> <span>New investigation</span></Link>
+          <Link href="/assess" aria-label="New investigation" className="result-nav-back"><ArrowLeft size={16}/> <span>New investigation</span></Link>
         </div>
       </div>
     </header>
