@@ -4,7 +4,7 @@ import "./assess.css";
 
 export const metadata: Metadata = {
   title: "Assess your application | ShipSafe",
-  description: "Connect an application to start a focused security assessment. Explicit permissions, transparent checks and no separate ShipSafe account.",
+  description: "Choose a public GitHub URL or connect an authorized private repository. One clear path to a full security report.",
   robots: { index: false, follow: true },
 };
 
