@@ -61,7 +61,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
             <p className="eyebrow">THE AGENT REPORT</p>
             <h2 id="experience-title">Less guesswork.<br/><span>More clarity.</span></h2>
           </motion.div>
-          <p>See how Secuvora's automated investigation connects source evidence with actionable remediation steps.</p>
+          <p>See more than severity labels. Explore the affected code, the supporting evidence and the exact questions to resolve before treating a finding as fixed.</p>
         </div>
         <motion.div className="experience-shell" initial={{ y: 26 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.13 }} transition={{ duration: reduceMotion ? 0 : .8, ease }}>
           <div className="experience-toolbar">
