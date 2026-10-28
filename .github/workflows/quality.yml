@@ -32,5 +32,13 @@ jobs:
           NEXT_TELEMETRY_DISABLED: '1'
       - name: Install Chromium for browser smoke tests
         run: npx playwright install --with-deps chromium
-      - name: Verify homepage scroll and mobile navigation
+      - name: Verify all product, legal, mobile and desktop routes
         run: npm run test:e2e
+      - name: Keep responsive QA screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secuvora-responsive-qa
+          path: test-results/ux-snapshots/
+          if-no-files-found: ignore
+          retention-days: 3
