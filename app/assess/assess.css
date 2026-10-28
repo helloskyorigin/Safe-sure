@@ -399,3 +399,7 @@
  .connect-header-actions{gap:10px}
  .history-row-actions{margin-left:0}
 }
+
+@media(max-width:400px){
+ .connect-header-actions .assess-back:last-child span{display:none}
+}
