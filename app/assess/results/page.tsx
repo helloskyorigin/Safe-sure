@@ -3,7 +3,7 @@ import ResultsExperience from "@/components/ResultsExperience";
 import "./results.css";
 
 export const metadata: Metadata = {
-  title: "Security findings | ShipSafe",
+  title: "Security agent findings | Secuvora",
   description: "Full application security report: risk summary, evidence, affected locations, practical fixes and check coverage.",
   robots: { index: false, follow: false },
 };
