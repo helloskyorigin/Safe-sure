@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 
 interface HeaderProps {
   onOpenAssessment: () => void;
@@ -81,6 +82,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             <a href="#security">Security</a>
             <a href="#pricing">Free report</a>
             <a href="#faq">FAQ</a>
+            <Link href="/assess/history">Scan history</Link>
           </nav>
           <a
             href="/assess"
@@ -124,6 +126,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
           <a href="#faq" onClick={closeMenu}>
             FAQ
           </a>
+          <Link href="/assess/history" onClick={closeMenu}>Scan history</Link>
           <a
             href="/assess"
             onClick={handleAssessmentClick}
