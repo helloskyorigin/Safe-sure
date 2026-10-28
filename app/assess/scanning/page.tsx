@@ -3,7 +3,7 @@ import ScanningConsole from "@/components/ScanningConsole";
 import "./scanning.css";
 
 export const metadata: Metadata = {
-  title: "Security inspection | ShipSafe",
+  title: "Live security agent | Secuvora",
   description: "A transparent application security scanning workspace with check-by-check coverage and evidence status.",
   robots: { index: false, follow: false },
 };
