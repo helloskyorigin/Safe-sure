@@ -1,4 +1,4 @@
-# ShipSafe — Legal and trust launch checklist
+# Secuvora — Legal and trust launch checklist
 
 **Prepared:** 27 October 2026  
 **Scope:** Current marketing website and planned free full security assessment report.  
