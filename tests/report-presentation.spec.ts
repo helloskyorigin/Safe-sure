@@ -12,7 +12,7 @@ test("report priorities are based on scanner severity and do not alter source da
 test("fix plan is report-derived, covers everything and makes no claim of applied changes", () => {
   const plan = remediationMarkdown(SAMPLE_REPORT, true);
   expect(plan).toContain("ILLUSTRATIVE SAMPLE - NOT A REAL SCAN");
-  expect(plan).toContain("No application");
+  expect(plan).toContain("This sample is fictional");
   for (const item of SAMPLE_REPORT.findings) {
     expect(plan).toContain(item.title);
     expect(plan).toContain(item.verification);
