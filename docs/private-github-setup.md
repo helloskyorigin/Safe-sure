@@ -1,10 +1,10 @@
-# ShipSafe production activation — GitHub App and encrypted reports
+# Secuvora production activation — GitHub App and encrypted reports
 
 This repository includes **working code paths** for OAuth, private source inspection, seven-day encrypted report recovery and cross-instance scan quotas. Those services are **not live** until configured and validated with the external accounts below. Do not treat successful mocked tests as proof of a real private scan.
 
 ## 1. Register a GitHub App
 
-1. In GitHub's **Developer settings → GitHub Apps → New GitHub App**, register the app for your ShipSafe site. Install it only on accounts/repositories the user explicitly chooses.
+1. In GitHub's **Developer settings → GitHub Apps → New GitHub App**, register the app for your Secuvora site. Install it only on accounts/repositories the user explicitly chooses.
 2. Set **Homepage URL** to your real HTTPS site.
 3. Set the **Callback URL** to `https://YOUR_HOST/api/auth/github/callback`.
 4. Enable **Request user authorization (OAuth)** if desired during installation. The app also offers sign-in through the explicit “Authorize with GitHub” button.
@@ -55,3 +55,5 @@ Optional `GITHUB_TOKEN` applies only to public repository API limits. The privat
 - A Redis shared quota is implemented when configured; large-scale abuse controls still require an edge gateway and operational monitoring. Public mode has a process-level fallback when Redis isn't configured.
 - OAuth sessions are HttpOnly AES-GCM cookies; a stolen/revoked GitHub token must be reauthorized. GitHub access tokens are not persisted in the Redis database.
 - Confirm privacy notices with actual hosting/Redis provider regions and contact methods before offering private scanning to outside users.
+
+> **Compatibility:** existing SHIPSAFE_* environment variable names are retained for deployments. These are internal legacy configuration keys, not the customer-facing brand. Do not rename them without updating all consumers and deployed secrets.
