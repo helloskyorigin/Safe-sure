@@ -53,6 +53,7 @@ export default function ScanningConsole() {
   const [savedId, setSavedId] = useState<string | null>(null);
   const [cancelBusy, setCancelBusy] = useState(false);
   const [actionError, setActionError] = useState("");
+  const [restartNote, setRestartNote] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const runRef = useRef<string | null>(null);
 
@@ -66,6 +67,20 @@ export default function ScanningConsole() {
       setSource({ name: repo, private: Boolean(privateRepo) });
       if (!repoPattern.test(repo)) { setLoad({ type: "invalid" }); return; }
 
+      // The streaming request itself cannot survive a full browser refresh.
+      // Preserve the selected repo and safely restart the REAL scan instead of
+      // pretending the disconnected server job is still supplying progress.
+      const marker = "shipsafe:active-scan:v1";
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(marker) || "null") as
+          { repo?: string; isPrivate?: boolean; timestamp?: number } | null;
+        const resumed = !!saved && saved.repo === repo && saved.isPrivate === Boolean(privateRepo) &&
+          typeof saved.timestamp === "number" && Date.now() - saved.timestamp < 10 * 60_000;
+        setRestartNote(resumed);
+        sessionStorage.setItem(marker, JSON.stringify({
+          repo, isPrivate: Boolean(privateRepo), timestamp: Date.now(),
+        }));
+      } catch { /* Scanning works even if browser storage is disabled. */ }
       let stopped = false;
       const controller = new AbortController();
       abortRef.current = controller;
@@ -103,6 +118,7 @@ export default function ScanningConsole() {
               if (latestId && value.runId !== latestId)
                 throw new Error("Scanner switched run IDs unexpectedly.");
               latestId = value.runId;
+              setRestartNote(false);
               setLoad({ type: "live", snapshot: value });
             } else if (message.type === "error") {
               throw new Error(typeof message.message === "string" ? message.message : "Scan failed.");
@@ -139,6 +155,7 @@ export default function ScanningConsole() {
           pending += decoder.decode();
           if (pending.trim()) receive(pending);
           if (!sawReport || !completedId) throw new Error("Scan ended without a complete verified report.");
+          try { sessionStorage.removeItem(marker); } catch { /* read-only storage */ }
 
           // Report is verified and saved before navigation; failed scans never redirect.
           if (!stopped && !controller.signal.aborted) {
@@ -146,6 +163,7 @@ export default function ScanningConsole() {
           }
         } catch (error) {
           if (stopped || controller.signal.aborted) return;
+          try { sessionStorage.removeItem(marker); } catch { /* read-only storage */ }
           setLoad({ type: "error", message: error instanceof Error ? error.message : "Scan failed." });
         } finally {
           if (abortRef.current === controller) abortRef.current = null;
@@ -227,7 +245,7 @@ export default function ScanningConsole() {
   const liveDescription = latestRunning
     ? displayNames[latestRunning.key]
      : snapshot?.status === "completed" ? (savedId ? "Opening your full report…" : "Preparing your full report…")
-    : load.type === "loading" ? "Connecting to the scanner…"
+    : load.type === "loading" ? (restartNote ? "Reconnecting after refresh · starting a new scan…" : "Connecting to the scanner…")
     : snapshot?.status === "queued" ? "Waiting for the scanner…"
     : "Analyzing your repository…";
   const stateLabel = isFailure ? "Scan interrupted" :
@@ -243,6 +261,7 @@ export default function ScanningConsole() {
     if (abortRef.current) {
       abortRef.current.abort();
       abortRef.current = null;
+      try { sessionStorage.removeItem("shipsafe:active-scan:v1"); } catch { /* storage blocked */ }
       setLoad({ type: "error", message: "Scan cancelled in this tab." });
       return;
     }
