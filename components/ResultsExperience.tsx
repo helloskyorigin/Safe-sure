@@ -357,7 +357,7 @@ export default function ResultsExperience() {
                     active.verification,
                     "",
                     "**Note:** Static detection is not a confirmed exploit. Review scan coverage before closing.",
-                  ].join("\\n")}/>
+                  ].join("\n")}/>
                 </div>
                 <div className="result-detail-meta"><span><Code2 size={14}/>{active.category}</span>
                   <span><ShieldCheck size={14}/>{active.confidence} confidence</span>
