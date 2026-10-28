@@ -9,8 +9,8 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
       <div className="container footer-main">
         <div className="footer-identity">
           <a href="#top" className="brand" aria-label="Secuvora home">secuvora<span>.</span></a>
-          <p>Building your AI security agent for every stage of development.</p>
-          <span className="footer-independence">Current beta: automated source and dependency investigations. Model-based AI reasoning is in development.</span>
+          <p>A security agent built to turn code risks into clarity.</p>
+          <span className="footer-independence">Evidence-backed investigations across supported source rules, configuration checks and published dependency advisories.</span>
         </div>
         <div className="footer-columns">
           <nav aria-label="Product navigation"><strong>Product</strong><a href="#product">The report</a><a href="#how">How it works</a><a href="#pricing">Full report</a><a href="#faq">Questions</a></nav>
