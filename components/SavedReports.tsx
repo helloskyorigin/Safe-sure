@@ -103,15 +103,15 @@ export default function SavedReports() {
 
   return <div className="assess-page history-page">
     <header className="assess-header"><div className="assess-container assess-header-inner">
-      <Link href="/" className="brand" aria-label="ShipSafe home">shipsafe<span>.</span></Link>
-      <Link className="assess-back" href="/assess"><ArrowLeft size={15}/> New scan</Link>
+      <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
+      <Link className="assess-back" href="/assess"><ArrowLeft size={15}/> New investigation</Link>
     </div></header>
 
     <main className="assess-container history-main">
       <div className="history-top">
-        <div><p className="history-eyebrow"><ShieldCheck size={15}/> YOUR SCAN RECORDS</p>
-          <h1>Scan history<span>.</span></h1>
-          <p>Open your previous security reports. No paywall, no unnecessary dashboard.</p>
+        <div><p className="history-eyebrow"><ShieldCheck size={15}/> YOUR AGENT INVESTIGATIONS</p>
+          <h1>Agent history<span>.</span></h1>
+          <p>Revisit previous agent investigations. No paywall, no unnecessary dashboard.</p>
         </div>
         <button type="button" onClick={() => void load()} className="history-refresh">
           <RefreshCw size={15}/> Refresh
