@@ -51,7 +51,7 @@ function fingerprint(rule: string, path: string, line: string) {
 function finding(signal: Signal, file: string, row: number, line: string): ReportFinding {
   return {
     id: signal.id + "-" + fingerprint(signal.id, file, line),
-    ruleId: signal.id, ruleEngine: "ShipSafe static rules v2",
+    ruleId: signal.id, ruleEngine: "Secuvora static rules v2",
     severity: signal.severity, confidence: contextualConfidence(file, signal.confidence),
     title: signal.title, category: signal.category,
     location: { path: file, line: row },
