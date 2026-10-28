@@ -12,7 +12,7 @@ export default function SecuritySection() {
             </h2>
           </div>
           <p>
-            Your code is sensitive. Secuvora&apos;s approach emphasizes transparent
+            Your code is sensitive. Secuvora's automated agent emphasizes transparent
             access, understandable evidence and responsible assessment.
           </p>
         </div>
@@ -26,7 +26,7 @@ export default function SecuritySection() {
             </div>
             <h3>Read-only access</h3>
             <p>
-              Only selected source needs to be read. Secuvora does not need permission
+              Only selected source needs to be read. Secuvora's agent does not need permission
               to modify your code.
             </p>
           </article>
