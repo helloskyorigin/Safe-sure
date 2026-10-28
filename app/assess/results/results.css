@@ -287,3 +287,8 @@
  .result-nav-actions .result-nav-back{font-size:10px}
 }
 @media print{.result-keyboard-hint,.result-detail-ticket{display:none!important}}
+
+@media(max-width:400px){
+ .result-nav-actions .result-nav-back:last-child span{display:none}
+ .result-nav-actions{gap:12px}
+}
