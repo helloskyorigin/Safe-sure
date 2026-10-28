@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const pages = [
   { href: "/privacy", title: "Privacy policy", desc: "What is processed when you visit ShipSafe, what is not collected and your choices.", icon: Fingerprint, section: "DATA" },
   { href: "/terms", title: "Terms of use", desc: "How the public preview may be used and what authorized assessments will require.", icon: BookOpen, section: "TERMS" },
-  { href: "/refunds", title: "Payments & refunds", desc: "The planned one-time $19 offer, current payment status and consumer protections.", icon: CreditCard, section: "BILLING" },
+  { href: "/refunds", title: "Pricing & billing", desc: "Full report access without a paywall, current billing status and user protections.", icon: CreditCard, section: "BILLING" },
   { href: "/security", title: "Security practices", desc: "Security principles, assessment limits and responsible vulnerability reporting.", icon: ShieldCheck, section: "TRUST" },
   { href: "/contact", title: "Contact & support", desc: "Where to send non-sensitive feedback and how private channels will be introduced.", icon: Headphones, section: "SUPPORT" },
 ];
