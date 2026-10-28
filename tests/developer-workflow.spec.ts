@@ -88,3 +88,31 @@ test("a first scan shows a baseline instead of inventing historical data", async
   await expect(page.locator(".delta-panel")).toHaveCount(0);
   await expect(page.getByText(/Sample report, not a security assessment/i)).toBeVisible();
 });
+
+test("developer report delta fits 320 and 375px and history actions remain tappable", async ({ browser }) => {
+  for (const width of [320, 375]) {
+    const context = await browser.newContext({ viewport: { width, height: 750 }, isMobile: true, hasTouch: true });
+    const page = await context.newPage();
+    await page.goto("/");
+    await page.evaluate(({ older, current }) => {
+      [older, current].forEach(item =>
+        localStorage.setItem("shipsafe:public-report:v1:" + item.runId, JSON.stringify(item)));
+      localStorage.setItem("shipsafe:public-history:v1", JSON.stringify([current, older].map(item => ({
+        runId:item.runId, appName:item.appName, finishedAt:item.finishedAt,
+        findings:item.findings.length, savedAt:Date.now(),
+      }))));
+    }, { older: original, current: latest });
+    await page.goto("/assess/results?local=" + currentId);
+    await expect(page.getByRole("heading", { name: "What changed since last scan?" })).toBeVisible();
+    await expect(page.locator(".delta-metrics")).toBeVisible();
+    const resultOverflow = await page.evaluate(() =>
+      document.documentElement.scrollWidth > window.innerWidth + 2);
+    expect(resultOverflow).toBe(false);
+    await page.goto("/assess/history");
+    await expect(page.getByRole("link", { name: "Rescan" }).first()).toBeVisible();
+    const historyOverflow = await page.evaluate(() =>
+      document.documentElement.scrollWidth > window.innerWidth + 2);
+    expect(historyOverflow).toBe(false);
+    await context.close();
+  }
+});
