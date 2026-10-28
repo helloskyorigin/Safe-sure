@@ -21,14 +21,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid request size." }, { status: 413, headers: jsonHeaders });
   let repo: string;
   try {
-    const body: unknown = await req.json();
+    if (!req.body) throw new ScanError("Missing scan request.", 400);
+    const reader = req.body.getReader();
+    const chunks: Uint8Array[] = []; let total = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        total += value.byteLength;
+        if (total > 1600) { await reader.cancel(); throw new ScanError("Scan request is too large.", 413); }
+        chunks.push(value);
+      }
+    } finally { reader.releaseLock(); }
+    const bytes = new Uint8Array(total); let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+    const body: unknown = JSON.parse(new TextDecoder().decode(bytes));
     if (!body || typeof body !== "object" || !("repo" in body) || typeof body.repo !== "string" ||
       body.repo.length > 200) throw new ScanError("Provide one public repository.", 400);
     const { owner, repo: name } = parsePublicRepo(body.repo);
     repo = owner + "/" + name;
   } catch (error) {
     return NextResponse.json({ error: error instanceof ScanError ? error.message : "Invalid scan request." },
-      { status: 400, headers: jsonHeaders });
+      { status: error instanceof ScanError ? error.status : 400, headers: jsonHeaders });
   }
   if (activeScans >= MAX_ACTIVE) return NextResponse.json(
     { error: "Scanner is busy. Try again after the active scans finish." }, { status: 429, headers: jsonHeaders });
