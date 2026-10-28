@@ -48,7 +48,7 @@ test("public source scan streams worker snapshots into full report experience", 
   await page.getByRole("button", { name: "Scan repository" }).click();
   // No extra click: completed, validated stream must navigate automatically.
   await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 12000 });
-  await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toBeVisible();
+  await expect(page.getByText("PUBLIC REPOSITORY")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
 });
 
@@ -73,7 +73,7 @@ test("live source scan integrates GitHub public tree and full report end-to-end"
     const details = await page.locator(".scan-visual-bottom").innerText().catch(() => "Unavailable");
     throw new Error("Live scan did not auto-open report. " + details.slice(0, 1100) + " " + String(error).slice(0, 300));
   }
-  await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toBeVisible();
+  await expect(page.getByText("PUBLIC REPOSITORY")).toBeVisible();
   await expect(page.getByRole("heading", { name: "vercel/ms" })).toBeVisible();
   await expect(page.getByText(/Read-only public source scan|Static public-source scan/i).first()).toBeVisible();
 });
@@ -88,7 +88,7 @@ test("failed stream remains on inspection screen and offers an immediate retry",
   await expect(page.getByText("GitHub returned a rate limit. Try later.")).toBeVisible();
   await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
-  await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toHaveCount(0);
+  await expect(page.getByText("PUBLIC REPOSITORY")).toHaveCount(0);
 });
 
 test("invalid or incomplete report never triggers automatic navigation", async ({ page }) => {
@@ -120,5 +120,5 @@ test("zero real findings is not mislabeled a clean security certificate", async 
   await expect(page.getByText(/No candidates detected in supported checks/i)).toBeVisible();
   await expect(page.getByText("No findings flagged by these rules")).toBeVisible();
   await expect(page.getByText(/does not prove the application is secure/i)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Review coverage", exact: true })).toBeVisible();
+  await expect(page.locator(".result-no-findings").getByRole("link", { name: "Review coverage" })).toBeVisible();
 });
