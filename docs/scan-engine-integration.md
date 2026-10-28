@@ -4,13 +4,15 @@
 
 The inspection console lives at /assess/scanning. From /assess, choose “Preview scanning workspace” to inspect the design without connecting a repository.
 
-This is an interface and integration contract, not a working security scan:
-- No authorized run: **Awaiting authorization**; no fake check completion or progress.
+This includes a **working limited public-source scanning integration** (not a full security audit):
+- /assess/scanning?repo=owner/repo streams real source-analysis check statuses from /api/scan/public. The no-repo state remains idle.
 - Five interactive analysis layers explain intended coverage and limitations.
 - An arbitrary ?run= parameter cannot impersonate a scan: the API fails closed with HTTP 503.
 
 ## Architecture
 
+- lib/public-repo-scanner.ts — public source acquisition from GitHub, static source candidates, pinned npm/PyPI OSV advisory matching, bounded coverage and redaction.
+- app/api/scan/public/route.ts — bounded server-side NDJSON streamed scan endpoint; transient in-memory processing.
 - lib/assessment-contract.ts — strict typed AssessmentSnapshot and validation.
 - app/api/assessments/[runId]/route.ts — GET status and DELETE cancellation boundaries; currently both 503/no-store.
 - components/ScanningConsole.tsx — reads worker-confirmed status with polling only when given a valid run ID.
@@ -33,4 +35,4 @@ This is an interface and integration contract, not a working security scan:
 
 Run npm install, npm run typecheck, npm run build and npm run test:e2e. GitHub Actions also runs these checks on commits.
 
-The GitHub App, analysis worker, report storage and live report delivery remain **not implemented**.
+The public scanner is functional in code; private GitHub App authorization, independent distributed worker jobs, durable report storage/recovery and private authenticated report delivery remain **not implemented**. On Vercel or any host, validate outbound access to api.github.com, raw.githubusercontent.com and api.osv.dev. Optionally set a server-only GITHUB_TOKEN for higher GitHub API limits. Scans are capped at 65 eligible files and 55 seconds, so large repositories are partial or rejected. This is source analysis, not active penetration testing.
