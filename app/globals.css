@@ -1964,3 +1964,20 @@ svg {
 /* Decorative radial glows extend 370px past the hero. Clip that decoration
    at the section boundary instead of expanding the document scroll width. */
 .hero{overflow-x:clip}
+
+
+/* Product clarity: paired primary action and transparent example path. */
+.hero-cta-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px}
+.hero-preview-link{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;
+ color:#526e93;font-size:12px;font-weight:760;white-space:nowrap;text-decoration:none;
+ border-bottom:1px solid #c9d8ea;transition:color .2s,border-color .2s}
+.hero-preview-link:hover{color:#1e4d83;border-color:#6a91c0}
+.hero-preview-link:focus-visible{outline:3px solid #7aa6d3;outline-offset:4px;border-radius:4px}
+@media(max-width:850px){.hero-cta-row{justify-content:center}}
+@media(max-width:640px){.hero-cta-row{width:100%;display:grid;justify-items:stretch;gap:8px}
+ .hero-cta-row>.button{width:100%;min-height:50px}
+ .hero-preview-link{min-height:44px;width:100%;border:1px solid #dce6f1;border-radius:9px;background:#fff}
+ .hero-action{width:100%}
+ .under-cta{justify-content:center;line-height:1.65}
+}
+@media(prefers-reduced-motion:reduce){.hero-preview-link{transition:none}}
