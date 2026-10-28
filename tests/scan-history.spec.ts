@@ -24,7 +24,7 @@ test("completed public report survives refresh, tab navigation and appears in ha
   await page.goto("/");
   await page.getByRole("link", { name: "Scan history" }).first().click();
   await expect(page).toHaveURL(/\/assess\/history/);
-  await expect(page.getByRole("heading", { name: /Scan history/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Agent history/i })).toBeVisible();
   await expect(page.locator(".history-report-row")).toHaveCount(1);
   await expect(page.getByText("acme/testapp")).toBeVisible();
   await page.getByRole("link", { name: "Open report" }).click();
@@ -48,7 +48,7 @@ test("saved public history survives new tab and can be deleted", async ({ browse
   await expect(next.getByRole("link", { name: "Open report" })).toBeVisible();
   next.once("dialog", dialog => dialog.accept());
   await next.getByRole("button", { name: "Delete report for acme/testapp" }).click();
-  await expect(next.getByText("No public scans saved yet.")).toBeVisible();
+  await expect(next.getByText("No agent reports saved yet.")).toBeVisible();
   await next.goto("/assess/results?local=" + runId);
   await expect(next.getByRole("heading", { name: /A verified report isn't available/i })).toBeVisible();
   await ctx.close();
@@ -79,7 +79,7 @@ test("mobile hamburger has Scan history without requiring GitHub login", async (
   const nav = page.getByRole("navigation", { name: "Mobile navigation" });
   await nav.getByRole("link", { name: "Scan history" }).click();
   await expect(page).toHaveURL(/\/assess\/history/);
-  await expect(page.getByRole("heading", { name: /Scan history/i })).toBeVisible();
-  await expect(page.getByText("No public scans saved yet.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Agent history/i })).toBeVisible();
+  await expect(page.getByText("No agent reports saved yet.")).toBeVisible();
   await context.close();
 });
