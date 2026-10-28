@@ -4,9 +4,9 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight, Braces, ListChecks, ScanEye } from "lucide-react";
 
 const cards = [
-  { icon: ScanEye, count: "01", title: "See the signal.", text: "Focus on findings with explainable severity instead of a vague single security score.", word: "Detect" },
-  { icon: Braces, count: "02", title: "Get the context.", text: "Understand which file or configuration is implicated and what supporting evidence means.", word: "Understand" },
-  { icon: ListChecks, count: "03", title: "Make the fix.", text: "Follow a practical remediation checklist and verify the result in your own application.", word: "Resolve" },
+  { icon: ScanEye, count: "01", title: "Investigate real signals.", text: "Focus on findings with explainable severity instead of a vague single security score.", word: "Detect" },
+  { icon: Braces, count: "02", title: "Trace the evidence.", text: "Understand which file or configuration is implicated and what supporting evidence means.", word: "Understand" },
+  { icon: ListChecks, count: "03", title: "Act on findings.", text: "Follow a practical remediation checklist and verify the result in your own application.", word: "Resolve" },
 ];
 
 export default function ValueSection() {
@@ -15,8 +15,8 @@ export default function ValueSection() {
     <section className="value-section section" aria-labelledby="value-heading">
       <div className="container">
         <motion.div className="value-heading" initial={{ y: 24 }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: reduceMotion ? 0 : .7 }}>
-          <div><p className="eyebrow">MADE FOR BUILDERS</p><h2 id="value-heading">A security report<br/>you can act on.</h2></div>
-          <p>ShipSafe is designed to turn technical findings into a clear next decision. No bloated dashboard required.</p>
+          <div><p className="eyebrow">MADE FOR BUILDERS</p><h2 id="value-heading">A security agent<br/>you can trust.</h2></div>
+          <p>Secuvora is designed to turn technical findings into a clear next decision. No bloated dashboard required.</p>
         </motion.div>
         <div className="value-grid">
           {cards.map((card, i) => (
