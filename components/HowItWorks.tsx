@@ -4,8 +4,8 @@ export default function HowItWorks() {
       <div className="container">
         <div className="section-heading ">
           <p className="eyebrow">THE PROCESS</p>
-          <h2>How ShipSafe works</h2>
-          <p>From assessment to clarity in three simple steps.</p>
+          <h2>How Secuvora works</h2>
+          <p>An automated security investigation, on demand. No launch deadline required.</p>
         </div>
         <div className="steps">
           <article className="step ">
@@ -20,10 +20,9 @@ export default function HowItWorks() {
               </div>
               <span>01</span>
             </div>
-            <h3>Connect application</h3>
+            <h3>Connect a repository</h3>
             <p>
-              Choose the application you want assessed. Source access is read-only,
-              with no code changes.
+              Select a public GitHub repository—or an authorized private repository when connected. The agent operates read-only.
             </p>
           </article>
           <article className="step ">
@@ -36,10 +35,9 @@ export default function HowItWorks() {
               </div>
               <span>02</span>
             </div>
-            <h3>Review findings</h3>
+            <h3>Agent investigates</h3>
             <p>
-              See critical, high, medium and low
-              security issues.
+              Secuvora follows a real workflow: inspect source, check credentials and configurations, query OSV advisories, then organize the evidence.
             </p>
           </article>
           <article className="step ">
@@ -52,7 +50,7 @@ export default function HowItWorks() {
               </div>
               <span>03</span>
             </div>
-            <h3>Understand and resolve</h3>
+            <h3>Review evidence & fix</h3>
             <p>
               Access affected files, supporting evidence, impact and actionable
               fix guidance in the same full report.
