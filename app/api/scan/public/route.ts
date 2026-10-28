@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { parsePublicRepo, scanPublicRepository, ScanError } from "@/lib/public-repo-scanner";
 import type { AssessmentSnapshot } from "@/lib/assessment-contract";
+import { createHash } from "node:crypto";
+import { durableStoreConfigured, enforceSharedQuota } from "@/lib/durable-reports";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -71,6 +73,23 @@ export async function POST(req: Request) {
       { status: 429, headers: { ...jsonHeaders, "Retry-After": "60" } },
     );
 
+  // Shared Redis quotas protect multiple serverless instances when configured.
+  // A hashed client identifier avoids storing raw addresses in the quota keys.
+  if (durableStoreConfigured()) {
+    const ip = (req.headers.get("x-vercel-forwarded-for") || req.headers.get("x-forwarded-for") || "unknown")
+      .split(",")[0].trim().slice(0, 80);
+    const opaque = createHash("sha256").update(
+      (process.env.SHIPSAFE_SESSION_SECRET || "") + ":" + ip).digest("hex").slice(0, 20);
+    try {
+      if (!(await enforceSharedQuota("public:" + opaque, 8)) ||
+          !(await enforceSharedQuota("public-global", 100)))
+        return NextResponse.json({ error: "Scan quota reached. Retry shortly." },
+          { status: 429, headers: { ...jsonHeaders, "Retry-After": "60" } });
+    } catch {
+      return NextResponse.json({ error: "Shared scan protection is temporarily unavailable." },
+        { status: 503, headers: jsonHeaders });
+    }
+  }
   recentStarts.push(now);
   activeScans++;
   const encoder = new TextEncoder();
