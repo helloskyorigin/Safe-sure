@@ -12,7 +12,7 @@ type AccessMode = "public" | "private";
 export default function AssessmentStart() {
   const router = useRouter();
   const reducedMotion = useReducedMotion();
-  const [mode, setMode] = useState<AccessMode | null>(null);
+  const [mode, setMode] = useState<AccessMode | null>("public");
   const [publicRepo, setPublicRepo] = useState("");
   const [error, setError] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
@@ -57,20 +57,20 @@ export default function AssessmentStart() {
       <main id="connect-main" className="connect-main">
         <div className="connect-content">
           <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
-          <h1>Which repository should your <em>agent inspect?</em></h1>
-          <p className="connect-subtitle">Choose a repository. Secuvora investigates supported source risks, checks vulnerable dependencies and connects findings to evidence and fixes—without changing your code.</p>
+          <h1>Find the risks in <em>your repository.</em></h1>
+          <p className="connect-subtitle">Paste a public GitHub repository to start a read-only investigation. Get source locations, supported security findings, dependency advisories, and fix guidance in one report.</p>
 
           <div className="connect-choices" role="group" aria-label="Repository visibility">
             <button type="button" className={"connect-choice" + (mode === "public" ? " selected" : "")}
               aria-pressed={mode === "public"} onClick={() => choose("public")}>
               <span className="connect-choice-icon"><Globe2 size={24} strokeWidth={1.8}/></span>
-              <span className="connect-choice-copy"><strong>Public repository</strong><small>Paste a GitHub link</small></span>
+              <span className="connect-choice-copy"><strong>Public repository</strong><small>No sign-in. Start with a GitHub link.</small></span>
               <span className="connect-choice-end">{mode === "public" ? <Check size={19}/> : <ArrowRight size={18}/>}</span>
             </button>
             <button type="button" className={"connect-choice" + (mode === "private" ? " selected" : "")}
               aria-pressed={mode === "private"} onClick={() => choose("private")}>
               <span className="connect-choice-icon"><LockKeyhole size={23} strokeWidth={1.8}/></span>
-              <span className="connect-choice-copy"><strong>Private repository</strong><small>Connect GitHub and select a repo</small></span>
+              <span className="connect-choice-copy"><strong>Private repository</strong><small>Authorized GitHub access when configured</small></span>
               <span className="connect-choice-end">{mode === "private" ? <Check size={19}/> : <ArrowRight size={18}/>}</span>
             </button>
           </div>
@@ -84,24 +84,29 @@ export default function AssessmentStart() {
               {mode === "public" ? (
                 <form onSubmit={submitPublic} className="connect-public-form">
                   <label htmlFor="connect-repo-url">GitHub repository URL</label>
+                  <p className="connect-field-hint" id="connect-repo-hint">Paste a public repository URL or owner/repo. No account required.</p>
                   <div className="connect-url-field">
                     <Github size={20}/>
                     <input id="connect-repo-url" name="repository" value={publicRepo}
                       onChange={event => { setPublicRepo(event.target.value); setError(""); }}
                       placeholder="github.com/owner/repo" autoCapitalize="off" autoComplete="off"
-                      spellCheck={false} aria-invalid={!!error} aria-describedby={error ? "connect-url-error" : undefined}
+                      spellCheck={false} aria-invalid={!!error} aria-describedby={error ? "connect-repo-hint connect-url-error" : "connect-repo-hint"}
                       required autoFocus/>
                   </div>
                   {error && <p className="connect-error" role="alert" id="connect-url-error">{error}</p>}
                   <button type="submit" className="connect-submit">
-                    Run security agent <ArrowRight size={18}/>
+                    Scan this repository <ArrowRight size={18}/>
                   </button>
+                <div className="connect-workflow-note" aria-label="What happens next">
+                    <span>01 · Read pinned source</span><span>02 · Check supported risks</span><span>03 · Review the full report</span>
+                  </div>
                 </form>
               ) : <PrivateRepoConnector/>}
             </motion.div>}
           </AnimatePresence>
 
-          <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only agent analysis <span/> Full results, free</p>
+          <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only source review <span/> Complete report, free</p>
+          <Link className="connect-example-link" href="/assess/results">Explore an illustrative report <ArrowRight size={14} aria-hidden="true"/></Link>
         </div>
       </main>
 
