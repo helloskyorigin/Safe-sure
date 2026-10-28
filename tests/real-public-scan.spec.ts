@@ -58,3 +58,18 @@ test("real report id without tab-held report does not leak or invent findings", 
   await expect(page.getByRole("heading", { name: /A verified report isn't available/i })).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(0);
 });
+
+
+test("live source scan integrates GitHub public tree and full report end-to-end", async ({ page }) => {
+  test.skip(process.env.RUN_LIVE_SCAN !== "1", "External integration smoke test is opt-in");
+  test.setTimeout(95_000);
+  await page.goto("/assess");
+  await page.getByRole("textbox", { name: "Public GitHub repository" }).fill("vercel/ms");
+  await page.getByRole("button", { name: "Scan public repository" }).click();
+  await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
+  await expect(page.getByRole("link", { name: /View full real results/i })).toBeVisible({ timeout: 75_000 });
+  await page.getByRole("link", { name: /View full real results/i }).click();
+  await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "vercel/ms" })).toBeVisible();
+  await expect(page.getByText(/Read-only public source scan|Static public-source scan/i).first()).toBeVisible();
+});
