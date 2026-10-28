@@ -44,7 +44,7 @@ test("legacy status API remains fail closed for unknown runs", async ({ request 
 
 test("unknown run never shows an invented completed scan", async ({ page }) => {
   await page.goto("/assess/scanning?run=safeTestRun123456");
-  await expect(page.getByText("Scan interrupted")).toBeVisible();
+  await expect(page.locator(".scan-state-tag")).toContainText("Scan interrupted");
   await expect(page.getByText(/not configured/i)).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
 });
