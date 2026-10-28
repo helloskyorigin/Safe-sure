@@ -50,7 +50,7 @@ const STORE_KEY = "shipsafe:landing-reveals:v2";
 /**
  * Motion design is progressively enhanced: before hydration or without IO,
  * everything is readable. Reduced-motion users see all content immediately.
- * Visible-once nodes stay visible on reverse scroll and across same-tab return.
+ * Visible-once nodes stay visible on reverse scroll and across browser revisit.
  */
 export default function LandingMotionDirector() {
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function LandingMotionDirector() {
 
     let previouslyRevealed = new Set<string>();
     try {
-      const value = window.sessionStorage.getItem(STORE_KEY);
+      const value = window.localStorage.getItem(STORE_KEY);
       if (value) {
         const parsed: unknown = JSON.parse(value);
         if (Array.isArray(parsed)) previouslyRevealed = new Set(parsed.filter((v): v is string => typeof v === "string"));
@@ -101,7 +101,7 @@ export default function LandingMotionDirector() {
         observer.unobserve(element); // Never animate this element twice.
       }
       if (changed) {
-        try { window.sessionStorage.setItem(STORE_KEY, JSON.stringify([...previouslyRevealed])); }
+        try { window.localStorage.setItem(STORE_KEY, JSON.stringify([...previouslyRevealed])); }
         catch { /* harmless if blocked */ }
       }
     }, { threshold: 0.09, rootMargin: "0px 0px -28px 0px" });
