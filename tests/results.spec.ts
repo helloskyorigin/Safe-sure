@@ -42,7 +42,7 @@ test("coverage openly distinguishes complete and skipped checks", async ({ page 
   await page.getByRole("button", { name: /Show coverage/i }).click();
   await expect(page.locator(".result-coverage-list").getByText("Authenticated runtime testing", { exact: true })).toBeVisible();
   await expect(page.locator(".result-coverage-tag").filter({ hasText: "skipped" })).toBeVisible();
-  await expect(page.getByText("Illustrative source and configuration review.", { exact: false })).toBeVisible();
+  await expect(page.locator(".result-coverage-header").getByText("Illustrative source and configuration review.", { exact: false })).toBeVisible();
 });
 
 test("arbitrary run URLs never reveal sample report or pretend a scan completed", async ({ page, request }) => {
