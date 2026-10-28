@@ -10,6 +10,10 @@ export const maxDuration = 60;
 // shared durable limiter; this does not work across separate serverless workers.
 let activeScans = 0;
 const MAX_ACTIVE = 2;
+const MAX_STARTS_PER_MINUTE = 12;
+const recentStarts: number[] = [];
+// These process-local budgets limit accidental abuse but do NOT replace an
+// edge/WAF or shared rate limiter for distributed production deployments.
 const jsonHeaders = { "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff" };
 
 export async function POST(req: Request) {
@@ -57,9 +61,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error instanceof ScanError ? error.message : "Invalid scan request." },
       { status: error instanceof ScanError ? error.status : 400, headers: jsonHeaders });
   }
-  if (activeScans >= MAX_ACTIVE) return NextResponse.json(
-    { error: "Scanner is busy. Try again after the active scans finish." }, { status: 429, headers: jsonHeaders });
+  // Simple per-process capacity budget. A distributed scanner needs a shared
+  // edge quota keyed to a verified identity before being opened broadly.
+  const now = Date.now();
+  while (recentStarts.length && recentStarts[0] < now - 60_000) recentStarts.shift();
+  if (activeScans >= MAX_ACTIVE || recentStarts.length >= MAX_STARTS_PER_MINUTE)
+    return NextResponse.json(
+      { error: "Public scanner is at capacity. Please retry shortly." },
+      { status: 429, headers: { ...jsonHeaders, "Retry-After": "60" } },
+    );
 
+  recentStarts.push(now);
   activeScans++;
   const encoder = new TextEncoder();
   const work = new AbortController();
