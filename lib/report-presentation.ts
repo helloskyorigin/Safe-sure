@@ -11,7 +11,7 @@ export function priorityFindings(findings: ReportFinding[]): ReportFinding[] {
 export function remediationMarkdown(report: AssessmentReport, sample: boolean): string {
   const heading = sample ? "ILLUSTRATIVE SAMPLE - NOT A REAL SCAN" : "SOURCE SECURITY ASSESSMENT";
   const lines = [
-    "# ShipSafe - Security Remediation Plan",
+    "# Secuvora - Security Remediation Plan",
     "",
     "**" + heading + "**",
     "",
