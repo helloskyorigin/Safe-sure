@@ -12,8 +12,7 @@ export default function SecuritySection() {
             </h2>
           </div>
           <p>
-            Your code is sensitive. Secuvora's automated agent emphasizes transparent
-            access, understandable evidence and responsible assessment.
+            Security investigation should earn your trust. Secuvora analyzes supported source signals read-only, preserves clear evidence and makes the boundaries of every assessment visible.
           </p>
         </div>
         <div className="trust-grid">
