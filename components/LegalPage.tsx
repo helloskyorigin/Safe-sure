@@ -19,7 +19,7 @@ const related = [
   { href: "/legal", label: "Legal center" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
-  { href: "/refunds", label: "Payments & refunds" },
+  { href: "/refunds", label: "Pricing & billing" },
   { href: "/security", label: "Security" },
   { href: "/contact", label: "Contact" },
 ];
