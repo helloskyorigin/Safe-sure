@@ -83,7 +83,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             <a href="#faq">FAQ</a>
           </nav>
           <a
-            href="#assessment"
+            href="/assess"
             onClick={handleAssessmentClick}
             data-start
             className="button button-dark top-cta"
@@ -125,7 +125,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             FAQ
           </a>
           <a
-            href="#assessment"
+            href="/assess"
             onClick={handleAssessmentClick}
             data-start
             className="button button-dark"
