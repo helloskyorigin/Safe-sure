@@ -67,7 +67,16 @@ test("live source scan integrates GitHub public tree and full report end-to-end"
   await page.getByRole("textbox", { name: "Public GitHub repository" }).fill("vercel/ms");
   await page.getByRole("button", { name: "Scan public repository" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
-  await expect(page.getByRole("link", { name: /View full real results/i })).toBeVisible({ timeout: 75_000 });
+  await expect.poll(async () => {
+    const state = await page.locator(".scan-state-tag").innerText();
+    return /Assessment finished|Unable to verify/.test(state);
+  }, { timeout: 70_000, message: "Waiting for a terminal real scanning state" }).toBe(true);
+  const state = await page.locator(".scan-state-tag").innerText();
+  if (state.includes("Unable to verify")) {
+    const details = await page.locator(".scan-visual-bottom").innerText();
+    throw new Error("Public source scan failure detail: " + details.slice(0, 1100));
+  }
+  await expect(page.getByRole("link", { name: /View full real results/i })).toBeVisible();
   await page.getByRole("link", { name: /View full real results/i }).click();
   await expect(page.getByText("REAL PUBLIC-SOURCE SCAN")).toBeVisible();
   await expect(page.getByRole("heading", { name: "vercel/ms" })).toBeVisible();
