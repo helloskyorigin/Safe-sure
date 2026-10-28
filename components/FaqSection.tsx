@@ -6,24 +6,24 @@ import { Plus } from "lucide-react";
 
 const faqs = [
   {
-    question: "Do I need a ShipSafe account?",
-    answer: "No separate ShipSafe signup is planned. Source access will still need explicit authorization through the connection provider.",
+    question: "Do I need a Secuvora account?",
+    answer: "No separate Secuvora signup is planned. Source access will still need explicit authorization through the connection provider.",
   },
   {
-    question: "Will ShipSafe modify my application?",
-    answer: "The intended assessment is read-only. You review and apply any suggested changes yourself. Live scanning is not connected to this preview yet.",
+    question: "Will Secuvora modify my application?",
+    answer: "No. The agent performs bounded read-only source analysis and advisory lookups. It does not modify code or apply patches; you review and make changes yourself.",
   },
   {
     question: "What exactly is free?",
-    answer: "When scanning launches, the full report is planned to be available without payment: severity counts, affected files, evidence, impact, remediation and verification steps.",
+    answer: "Public scans already provide full findings, evidence, impact, remediation and verification guidance without a paywall.",
   },
   {
-    question: "Does a clean report guarantee safety?",
-    answer: "No. Automated analysis is limited by its rules, available data and context. Findings can be incomplete or require verification.",
+    question: "Does the agent guarantee my code is secure?",
+    answer: "No. Secuvora currently uses automated static rules and OSV advisories; it does not perform full runtime, cross-file taint analysis or LLM reasoning. Findings can be incomplete and require human verification.",
   },
   {
     question: "Can I view the full report right now?",
-    answer: "You can explore the complete fictional example report now. Actual results will become available only after the real scanner and verified access are connected.",
+    answer: "Yes. Run a real public GitHub repository analysis now or explore the clearly labeled fictional sample report. Private access needs an authorized GitHub App configuration.",
   },
 ];
 
