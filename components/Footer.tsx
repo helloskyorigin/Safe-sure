@@ -8,9 +8,9 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
     <footer className="footer">
       <div className="container footer-main">
         <div className="footer-identity">
-          <a href="#top" className="brand" aria-label="ShipSafe home">shipsafe<span>.</span></a>
-          <p>Know the risks before you ship.</p>
-          <span className="footer-independence">Security assessments for independent builders.</span>
+          <a href="#top" className="brand" aria-label="Secuvora home">secuvora<span>.</span></a>
+          <p>Your on-demand security agent for every stage of development.</p>
+          <span className="footer-independence">Automated code and dependency investigations with human-readable evidence.</span>
         </div>
         <div className="footer-columns">
           <nav aria-label="Product navigation"><strong>Product</strong><a href="#product">The report</a><a href="#how">How it works</a><a href="#pricing">Full report</a><a href="#faq">Questions</a></nav>
@@ -18,9 +18,9 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
         </div>
       </div>
       <div className="container copyright">
-        <span>© {new Date().getFullYear()} ShipSafe. All rights reserved.</span>
-        <span className="footer-preview"><span className="status-light" /> Public source scanning available · private access in development</span>
-        <button type="button" onClick={onOpenAssessment}>Explore ShipSafe <ArrowUpRight size={14}/></button>
+        <span>© {new Date().getFullYear()} Secuvora. All rights reserved.</span>
+        <span className="footer-preview"><span className="status-light" /> Public source scanning available · private access requires configuration</span>
+        <button type="button" onClick={onOpenAssessment}>Run security agent <ArrowUpRight size={14}/></button>
       </div>
     </footer>
   );
