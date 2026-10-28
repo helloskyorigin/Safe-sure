@@ -5,7 +5,7 @@ Updated: 28 October 2026. This document separates **shipped code** from **operat
 ## Current verified application behavior
 
 - Public GitHub source scan: on-demand, read-only, pinned revision, bounded file and request budgets.
-- Source and configuration rules + exact-version OSV dependency advisory matches; reports include severity, confidence, evidence redaction, locations and steps.
+- Source, configuration and two explicit AI-agent safety-bypass rules + exact-version OSV dependency advisory matches; reports include severity, confidence, evidence redaction, locations and steps.
 - Real progress stream, automatic validated report navigation, public browser history, JSON/Markdown/PDF print exports.
 - Developer review flow: search, priority filter, issue-ready copy, keyboard navigation, rescan and diff against an earlier verified report.
 - Private repository OAuth, authorization, server-side encrypted report retention and owner-scoped reads exist in code but are **not enabled by code alone**.
