@@ -293,7 +293,7 @@ export default function ScanningConsole() {
       snapshot!.status === "completed" ? "Assessment finished" :
       snapshot!.status === "failed" ? "Assessment interrupted" :
       snapshot!.status === "cancelled" ? "Assessment cancelled" : "Queued for assessment"
-    ) : load.type === "loading" ? "Checking run" :
+    ) : load.type === "loading" ? "Preparing source scan" :
       load.type === "invalid" ? "Invalid run reference" :
       load.type === "unavailable" ? "Integration required" :
       load.type === "error" ? "Unable to verify" : "Awaiting authorization";
@@ -360,7 +360,7 @@ export default function ScanningConsole() {
               <p>{running
                 ? "The steps at right reflect verified status received from the assessment service."
                 : snapshot?.status === "completed"
-                ? "The supported checks have finished. Securing the full report for automatic navigation…"
+                ? "The supported checks have finished. Opening your full report automatically…"
                 : load.type === "unavailable"
                 ? "The security engine is not configured. A run cannot be started or verified from this preview."
                 : load.type === "error"
@@ -386,7 +386,14 @@ export default function ScanningConsole() {
                 </div>
                 <p>{snapshot?.progress ? snapshot.progress.done + " of " + snapshot.progress.total + " worker-reported units complete" : "No progress data received — percentages are never guessed."}</p>
               </div>
-              {localReportId && snapshot?.status === "completed" ? (
+              {load.type === "error" && publicRepoName ? (
+                <div className="scan-retry-actions">
+                  <button type="button" className="scan-primary-link" onClick={() => {
+                    window.location.assign("/assess/scanning?repo=" + encodeURIComponent(publicRepoName));
+                  }}><RefreshCw size={17}/> Retry this scan <ArrowRight size={17}/></button>
+                  <Link className="scan-change-target" href="/assess">Choose another repository</Link>
+                </div>
+              ) : localReportId && snapshot?.status === "completed" ? (
                 <Link className="scan-primary-link" href={"/assess/results?local=" + encodeURIComponent(localReportId)}>
                   <FileSearch size={17}/> View full real results <ArrowRight size={17}/>
                 </Link>
