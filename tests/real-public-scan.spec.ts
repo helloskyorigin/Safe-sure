@@ -117,7 +117,7 @@ test("zero real findings is not mislabeled a clean security certificate", async 
   }));
   await page.goto("/assess/scanning?repo=example%2Fno-findings");
   await expect(page).toHaveURL(/\/assess\/results\?local=/);
-  await expect(page.getByText("No candidate findings in the supported checks")).toBeVisible();
+  await expect(page.getByText(/No candidates detected in supported checks/i)).toBeVisible();
   await expect(page.getByText("No findings flagged by these rules")).toBeVisible();
   await expect(page.getByText(/does not prove the application is secure/i)).toBeVisible();
   await expect(page.getByRole("link", { name: "Review coverage", exact: true })).toBeVisible();
