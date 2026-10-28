@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
@@ -25,6 +26,9 @@ const checks = [
 
 export default function AssessmentStart() {
   const reducedMotion = useReducedMotion();
+  const router = useRouter();
+  const [publicRepo, setPublicRepo] = useState("");
+  const [publicError, setPublicError] = useState("");
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -78,21 +82,38 @@ export default function AssessmentStart() {
               <motion.section aria-labelledby="assess-card-title" className="assess-connect-card" {...entrance(.14)}>
                 <div className="assess-card-top">
                   <div className="assess-github-icon"><Github size={26} strokeWidth={1.8}/></div>
-                  <span className="assess-pill"><span /> INTEGRATION PENDING</span>
+                  <span className="assess-pill"><span /> PUBLIC SCANNING ACTIVE</span>
                 </div>
                 <h2 id="assess-card-title">Connect your application</h2>
-                <p className="assess-card-description">GitHub will let you choose which repositories the ShipSafe GitHub App can access. Only authorized applications should be assessed.</p>
+                <p className="assess-card-description">Paste a public GitHub repository to run an actual bounded, read-only source security scan. Private repository connection requires a future GitHub App.</p>
+                <form className="assess-live-form" onSubmit={event => {
+                  event.preventDefault();
+                  const raw = publicRepo.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
+                  const m = /^(?:https:\/\/github\.com\/)?([A-Za-z0-9-]{1,39})\/([A-Za-z0-9_.-]{1,100})$/i.exec(raw);
+                  if (!m) { setPublicError("Enter a public GitHub repo: owner/repo or https://github.com/owner/repo"); return; }
+                  setPublicError("");
+                  router.push("/assess/scanning?repo=" + encodeURIComponent(m[1] + "/" + m[2]));
+                }}>
+                  <label htmlFor="assess-public-repo">Public GitHub repository</label>
+                  <div className="assess-repo-input"><Github size={19}/><input id="assess-public-repo" type="text" required autoComplete="off" spellCheck={false}
+                    value={publicRepo} onChange={event => { setPublicRepo(event.target.value); setPublicError(""); }}
+                    placeholder="owner/repository" aria-invalid={!!publicError} aria-describedby="public-repo-note"/></div>
+                  <p id="public-repo-note" className="assess-availability"><Info size={14}/> Real public-source scan. No GitHub account required; only public code, pinned versions and supported security rules are checked.</p>
+                  {publicError && <p role="alert" className="assess-public-error">{publicError}</p>}
+                  <button className="assess-primary" type="submit"><ScanSearch size={19}/><span>Scan public repository</span><ArrowRight size={18}/></button>
+                </form>
+                <div className="assess-or-separator"><span/> OR PRIVATE REPOSITORY <span/></div>
                 <button className="assess-primary" type="button" onClick={() => setDialogOpen(true)}>
                   <Github size={20} aria-hidden="true"/>
                   <span>Connect with GitHub</span>
                   <ArrowRight size={18} aria-hidden="true"/>
                 </button>
-                <p className="assess-availability"><Info size={14}/> GitHub connection is not enabled yet. This button explains the current status.</p>
+                <p className="assess-availability"><Info size={14}/> Private GitHub App connection is not enabled yet. Public repository scanning above is functional.</p>
                 <div className="assess-card-divider"/>
                 <div className="assess-assurances" aria-label="Connection principles">
                   <span><ShieldCheck size={16}/> Read-only by design</span>
                   <span><LockKeyhole size={16}/> Select access</span>
-                  <span><CheckCircle2 size={16}/> No ShipSafe signup</span>
+                  <span><CheckCircle2 size={16}/> No signup for public repos</span>
                 </div>
                 <button type="button" className="assess-permissions-trigger" aria-expanded={detailsOpen} aria-controls="assess-permissions"
                   onClick={() => setDetailsOpen(value => !value)}>
@@ -120,13 +141,13 @@ export default function AssessmentStart() {
 
               <div className="assess-scan-preview">
                 <span className="assess-scan-preview-icon"><ScanSearch size={19}/></span>
-                <div><strong>Explore the inspection console</strong><p>See how scan stages and evidence will be displayed. No scan starts in preview mode.</p></div>
+                <div><strong>Explore the inspection console</strong><p>Try the inspection interface without starting a real repository scan.</p></div>
                 <Link href="/assess/scanning" aria-label="Preview scanning workspace"><ArrowRight size={18}/></Link>
               </div>
 
               <motion.div className="assess-microtrust" {...entrance(.24)}>
                 <div className="assess-microtrust-icon"><ShieldCheck size={19}/></div>
-                <p><strong>You're always in control.</strong><br/>GitHub authorization, when enabled, will happen on GitHub—not on a password form built by ShipSafe.</p>
+                <p><strong>You're always in control.</strong><br/>Public scanning reads only publicly available code. Private repository access, when enabled, will require explicit GitHub authorization.</p>
               </motion.div>
             </div>
 
@@ -221,7 +242,7 @@ export default function AssessmentStart() {
           <span className="assess-modal-symbol"><Github size={24}/></span>
           <p className="assess-small-label">CONNECTION STATUS</p>
           <h2 id="assess-modal-title">GitHub connection is coming soon.</h2>
-          <p id="assess-modal-description">The assessment interface is ready to explore, but the ShipSafe GitHub App and scanning backend have not been connected yet. No GitHub authorization was initiated and no application data was accessed.</p>
+          <p id="assess-modal-description">Public GitHub source scanning is available above. Private repository access still requires a GitHub App integration and is not yet available. This button does not request your GitHub credentials.</p>
           <div className="assess-modal-list">
             <span><CheckCircle2 size={16}/> Selected repositories, not blanket access</span>
             <span><CheckCircle2 size={16}/> Read-only application analysis</span>
