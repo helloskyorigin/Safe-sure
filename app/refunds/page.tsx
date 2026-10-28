@@ -3,74 +3,59 @@ import Link from "next/link";
 import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Payments & Refunds | ShipSafe",
-  description: "Understand ShipSafe's proposed $19 one-time report, current checkout status, delivery expectations and refund principles.",
+  title: "Pricing & Billing Status | ShipSafe",
+  description: "Full ShipSafe security reports are planned to be free. No checkout, subscriptions or payment collection are active.",
 };
 
 const sections: LegalSection[] = [
-  { id: "current-status", title: "Current payment status" },
-  { id: "pricing", title: "The proposed $19 report" },
-  { id: "delivery", title: "Report delivery" },
-  { id: "payment-issues", title: "Payment errors or duplicates" },
-  { id: "report-quality", title: "Report quality concerns" },
-  { id: "refund-process", title: "How refunds will work" },
-  { id: "rights", title: "Consumer rights and updates" },
+  { id: "current", title: "Current status" },
+  { id: "free", title: "Full reports without a paywall" },
+  { id: "delivery", title: "Report access and delivery" },
+  { id: "payments", title: "No payments or refunds" },
+  { id: "changes", title: "Future policy changes" },
+  { id: "questions", title: "Questions and contact" },
 ];
 
 export default function RefundsPage() {
   return (
-    <LegalPage
-      eyebrow="POLICY / PAYMENTS"
-      title="Payments & refunds."
-      lead="One report. One transparent price. No recurring charges. Here is what the offer means and what must happen before checkout goes live."
+    <LegalPage eyebrow="POLICY / PRICING" title="Pricing & billing."
+      lead="Clear terms, even while the product is still in development. ShipSafe's current plan is to provide the complete security report without a payment gate."
       sections={sections}
       summary={[
-        "No live checkout is connected to the current website, so you cannot be charged by ShipSafe today.",
-        "The planned detailed report costs $19 once for a defined assessment; it is not a recurring subscription.",
-        "A complete delivery, dispute and refund process will be published at or before the first purchase.",
+        "The complete report experience—including findings, evidence, impact and fixes—is planned to be free.",
+        "The current site does not accept payment, collect billing details or issue invoices.",
+        "Sample results are freely viewable, but the live scanning backend is not yet connected.",
       ]}
     >
-      <section id="current-status" className="legal-section">
-        <h2>Current payment status</h2>
-        <p>The ShipSafe website is currently an informational preview. It contains no connected payment checkout, billing database or working purchase button. The "$19" displayed on the site describes the planned price of a future digital assessment report; it is not a charge being collected today.</p>
-        <p>Do not enter card information or send money to a third party claiming to collect payment for this preview. The relevant payment processor and official checkout flow will be disclosed before accepting purchases.</p>
+      <section id="current" className="legal-section">
+        <h2>Current status</h2>
+        <p>ShipSafe is currently a public product preview. You can view a clearly labeled, fictional full-report example at <Link href="/assess/results">Results</Link>, including findings, code locations, evidence, remediation and verification. The example is not an assessment of your application.</p>
+        <p>GitHub authorization, real code analysis, report storage and authenticated delivery have not launched. No customer security data or payment card details are collected through the preview.</p>
       </section>
-      <section id="pricing" className="legal-section">
-        <h2>The proposed $19 report</h2>
-        <p>The intended model is a <strong>single $19 payment for detailed findings associated with one specified assessment</strong>. No account subscription, automatic renewal or recurring charge is proposed. A free preliminary overview will show issue counts grouped by severity where supported checks have run.</p>
-        <p>A future checkout should show the final price, currency, any applicable taxes and the exact scope of the report before payment confirmation. The precise code revision or assessed target, report access and any recheck entitlement will also be stated with the product offer.</p>
+      <section id="free" className="legal-section">
+        <h2>Full reports without a paywall</h2>
+        <p>Our current product direction is to show the full security report without a paid upgrade. When a real report is available, the intended experience is to include severity summaries, affected locations, evidence, possible impact, fix steps, verification guidance, and explicit scan limitations together.</p>
+        <p>There is no subscription, one-time report charge or premium unlock in the current website experience.</p>
       </section>
       <section id="delivery" className="legal-section">
-        <h2>Report delivery</h2>
-        <p>When the paid service launches, customers should receive the report described at checkout after a successful verified payment. Any estimated delivery window will be disclosed by the active product, not invented in advance.</p>
-        <p>Technical failures, unsupported targets or incomplete scans should be handled transparently. The product must not generate fictional findings merely to complete a paid report. If a paid report cannot be supplied as promised, a corrective delivery or a refund review must be available under the final purchase policy.</p>
+        <h2>Report access and delivery</h2>
+        <p>After the scanning backend is implemented, viewing an actual report will require authorized access to the relevant application and scan run. The system must show whether checks completed, failed or were skipped. Report details must not be fabricated to fill gaps in analysis.</p>
+        <p>A sample report is downloadable from the preview for demonstration purposes, clearly identified as synthetic example data.</p>
       </section>
-      <section id="payment-issues" className="legal-section">
-        <h2>Payment errors or duplicates</h2>
-        <p>Before launching payment processing, ShipSafe will establish a private support channel for failed deliveries, duplicate payments, unexpected charges and mismatched checkout status. Any refund or reversal will be processed through the payment provider, subject to applicable rules and payment-network processing time.</p>
-        <p>There is no customer billing history to retrieve from the present preview because no customer payments are being accepted.</p>
+      <section id="payments" className="legal-section">
+        <h2>No payments or refunds</h2>
+        <p>The current service does not process payments or issue paid reports, so no order can be placed and no refund can be requested for a ShipSafe report. If someone asks you to pay for access to the current sample or claims a payment is required here, treat that as suspicious.</p>
+        <p>If ShipSafe later introduces a separately priced product, the price, tax disclosures, seller identity, refund eligibility and a private support route must be published before any purchase is requested. Applicable mandatory consumer protections will remain in effect.</p>
       </section>
-      <section id="report-quality" className="legal-section">
-        <h2>Report quality concerns</h2>
-        <p>A security report provides evidence and recommendations for the checks actually performed; it cannot promise that every vulnerability will be found. A customer should have a way to raise a material discrepancy, a corrupted or inaccessible report, or a significant difference between the purchased description and delivered content.</p>
-        <p>These requests will be governed by the final policy shown before checkout. The absence of a finding, by itself, does not prove a scan was defective, and buyers will not be asked to waive mandatory rights to receive the product as described.</p>
+      <section id="changes" className="legal-section">
+        <h2>Future policy changes</h2>
+        <p>Any future paid offering would require an updated policy and appropriate checkout disclosures. Nothing on this page authorizes a charge or creates an ongoing payment obligation.</p>
+        <p>Changes affecting the product's scope or data collection will also be reflected in our <Link href="/privacy">privacy</Link> and <Link href="/terms">terms</Link> pages.</p>
       </section>
-      <section id="refund-process" className="legal-section">
-        <h2>How refunds will work</h2>
-        <p>Because sales are not yet enabled, this page does not pretend to describe an operational refund queue or guarantee an unimplemented automatic return system. Before the first paid order, we will publish:</p>
-        <ul>
-          <li>The situations eligible for a refund or correction, including failed delivery and duplicate charges.</li>
-          <li>The private method to submit an order-related request and the information reasonably needed to locate it.</li>
-          <li>Applicable request and response windows, plus the expected payment-provider processing method.</li>
-          <li>Any limits applicable to delivered digital reports, subject to mandatory consumer law.</li>
-        </ul>
-        <p>Until checkout is activated, no purchase or refund request can be processed here. You can view current <Link href="/contact">contact options</Link> for non-sensitive inquiries.</p>
-      </section>
-      <section id="rights" className="legal-section">
-        <h2>Consumer rights and updates</h2>
-        <p>Nothing in a future checkout policy should exclude statutory consumer protections that apply to a particular transaction. ShipSafe will review its digital-product disclosures, grievance channel and refund terms against applicable law before accepting payment.</p>
-        <p>Pricing, tax treatment, payment processor and the final commercial policy may change before launch. The policy presented during an actual purchase will govern that purchase, together with any non-waivable legal rights.</p>
-        <p className="legal-note"><strong>No charges today:</strong> The landing page and demonstration are currently free to view. The $19 figure is a proposed one-time report price, not an active paid service.</p>
+      <section id="questions" className="legal-section">
+        <h2>Questions and contact</h2>
+        <p>For non-sensitive product feedback, visit <Link href="/contact">Contact</Link>. Please do not post private application code, credentials or personal records in public support channels.</p>
+        <p className="legal-note"><strong>Product preview:</strong> Full example results are available now; real reports will be available only after the authorized scanning system is built and verified.</p>
       </section>
     </LegalPage>
   );
