@@ -27,7 +27,7 @@ export default function TermsPage() {
       lead="A straightforward explanation of what ShipSafe offers today, how the preview may be used and what to expect before the service goes live."
       sections={sections}
       summary={[
-        "The current website offers a sample full report; real vulnerability scanning and authenticated live reports are not enabled.",
+        "Read-only public repository source scanning is available; private scanning and authenticated server-stored reports are not enabled.",
         "Example assessments are illustrative, not results from your website or source code.",
         "Only applications you own or are expressly authorized to test may be assessed when scanning becomes available.",
       ]}
@@ -39,8 +39,8 @@ export default function TermsPage() {
       </section>
       <section id="availability" className="legal-section">
         <h2>What is available today</h2>
-        <p>The website contains product descriptions, a free full-report demonstration, an interactive sample report and informational pages. <strong>No real application scanning, GitHub authorization, production report delivery or payment processing is enabled at this stage.</strong> Interface controls marked as examples demonstrate intended functionality only.</p>
-        <p>When assessment functionality launches, the current plan is to provide complete findings and remediation guidance without a report paywall. Scope, permission requirements and service-specific conditions will be disclosed before accessing an application.</p>
+        <p>The website provides a public GitHub source scanner, interactive fictional sample results and informational pages. <strong>Public scans check supported source files and pinned dependencies only. No private GitHub authorization, runtime penetration testing or payment processing is enabled.</strong> Sample results remain fictional and are labeled.</p>
+        <p>Public-source scans currently provide the full detected findings and remediation without a report paywall. Scope, permission requirements and service-specific conditions will be disclosed before accessing an application.</p>
       </section>
       <section id="acceptable-use" className="legal-section">
         <h2>Acceptable use</h2>
@@ -50,7 +50,7 @@ export default function TermsPage() {
       <section id="authorization" className="legal-section">
         <h2>Authorized security testing</h2>
         <p>The planned security product is intended for testing applications or code you own or have explicit authority to assess. Merely knowing a URL or having access to a public repository does not automatically grant permission to perform intrusive testing.</p>
-        <p>Future use of assessment features will require you to confirm your authority to test the relevant target. The service will document its permitted scan scope, access model, restrictions and any additional rules before being activated. Nothing in this website grants permission to attack third-party services.</p>
+        <p>You must be entitled to analyze the public repository you submit; this tool retrieves publicly available content and performs passive static checks, not intrusive tests. Future private/active assessment features will require explicit authorization. The service will document its permitted scan scope, access model, restrictions and any additional rules before being activated. Nothing in this website grants permission to attack third-party services.</p>
       </section>
       <section id="results" className="legal-section">
         <h2>Reliability of information</h2>
@@ -60,7 +60,7 @@ export default function TermsPage() {
       <section id="ownership" className="legal-section">
         <h2>Intellectual property</h2>
         <p>ShipSafe's original brand presentation, content, illustrations and interface are part of the project. Third-party components, libraries, trademarks and materials remain subject to their respective licenses and rights. Access to the website does not transfer ownership of any intellectual property.</p>
-        <p>Future application submissions will remain the responsibility of their respective owners. ShipSafe is not requesting or accepting customer source code through this preview.</p>
+        <p>Future application submissions will remain the responsibility of their respective owners. ShipSafe fetches publicly available repository code only when a public scan is requested; it does not accept private source credentials.</p>
       </section>
       <section id="third-party" className="legal-section">
         <h2>External services</h2>
@@ -75,7 +75,7 @@ export default function TermsPage() {
         <h2>Updates and questions</h2>
         <p>We may update these website terms as the preview evolves. If a commercial service is ever offered, its operator identity, support contacts, complete purchase terms and mandatory rights must be disclosed before a transaction.</p>
         <p>For ordinary non-sensitive feedback see <Link href="/contact">Contact</Link>. For information about the present data practices and planned security controls, see <Link href="/privacy">Privacy</Link> and <Link href="/security">Security</Link>.</p>
-        <p className="legal-note"><strong>Important:</strong> These terms govern the currently published preview. They do not pretend that a live scanning service, registered corporate identity or private customer-support desk already exists.</p>
+        <p className="legal-note"><strong>Important:</strong> These terms govern the currently published preview. They do not claim private scanning, a registered corporate identity or a staffed private customer-support desk.</p>
       </section>
     </LegalPage>
   );
