@@ -14,10 +14,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "ShipSafe — Know the risks before you ship",
   description:
-    "ShipSafe helps developers understand application security risks, why they matter, and how to fix them. Free initial assessment, $19 one-time detailed report.",
+    "ShipSafe helps developers understand application security risks, why they matter, and how to fix them. Full report details included. Security scanning coming soon.",
   openGraph: {
     title: "ShipSafe — Know the risks before you ship",
-    description: "Clear, actionable application security. Free overview. $19 detailed report, one time.",
+    description: "Clear, actionable application security. Full security report with evidence and fixes, no report paywall.",
     type: "website",
   },
   icons: {
