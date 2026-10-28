@@ -1,6 +1,6 @@
-# ShipSafe
+# Secuvora
 
-ShipSafe is a developer-first, read-only public-repository security scanning MVP. This Next.js 15 App Router project includes a premium landing, live public source scanning, full results, an illustrative sample report and legal pages. Private-repository OAuth/source scanning and encrypted seven-day recovery are now implemented as opt-in server components; activation requires the operator to configure a GitHub App and Upstash Redis.
+Secuvora is an on-demand automated security agent for GitHub repository source investigations. Today its autonomous workflow runs bounded security rules and OSV advisories; it does not use an LLM for reasoning. This Next.js 15 App Router project includes a premium landing, live public source scanning, full results, an illustrative sample report and legal pages. Private-repository OAuth/source scanning and encrypted seven-day recovery are now implemented as opt-in server components; activation requires the operator to configure a GitHub App and Upstash Redis.
 
 ## Auto-open results and public-scanner readiness
 
@@ -93,4 +93,4 @@ Before broad private or commercial usage: confirm real Github App installation, 
 
 ### Scanner v2: evidence-backed security assessment
 
-ShipSafe uses 12 curated source/config detector families, selected Terraform/GitHub Actions rules, exact-version npm/PyPI OSV advisory checks, redacted file/line evidence, rule IDs, confidence and actual file/line/package scope metrics. This is bounded static analysis, not an exhaustive SAST/DAST scanner or certification. See [Scanner v2: detection scope, precision limits and tests](docs/scanner-v2-evidence.md).
+Secuvora uses 12 curated source/config detector families, selected Terraform/GitHub Actions rules, exact-version npm/PyPI OSV advisory checks, redacted file/line evidence, rule IDs, confidence and actual file/line/package scope metrics. This is bounded static analysis, not an exhaustive SAST/DAST scanner or certification. See [Scanner v2: detection scope, precision limits and tests](docs/scanner-v2-evidence.md).
