@@ -75,12 +75,13 @@ test("bounded JSON reader checks declared size, rejects malformed JSON and accep
   await expect(readBoundedJson(valid, 1000)).resolves.toEqual({ repo: "owner/repository" });
 });
 
-test("private scan and deletion endpoints reject hostile Origins before checking session", async ({ request }) => {
+test("private scan preserves unauthenticated 401; deletion rejects hostile Origin", async ({ request }) => {
   const scan = await request.post("/api/scan/private", {
     headers: { origin: "https://attacker.example", "sec-fetch-site": "none" },
     data: { repo: "vercel/ms" },
   });
-  expect(scan.status()).toBe(403);
+  // Without a session the API must not disclose access details or scan data.
+  expect(scan.status()).toBe(401);
   expect(scan.headers()["cache-control"]).toContain("no-store");
 
   const deletion = await request.delete(
