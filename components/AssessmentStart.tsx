@@ -118,6 +118,12 @@ export default function AssessmentStart() {
                 </AnimatePresence>
               </motion.section>
 
+              <div className="assess-scan-preview">
+                <span className="assess-scan-preview-icon"><ScanSearch size={19}/></span>
+                <div><strong>Explore the inspection console</strong><p>See how scan stages and evidence will be displayed. No scan starts in preview mode.</p></div>
+                <Link href="/assess/scanning" aria-label="Preview scanning workspace"><ArrowRight size={18}/></Link>
+              </div>
+
               <motion.div className="assess-microtrust" {...entrance(.24)}>
                 <div className="assess-microtrust-icon"><ShieldCheck size={19}/></div>
                 <p><strong>You're always in control.</strong><br/>GitHub authorization, when enabled, will happen on GitHub—not on a password form built by ShipSafe.</p>
