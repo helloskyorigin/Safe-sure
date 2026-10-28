@@ -206,7 +206,7 @@ export default function ScanningConsole() {
         } else {
           const snapshot: unknown = await response.json();
           if (!isAssessmentSnapshot(snapshot, run!)) {
-            setLoad({ type: "error", message: "Scan progress could not be verified." }); repeat = false;
+            setLoad({ type: "error", message: "Agent progress could not be verified." }); repeat = false;
           } else {
             setSource({ name: snapshot.target.name, private: false });
             setLoad({ type: "live", snapshot });
@@ -287,8 +287,8 @@ export default function ScanningConsole() {
       <a href="#scan-main" className="skip-link">Skip to scan</a>
       <header className="scan-nav">
         <div className="scan-container scan-nav-inner">
-          <Link href="/" className="brand" aria-label="ShipSafe home">shipsafe<span>.</span></Link>
-          <span className="scan-nav-center"><span/> LIVE INSPECTION</span>
+          <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
+          <span className="scan-nav-center"><span/> SECURITY AGENT · LIVE</span>
           <Link href="/assess" className="scan-nav-return"><ArrowLeft size={16}/> Back</Link>
         </div>
       </header>
@@ -311,7 +311,7 @@ export default function ScanningConsole() {
           <div className="scan-visual-bottom">
             <h1 id="scan-heading">{isFailure ? "Scan interrupted" :
               isFinishing ? (savedId ? "Opening your results" : "Finalizing your report") :
-              hasSource ? "Scanning your app" : "Ready to scan"}</h1>
+              hasSource ? "Agent investigating" : "Ready to scan"}</h1>
             <p className="scan-repo-name">{source?.name || "No repository selected"}</p>
             {!isFailure && <p className="scan-current-action" aria-live="polite">
               {ongoing && <LoaderCircle size={15} className="scan-inline-spinner"/>}
@@ -322,7 +322,7 @@ export default function ScanningConsole() {
 
           <div className="scan-progress">
             <div className="scan-progress-row">
-              <span>Scan progress</span>
+              <span>Agent progress</span>
               <strong>{snapshot?.progress ? snapshot.progress.done + " of " + snapshot.progress.total + " checks" : "—"}</strong>
             </div>
             <div className="scan-progress-track"
@@ -368,7 +368,7 @@ export default function ScanningConsole() {
             ) : isFinishing ? (
               <p className="scan-finishing"><FileCheck2 size={16}/>{savedId ? "Your full report is opening…" : "Preparing your full report…"}</p>
             ) : (
-              <Link href="/assess" className="scan-primary-link"><Github size={17}/> Scan a public repository <ArrowRight size={17}/></Link>
+              <Link href="/assess" className="scan-primary-link"><Github size={17}/> Start a new investigation <ArrowRight size={17}/></Link>
             )}
             {actionError && <p role="alert" className="scan-action-error">{actionError}</p>}
             <p className="scan-honesty"><ShieldCheck size={15}/> Read-only scan · Results open automatically</p>
