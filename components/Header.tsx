@@ -73,14 +73,14 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
         id="top"
       >
         <div className="container header-inner">
-          <a href="#top" className="brand" aria-label="ShipSafe home">
-            shipsafe<span>.</span>
+          <a href="#top" className="brand" aria-label="Secuvora home">
+            secuvora<span>.</span>
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
-            <a href="#product">The report</a>
+            <a href="#product">Agent report</a>
             <a href="#how">How it works</a>
             <a href="#security">Security</a>
-            <a href="#pricing">Free report</a>
+            <a href="#pricing">Free agent report</a>
             <a href="#faq">FAQ</a>
             <Link href="/assess/history">Scan history</Link>
           </nav>
@@ -90,7 +90,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark top-cta"
           >
-            Assess your application <span aria-hidden="true">↗</span>
+            Run security agent <span aria-hidden="true">↗</span>
           </a>
           <button
             id="menu-toggle"
@@ -113,7 +113,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
           inert={!isMenuOpen}
           style={isMenuOpen ? { display: "flex" } : undefined}
         >
-          <a href="#product" onClick={closeMenu}>The report</a>
+          <a href="#product" onClick={closeMenu}>Agent report</a>
           <a href="#how" onClick={closeMenu}>
             How it works
           </a>
@@ -121,7 +121,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             Security
           </a>
           <a href="#pricing" onClick={closeMenu}>
-            Pricing
+            Free report
           </a>
           <a href="#faq" onClick={closeMenu}>
             FAQ
@@ -133,7 +133,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark"
           >
-            Assess your application <span aria-hidden="true">↗</span>
+            Run security agent <span aria-hidden="true">↗</span>
           </a>
         </nav>
       </header>
