@@ -125,8 +125,8 @@ export default function SavedReports() {
         </div>
         <p className="history-hint">Saved only in this browser, for up to 30 days. Clearing site data deletes them.</p>
         {publicReports.length ? publicReports.map(item => <ReportRow key={item.runId} item={item} kind="public"/>) :
-          <div className="history-empty"><CheckCircle2 size={21}/><span>No public scans saved yet.</span>
-            <Link href="/assess">Scan a repository <ArrowRight size={15}/></Link></div>}
+          <div className="history-empty"><CheckCircle2 size={21}/><span>No agent reports saved yet.</span>
+            <Link href="/assess">Run security agent <ArrowRight size={15}/></Link></div>}
       </section>
 
       <section className="history-group" aria-labelledby="private-history-heading">
@@ -142,7 +142,7 @@ export default function SavedReports() {
         {privateStatus === "offline" && <p className="history-status">Private report storage is not configured or temporarily unavailable.</p>}
         {privateStatus === "ready" && (privateReports.length
           ? privateReports.map(item => <ReportRow key={item.runId} item={item} kind="private"/>)
-          : <p className="history-status">No private reports saved yet.</p>)}
+          : <p className="history-status">No private agent reports saved yet.</p>)}
       </section>
       {error && <p role="alert" className="history-error">{error}</p>}
       <p className="history-bottom"><ShieldCheck size={15}/> Your browser history is local; private GitHub report access remains account-protected.</p>
