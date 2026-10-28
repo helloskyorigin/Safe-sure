@@ -1845,3 +1845,96 @@ svg {
     transform: none !important;
   }
 }
+
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SHIPSAFE LANDING · CINEMATIC ONCE-ONLY SCROLL MOTION
+   Progressive enhancement: all content is visible before hydration,
+   when IntersectionObserver is unavailable, or with reduced-motion enabled.
+   "ship-motion-revealed" remains set after leaving the viewport.
+   Use individual translate/scale properties so Framer Motion's own transforms
+   and the preview's 3D perspective aren't overridden.
+   ────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .landing-motion-active [data-ship-motion] {
+    opacity: 0;
+    translate: 0 38px;
+    scale: 1;
+    filter: blur(0px);
+    transition:
+      opacity 780ms cubic-bezier(.22,1,.36,1),
+      translate 900ms cubic-bezier(.22,1,.36,1),
+      scale 900ms cubic-bezier(.22,1,.36,1),
+      filter 800ms cubic-bezier(.22,1,.36,1),
+      rotate 900ms cubic-bezier(.22,1,.36,1);
+    transition-delay: var(--ship-stagger,0ms);
+    will-change: opacity, translate;
+  }
+  .landing-motion-active [data-ship-motion="slide-left"] {
+    translate: -54px 12px;
+  }
+  .landing-motion-active [data-ship-motion="slide-right"] {
+    translate: 54px 12px;
+  }
+  .landing-motion-active [data-ship-motion="scale"] {
+    scale: .91;
+    translate: 0 24px;
+  }
+  .landing-motion-active [data-ship-motion="pop"] {
+    scale: .88;
+    translate: 0 32px;
+    rotate: -1.5deg;
+  }
+  .landing-motion-active [data-ship-motion="blur"] {
+    filter: blur(9px);
+    translate: 0 22px;
+  }
+  .landing-motion-active [data-ship-motion].ship-motion-revealed {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    rotate: 0deg;
+    filter: blur(0);
+    will-change: auto;
+  }
+
+  /* The 3-step visual connection builds only once as its step enters. */
+  .landing-motion-active #how .step:not(:last-child)::after {
+    transform-origin: left center;
+    scale: 0 1;
+    transition: scale .82s cubic-bezier(.22,1,.36,1) .25s;
+  }
+  .landing-motion-active #how .step.ship-motion-revealed:not(:last-child)::after {
+    scale: 1 1;
+  }
+
+  /* Tiny accent strokes add intentional editorial rhythm to big scroll reveals. */
+  .landing-motion-active .section-heading.ship-motion-revealed .eyebrow-dash,
+  .landing-motion-active .split-heading.ship-motion-revealed .eyebrow-dash {
+    animation: ship-accent-draw .8s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes ship-accent-draw {
+    from { scale: 0 1; transform-origin:left; }
+    to { scale: 1 1; transform-origin:left; }
+  }
+}
+
+/* When browser accessibility requests reduce, EVERYTHING remains visible. */
+@media (prefers-reduced-motion: reduce) {
+  .landing-motion-active [data-ship-motion] {
+    opacity: 1 !important;
+    translate: none !important;
+    scale: 1 !important;
+    rotate: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+/* Prevent long horizontal entrances from affecting very narrow Android screens. */
+@media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .landing-motion-active [data-ship-motion="slide-left"] { translate: -23px 9px; }
+  .landing-motion-active [data-ship-motion="slide-right"] { translate: 23px 9px; }
+  .landing-motion-active [data-ship-motion="pop"] { translate: 0 22px; }
+  .landing-motion-active [data-ship-motion].ship-motion-revealed { translate: 0 0; }
+}
