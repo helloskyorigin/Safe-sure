@@ -54,7 +54,21 @@ export default function ResultsExperience() {
   const [showExportMessage, setShowExportMessage] = useState(false);
 
   useEffect(() => {
-    const runId = new URLSearchParams(window.location.search).get("run");
+    const params = new URLSearchParams(window.location.search);
+    const localId = params.get("local");
+    if (localId) {
+      if (!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/.test(localId)) { setState({ kind: "invalid" }); return; }
+      try {
+        const stored = sessionStorage.getItem("shipsafe:report:" + localId);
+        if (!stored) { setState({ kind: "error" }); return; }
+        const report: unknown = JSON.parse(stored);
+        if (!isAssessmentReport(report, localId)) { setState({ kind: "error" }); return; }
+        setSelectedId(report.findings[0]?.id || "");
+        setState({ kind: "live", report });
+      } catch { setState({ kind: "error" }); }
+      return;
+    }
+    const runId = params.get("run");
     if (!runId) { setState({ kind: "sample" }); return; }
     if (!/^[A-Za-z0-9_-]{16,100}$/.test(runId)) {
       setState({ kind: "invalid" }); return;
@@ -106,13 +120,14 @@ export default function ResultsExperience() {
   const markedCount = active?.steps.filter((_, i) => checked[active.id + "-" + i]).length ?? 0;
 
   function exportSample() {
-    if (!isSample) return;
-    const payload = { ...SAMPLE_REPORT, sample: true, notice: "ILLUSTRATIVE EXAMPLE — not the result of a security assessment." };
+    if (!report) return;
+    const payload = isSample ? { ...SAMPLE_REPORT, sample: true, notice: "ILLUSTRATIVE EXAMPLE — not a real scan." } :
+      { ...report, notice: "Static public-source scan: not a penetration test, security guarantee or verification of exploitability." };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = "shipsafe-sample-full-report.json";
+    anchor.download = isSample ? "shipsafe-sample-full-report.json" : "shipsafe-public-source-report.json";
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -151,8 +166,8 @@ export default function ResultsExperience() {
             <p>{state.kind === "loading"
               ? "ShipSafe is checking for an authorized completed assessment. No results are assumed while this loads."
               : state.kind === "invalid" ? "This report reference is invalid. No scan data was accessed."
-              : state.kind === "unavailable" ? "The live results backend is not connected yet. A run URL cannot unlock or fabricate security findings."
-              : "This assessment could not be verified. We cannot display results without authorized report data."}</p>
+              : state.kind === "unavailable" ? "Authenticated stored-job reporting is not configured. For a real public scan, start from the connection screen; its results remain in the same browser tab."
+              : "No valid report is available in this browser tab. Run a new public scan to generate real findings, or open the sample report."}</p>
             <div className="result-unavailable-actions">
               <Link href="/assess/results" className="result-button-primary">View clearly labeled sample report <ArrowRight size={17}/></Link>
               <Link href="/assess" className="result-button-outline">Back to connection</Link>
@@ -167,10 +182,10 @@ export default function ResultsExperience() {
                 <p className="result-intro-desc">From severity to source context, every finding has room for the details that actually matter.</p>
               </div>
               <div className="result-intro-actions">
-                <span className={"result-status "+(isSample ? "sample" : "verified")}><span/>{isSample ? "INTERACTIVE SAMPLE" : "ASSESSMENT REPORT"}</span>
+                <span className={"result-status "+(isSample ? "sample" : "verified")}><span/>{isSample ? "INTERACTIVE SAMPLE" : "REAL PUBLIC-SOURCE SCAN"}</span>
                 <div className="result-action-buttons">
                   <button type="button" onClick={() => window.print()} className="result-action-secondary"><Printer size={16}/> Print</button>
-                  {isSample && <button type="button" onClick={exportSample} className="result-action-primary"><Download size={16}/> Export example</button>}
+                  <button type="button" onClick={exportSample} className="result-action-primary"><Download size={16}/> {isSample ? "Export example" : "Export JSON"}</button>
                 </div>
               </div>
             </motion.div>
@@ -184,7 +199,7 @@ export default function ResultsExperience() {
             <div className="result-report-head">
               <div className="result-report-heading">
                 <div className="result-app-icon"><FileCode2 size={20}/></div>
-                <div><span>APPLICATION REPORT / {isSample ? "SAMPLE" : "AUTHORIZED"}</span><h2>{report.appName}</h2><p><GitBranch size={13}/> {isSample ? "Fictional example revision" : (report.revision || "Revision unavailable")} <span aria-hidden="true">·</span> {isSample ? "Not a live scan" : "Worker-reported completion"}</p></div>
+                <div><span>APPLICATION REPORT / {isSample ? "SAMPLE" : "PUBLIC SOURCE SCAN"}</span><h2>{report.appName}</h2><p><GitBranch size={13}/> {isSample ? "Fictional example revision" : (report.revision || "Revision unavailable")} <span aria-hidden="true">·</span> {isSample ? "Not a live scan" : "Read-only public source scan"}</p></div>
               </div>
               <div className="result-report-badge"><CheckCircle2 size={16}/> Full details included</div>
             </div>
@@ -291,7 +306,7 @@ export default function ResultsExperience() {
               </motion.div>}</AnimatePresence>
             </section>
 
-            <section className="result-end"><div><p className="result-eyebrow">FROM FINDING TO FIX</p><h2>A report you can<br/>actually use.</h2><p>Every sample finding is fully visible. When scanning goes live, actual results will require verified authorization and reflect only completed checks.</p></div><div className="result-end-actions"><Link href="/assess" className="result-end-primary">Connect an application <ArrowUpRight size={17}/></Link><Link href="/security" className="result-end-secondary">Read our security approach <ArrowRight size={16}/></Link></div></section>
+            <section className="result-end"><div><p className="result-eyebrow">FROM FINDING TO FIX</p><h2>A report you can<br/>actually use.</h2><p>All detected candidates, evidence, fix guidance and coverage limits are included. Public GitHub source analysis is available now; private-repository access requires separate authorization.</p></div><div className="result-end-actions"><Link href="/assess" className="result-end-primary">Connect an application <ArrowUpRight size={17}/></Link><Link href="/security" className="result-end-secondary">Read our security approach <ArrowRight size={16}/></Link></div></section>
 
             <div className="result-print-all">{report.findings.map(f=><article key={f.id}><h2>{f.id} · {f.title} ({f.severity})</h2><p>{f.location.path}:{f.location.line||"—"}</p><p>{f.overview}</p><p>{f.whyItMatters}</p><pre>{f.evidence}</pre><ol>{f.steps.map(step=><li key={step}>{step}</li>)}</ol><p><strong>Verify:</strong> {f.verification}</p><p><strong>Limitations:</strong> {f.limitations||"See report scope"}</p></article>)}</div>
           </>
