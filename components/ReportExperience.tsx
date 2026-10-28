@@ -35,13 +35,13 @@ const examples: Record<FindingKey, {
     snippet: "npm audit --omit=dev",
   },
   headers: {
-    label: "Missing browser security header",
+    label: "TLS certificate verification override",
     severity: "Medium",
     location: "HTTP response · configuration",
-    risk: "An expected browser security control was not observed in the sampled response.",
+    risk: "A source configuration may disable TLS certificate validation.",
     impact: "Depending on your application, the missing control may reduce defense against certain browser-based attacks.",
     fix: ["Review the relevant response and deployment settings.", "Apply a tested policy appropriate to your app.", "Confirm the header on the live response."],
-    snippet: "Content-Security-Policy: default-src 'self'",
+    snippet: "rejectUnauthorized: false",
   },
 };
 
@@ -58,14 +58,14 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
       <div className="container">
         <div className="experience-intro">
           <motion.div initial={{ y: 22 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: reduceMotion ? 0 : .72, ease }}>
-            <p className="eyebrow">THE REPORT EXPERIENCE</p>
+            <p className="eyebrow">THE AGENT REPORT</p>
             <h2 id="experience-title">Less guesswork.<br/><span>More clarity.</span></h2>
           </motion.div>
-          <p>No mystery score. A clear assessment first, then technical context and practical next steps in one focused report.</p>
+          <p>See how Secuvora's automated investigation connects source evidence with actionable remediation steps.</p>
         </div>
         <motion.div className="experience-shell" initial={{ y: 26 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.13 }} transition={{ duration: reduceMotion ? 0 : .8, ease }}>
           <div className="experience-toolbar">
-            <div className="experience-app"><span className="app-symbol"><SearchCheck size={17}/></span><div><strong>ShipSafe report</strong><small>example-application / illustrative demo</small></div></div>
+            <div className="experience-app"><span className="app-symbol"><SearchCheck size={17}/></span><div><strong>Secuvora agent report</strong><small>example-application / illustrative demo</small></div></div>
             <span className="experience-example">INTERACTIVE EXAMPLE · NOT A REAL SCAN</span>
           </div>
           <div className="experience-tabs" role="tablist" aria-label="Explore report views">
@@ -114,7 +114,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
               )}
             </AnimatePresence>
           </div>
-          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Assess your application <ArrowRight size={16}/></button></div>
+          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Run security agent <ArrowRight size={16}/></button></div>
         </motion.div>
       </div>
     </section>
