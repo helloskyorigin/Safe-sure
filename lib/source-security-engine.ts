@@ -233,7 +233,7 @@ export function analyzeSourceDetailed(files: Source[]): { findings: ReportFindin
       }
     }
   }
-  return { findings, truncated, inspectedLines, rulesRun: 11 };
+  return { findings, truncated, inspectedLines, rulesRun: 12 };
 }
 
 export function analyzeSource(files: Source[]): ReportFinding[] {
