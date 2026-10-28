@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
-  ArrowLeft, ArrowRight, Check, CheckCircle2, Circle, CircleAlert,
-  FileCheck2, Github, LoaderCircle, LockKeyhole, RefreshCw, ScanSearch,
+  ArrowLeft, ArrowRight, CheckCircle2, Circle, CircleAlert,
+  FileCheck2, Github, LoaderCircle, RefreshCw, ScanSearch,
   ShieldCheck, Square,
 } from "lucide-react";
 import { isAssessmentReport } from "@/lib/report-contract";
@@ -241,7 +241,7 @@ export default function ScanningConsole() {
     if (abortRef.current) {
       abortRef.current.abort();
       abortRef.current = null;
-      setLoad({ type: "error", message: "Scan cancelled. No report was created." });
+      setLoad({ type: "error", message: "Scan cancelled in this tab." });
       return;
     }
     if (!runRef.current || !snapshot || cancelBusy) return;
