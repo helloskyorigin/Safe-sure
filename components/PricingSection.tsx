@@ -21,8 +21,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             nothing hidden.
           </h2>
           <p>
-            Explore every finding, its source location, supporting evidence and
-            recommended fixes together—without locked report sections.
+            Get the whole picture: affected source files, supporting evidence, risk context and step-by-step remediation. Every supported finding stays accessible.
           </p>
           <div className="no-renew">
             <span>✓</span> Full results included. No checkout.
