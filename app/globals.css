@@ -1939,3 +1939,24 @@ svg {
   .landing-motion-active [data-ship-motion="pop"] { translate: 0 22px; }
   .landing-motion-active [data-ship-motion].ship-motion-revealed { translate: 0 0; }
 }
+
+
+/* Responsive QA: accessible primary navigation and touch targets. */
+@media(max-width:850px){
+ .header .menu-toggle{width:44px;height:44px;min-width:44px;min-height:44px}
+ .header .top-cta{min-height:44px}
+ .mobile-nav:not([inert]){max-height:calc(100dvh - 68px);overflow-y:auto;overscroll-behavior:contain}
+ .mobile-nav>a{min-height:44px;display:flex;align-items:center}
+ .header-inner{min-width:0;gap:14px}
+}
+@media(max-width:640px){
+ .header .container{width:calc(100% - 32px)}
+ .hero-text h1{overflow-wrap:normal}
+ .footer .footer-columns{min-width:0}
+ .footer .footer-columns nav a{display:inline-flex;align-items:center;min-height:36px}
+}
+@media(max-width:370px){
+ .hero-text h1{font-size:clamp(35px,10.5vw,41px);letter-spacing:-.065em}
+ .header .brand{font-size:22px}
+ .mobile-nav:not([inert]){padding-inline:17px}
+}
