@@ -6,7 +6,7 @@ Updated: 28 October 2026. This document separates **shipped code** from **operat
 
 - Public GitHub source scan: on-demand, read-only, pinned revision, bounded file and request budgets.
 - Source, configuration and two explicit AI-agent safety-bypass rules + exact-version OSV dependency advisory matches; reports include severity, confidence, evidence redaction, locations and steps.
-- Real progress stream, automatic validated report navigation, public browser history, JSON/Markdown/PDF print exports.
+- Real progress stream, automatic validated report navigation, public browser history, JSON/Markdown/PDF print and verified SARIF exports.
 - Developer review flow: search, priority filter, issue-ready copy, keyboard navigation, rescan and diff against an earlier verified report.
 - Private repository OAuth, authorization, server-side encrypted report retention and owner-scoped reads exist in code but are **not enabled by code alone**.
 - Automated source investigation is deterministic; **no LLM reasoning, scheduled monitoring, incident response, runtime penetration testing or certification is provided**.
@@ -24,7 +24,7 @@ Updated: 28 October 2026. This document separates **shipped code** from **operat
 
 ## P0 — release testing
 
-- GitHub CI: typecheck, Next.js production build, Playwright browser tests, CodeQL. Required to pass on the **exact release commit**.
+- GitHub CI: reproducible npm ci from committed lockfile, high-severity production dependency audit, typecheck, Next.js production build, Playwright browser tests, CodeQL. Required to pass on the **exact release commit**.
 - Manual devices: Android 320px/375px/430px, tablet 768px, desktop 1024px/1440px; keyboard, reduced-motion, screen-reader headings, overflow, readable evidence.
 - Public scan test: a real permitted repository -> source read -> progress -> validated report -> refresh -> saved history -> JSON and fix-plan exports.
 - Private scan test: real selected repo -> owner-scoped session -> encrypted report -> same-user retrieval -> other-user denied -> deletion -> access revoked.
@@ -47,6 +47,13 @@ Updated: 28 October 2026. This document separates **shipped code** from **operat
 4. Copy issue-ready remediation steps, show how to verify, and perform a second real scan.
 5. Show the before/after detected-fingerprint delta, explicitly calling out that a disappearing match is not a confirmed fix.
 6. State the near-term product wedge: evidence-backed, developer-first security reviews for source repositories; long-term autonomy/monitoring is roadmap, not production behavior.
+
+## Supply-chain controls
+
+- Dependencies are locked in npm lockfile v3. CI uses `npm ci`, not drifting semver installs.
+- The release gate runs `npm audit --omit=dev --audit-level=high`. High-severity vulnerabilities block merge; assess the advisory's affected functionality and apply a tested security patch.
+- The Next.js 15 transitive PostCSS dependency is resolved through an npm root override to a patched 8.5.x release. Do not force a breaking Next.js major update without a separate migration and regression review.
+- Any dependency override must be inspected after the next Next.js upgrade to avoid unnecessary permanent version pinning.
 
 ## Go/no-go
 
