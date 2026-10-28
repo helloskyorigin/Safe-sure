@@ -15,8 +15,21 @@ const jsonHeaders = { "Cache-Control": "no-store, private", "X-Content-Type-Opti
 export async function POST(req: Request) {
   // Same-origin requests only; no cookies or private authorization are used.
   const origin = req.headers.get("origin");
-  if (origin && origin !== new URL(req.url).origin)
+  const fetchSite = req.headers.get("sec-fetch-site");
+  // Browsers mark same-origin requests even when a hosting reverse proxy
+  // rewrites the internal Request URL (e.g. 127.0.0.1 -> localhost).
+  if (fetchSite && fetchSite !== "same-origin" && fetchSite !== "none")
     return NextResponse.json({ error: "Cross-origin scan requests are not allowed." }, { status: 403, headers: jsonHeaders });
+  if (origin && fetchSite !== "same-origin") {
+    let allowed = false;
+    try {
+      const source = new URL(origin);
+      const hosts = [new URL(req.url).host, req.headers.get("host"), req.headers.get("x-forwarded-host")];
+      allowed = (source.protocol === "https:" || source.hostname === "localhost" || source.hostname === "127.0.0.1") &&
+        hosts.includes(source.host);
+    } catch { /* Invalid Origin header */ }
+    if (!allowed) return NextResponse.json({ error: "Cross-origin scan requests are not allowed." }, { status: 403, headers: jsonHeaders });
+  }
   if (Number(req.headers.get("content-length") || 0) > 1600)
     return NextResponse.json({ error: "Invalid request size." }, { status: 413, headers: jsonHeaders });
   let repo: string;
