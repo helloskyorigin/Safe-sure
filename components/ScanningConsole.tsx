@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { isAssessmentReport } from "@/lib/report-contract";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -87,6 +88,7 @@ function timeText(value: string) {
 
 export default function ScanningConsole() {
   const reducedMotion = useReducedMotion();
+  const router = useRouter();
   const [load, setLoad] = useState<LoadState>({ type: "idle" });
   const [selected, setSelected] = useState<CheckKey>("access");
   const [cancelBusy, setCancelBusy] = useState(false);
@@ -94,11 +96,13 @@ export default function ScanningConsole() {
   const runRef = useRef<string | null>(null);
   const localAbortRef = useRef<AbortController | null>(null);
   const [localReportId, setLocalReportId] = useState<string | null>(null);
+  const [publicRepoName, setPublicRepoName] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const publicRepo = params.get("repo");
     if (publicRepo) {
+      setPublicRepoName(publicRepo);
       if (!/^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9_.-]{1,100}$/.test(publicRepo)) {
         setLoad({ type: "invalid" }); return;
       }
@@ -122,6 +126,7 @@ export default function ScanningConsole() {
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
           let pending = "", sawReport = false, lastId = "";
+          let completedId: string | null = null;
           function handle(line: string) {
             if (!line.trim() || stopped) return;
             const packet: unknown = JSON.parse(line);
@@ -142,6 +147,7 @@ export default function ScanningConsole() {
                 throw new Error("Could not keep the report in this browser tab. Free tab storage or allow session storage and scan again.");
               }
               sawReport = true;
+              completedId = lastId;
               setLocalReportId(lastId);
             }
           }
@@ -155,7 +161,12 @@ export default function ScanningConsole() {
             for (const line of chunks) handle(line);
           }
           if (pending.trim()) handle(pending);
-          if (!sawReport) throw new Error("The scan ended without a verified complete report.");
+          if (!sawReport || !completedId) throw new Error("The scan ended without a verified complete report.");
+          // Navigation is deliberately gated behind the complete, validated,
+          // successfully stored report and clean end of the server stream.
+          if (!stopped && !controller.signal.aborted) {
+            router.replace("/assess/results?local=" + encodeURIComponent(completedId));
+          }
         } catch (error) {
           if (stopped) return;
           const message = controller.signal.aborted ? "Scan cancelled. No report was created." :
@@ -322,7 +333,7 @@ export default function ScanningConsole() {
           <section className="scan-visual" aria-labelledby="scan-visual-title">
             <div className="scan-panel-top">
               <span><Radar size={16}/> INSPECTION ENGINE</span>
-              <span className="scan-panel-ref">{snapshot?.target.name || new URLSearchParams(typeof window === "undefined" ? "" : window.location.search).get("repo") || "NO SOURCE CONNECTED"}</span>
+              <span className="scan-panel-ref">{snapshot?.target.name || publicRepoName || "NO SOURCE CONNECTED"}</span>
             </div>
 
             <div className={"scan-orbit-scene "+(running ? "is-active" : "")} aria-hidden="true">
@@ -349,7 +360,7 @@ export default function ScanningConsole() {
               <p>{running
                 ? "The steps at right reflect verified status received from the assessment service."
                 : snapshot?.status === "completed"
-                ? "The worker reported completion. A full report can appear only once authenticated report access is connected."
+                ? "The supported checks have finished. Securing the full report for automatic navigation…"
                 : load.type === "unavailable"
                 ? "The security engine is not configured. A run cannot be started or verified from this preview."
                 : load.type === "error"
@@ -357,7 +368,7 @@ export default function ScanningConsole() {
                 : load.type === "invalid"
                 ? "The run reference in this URL is not valid. No application was accessed."
                 : load.type === "loading"
-                ? "Checking for an authorized assessment record. Nothing is marked complete until confirmed."
+                ? publicRepoName ? "Contacting GitHub and preparing a bounded, read-only source scan. No progress is guessed." : "Checking for an authorized assessment record. Nothing is marked complete until confirmed."
                 : "Connect an authorized source first. This page shows the inspection interface—not a simulated scan."}</p>
 
               <div className="scan-progress-box">
@@ -389,7 +400,7 @@ export default function ScanningConsole() {
                 </Link>
               )}
               {actionError && <p className="scan-action-error" role="alert">{actionError}</p>}
-              <p className="scan-honesty"><ShieldCheck size={14}/> Illustration only until a verified scan is connected. No fabricated findings.</p>
+              <p className="scan-honesty"><ShieldCheck size={14}/>{publicRepoName ? "Real read-only public-source checks. No runtime testing or claim of complete security coverage." : "Preview only until a real scan starts. No fabricated findings."}</p>
             </div>
           </section>
 
@@ -422,7 +433,7 @@ export default function ScanningConsole() {
             </div>
             <div className="scan-rail-bottom">
               <span className="scan-rail-bottom-icon"><LockKeyhole size={17}/></span>
-              <p>Nothing starts without authorization. Coverage and unsupported checks must be reported, not hidden.</p>
+              <p>Public source is read-only. Private repositories require explicit authorization. Partial coverage stays visible.</p>
             </div>
           </section>
         </div>
@@ -452,11 +463,11 @@ export default function ScanningConsole() {
           <div className="scan-activity-foot"><CircleAlert size={15}/><p>ShipSafe is not a security certification. Uncompleted checks, errors and false-positive limitations remain visible to the user.</p></div>
         </section>
 
-        <section className="scan-results-preview">
+        {!publicRepoName && <section className="scan-results-preview">
           <div className="scan-results-preview-icon"><FileSearch size={20}/></div>
           <div><strong>Explore the full results experience</strong><p>Open a complete sample report—with all findings, evidence, and remediation visible. This is not your application's scan.</p></div>
           <Link href="/assess/results">View full sample <ArrowRight size={16}/></Link>
-        </section>
+        </section>}
 
         <section className="scan-footer-cta">
           <div><p className="scan-eyebrow">THE NEXT MILESTONE</p><h2>From inspection to action.</h2><p>Public-repository scans now generate real static findings and full reports. Private-repository authorization and deeper runtime testing remain separate future capabilities.</p></div>
