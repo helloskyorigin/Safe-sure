@@ -20,7 +20,7 @@ test("public choice reveals one URL field, validates, then opens scanning", asyn
   await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://evil.example/my/repo");
   await page.getByRole("button", { name: "Scan repository" }).click();
-  await expect(page.getByRole("alert")).toContainText("Enter a valid GitHub URL");
+  await expect(page.locator("#connect-url-error")).toContainText("Enter a valid GitHub URL");
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://github.com/vercel/ms");
   await page.getByRole("button", { name: "Scan repository" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
