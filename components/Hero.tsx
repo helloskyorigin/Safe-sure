@@ -32,23 +32,26 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
             <em>Your AI security agent.</em>
           </motion.h1>
           <p className="hero-sub animate delay-2">
-            Expose potential risks hiding in your code. Secuvora examines credentials, dependencies and security-sensitive configurations—then shows the evidence, affected files and next steps that matter.
+            Find the risky lines. See the evidence. Know what to fix. Secuvora examines credentials, dependencies and security-sensitive configurations through bounded, read-only source checks.
           </p>
           <div className="hero-action animate delay-3">
+            <div className="hero-cta-row">
             <a
               href="/assess"
               onClick={handleAssessmentClick}
               data-start
               className="button button-dark button-primary"
             >
-              Run security agent{" "}
+              Run security agent — free{" "}
               <span className="button-arrow" aria-hidden="true">
                 →
               </span>
             </a>
+            <a href="/assess/results" className="hero-preview-link">Explore example report <span aria-hidden="true">↗</span></a>
+            </div>
             <p className="under-cta">
               <span className="tiny-check">✓</span> Read-only security review{" "}
-              <span className="dot-separator">·</span> Full report included · free
+              <span className="dot-separator">·</span> Actual file locations <span className="dot-separator">·</span> No account for public scans
             </p>
           </div>
         </div>
@@ -144,7 +147,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
                 <span>
                   <i></i> Evidence-backed agent analysis
                 </span>
-                <span>Preview only</span>
+                <span>Fictional example</span>
               </div>
             </div>
           </div>
