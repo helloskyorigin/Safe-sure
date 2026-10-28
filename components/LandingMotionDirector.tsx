@@ -54,7 +54,7 @@ const STORE_KEY = "shipsafe:landing-reveals:v2";
  */
 export default function LandingMotionDirector() {
   useEffect(() => {
-    const root = document.getElementById("main");
+    const root = document.body;
     if (!root) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced || !("IntersectionObserver" in window)) return;
