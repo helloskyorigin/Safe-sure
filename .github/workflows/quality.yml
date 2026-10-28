@@ -24,3 +24,7 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: '1'
+      - name: Install Chromium for browser smoke tests
+        run: npx playwright install --with-deps chromium
+      - name: Verify homepage scroll and mobile navigation
+        run: npm run test:e2e
