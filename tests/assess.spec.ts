@@ -19,7 +19,7 @@ test("permissions disclosure and GitHub connection status are honest and interac
   await page.getByRole("button", { name: "Connect with GitHub" }).click();
   const dialog = page.getByRole("dialog", { name: /GitHub connection is coming soon/i });
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByText(/No GitHub authorization was initiated/i)).toBeVisible();
+  await expect(dialog.getByText(/Private repository access still requires a GitHub App integration/i)).toBeVisible();
   await dialog.getByRole("button", { name: /Understood/i }).click();
   await expect(dialog).not.toBeVisible();
 });
