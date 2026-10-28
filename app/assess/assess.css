@@ -215,3 +215,16 @@
 .assess-scan-preview>a{width:35px;height:35px;border-radius:10px;background:#fff;border:1px solid #dbe5f1;color:#5e83b4;display:grid;place-items:center;flex:none;transition:transform .25s,background .25s}
 .assess-scan-preview>a:hover{background:#e7f0fb;transform:translateX(3px)}
 @media(max-width:375px){.assess-scan-preview{gap:9px;padding:12px}.assess-scan-preview-icon{width:35px;height:35px}}
+
+/* Live public-source scan entry */
+.assess-live-form{display:grid;gap:12px}
+.assess-live-form>label{font-size:11px;font-weight:750;color:#415774}
+.assess-live-form .assess-primary{margin-top:5px}
+.assess-repo-input{display:flex;align-items:center;gap:11px;padding:0 14px;height:52px;border:1px solid #d9e5f2;border-radius:10px;background:#f9fbfe;color:#6a8db9;transition:border-color .2s,box-shadow .2s}
+.assess-repo-input:focus-within{border-color:#7da1cf;box-shadow:0 0 0 3px #e8f1fd}
+.assess-repo-input input{width:100%;flex:1;border:0;outline:0;background:transparent;min-width:0;color:#253950;font:inherit;font-size:13px}
+.assess-repo-input input::placeholder{color:#a1afc1}
+.assess-public-error{margin:0;color:#b55754;font-size:11px;line-height:1.6}
+.assess-or-separator{display:flex;align-items:center;gap:12px;color:#a2b0c1;font-size:9px;letter-spacing:.12em;font-weight:800;margin:10px 0}
+.assess-or-separator span{height:1px;flex:1;background:#e5ecf4}
+.assess-live-form .assess-availability{margin:0 0 5px}
