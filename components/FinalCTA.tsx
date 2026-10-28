@@ -14,7 +14,7 @@ export default function FinalCTA({ onOpenAssessment }: { onOpenAssessment: () =>
           <h2 id="final-cta-title">Understand your code.<br/><em>Whenever you want.</em></h2>
           <p>Start an agent investigation on a GitHub repository. See actual findings, redacted evidence, affected code and practical fixes.</p>
           <button type="button" className="button button-dark final-button" onClick={onOpenAssessment}>Run security agent <ArrowUpRight size={17}/></button>
-          <small>No separate Secuvora signup planned · No report paywall</small>
+          <small>Public repository access needs no signup · Complete reports free</small>
         </motion.div>
       </div>
     </section>
