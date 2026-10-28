@@ -126,7 +126,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
           <a href="#faq" onClick={closeMenu}>
             FAQ
           </a>
-          <Link href="/assess/history" onClick={closeMenu}>Scan history</Link>
+          <Link href="/assess/history" onClick={closeMenu}>Agent history</Link>
           <a
             href="/assess"
             onClick={handleAssessmentClick}
