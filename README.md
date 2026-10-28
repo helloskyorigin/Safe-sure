@@ -1,6 +1,6 @@
 # ShipSafe
 
-ShipSafe is a developer-first, read-only public-repository security scanning MVP. This Next.js 15 App Router project includes a premium landing, live public source scanning, full results, an illustrative sample report and legal pages. Private-repository access is not yet enabled.
+ShipSafe is a developer-first, read-only public-repository security scanning MVP. This Next.js 15 App Router project includes a premium landing, live public source scanning, full results, an illustrative sample report and legal pages. Private-repository OAuth/source scanning and encrypted seven-day recovery are now implemented as opt-in server components; activation requires the operator to configure a GitHub App and Upstash Redis.
 
 ## Auto-open results and public-scanner readiness
 
@@ -22,7 +22,7 @@ For deployment instructions, scope/accuracy limitations, private-repository mile
 
 ## What is not implemented
 
-**Public GitHub scanning is active in the codebase**, via /api/scan/public. It fetches a pinned public revision, applies supported source-pattern rules and checks pinned npm/PyPI dependencies against OSV. Source is processed transiently and reports are held in browser sessionStorage only. Private GitHub authorization, persistent user report storage and payment collection are not connected. The fictional example report is always labeled as a sample.
+**Public GitHub scanning is active in the codebase**, via /api/scan/public. It fetches a pinned public revision, applies supported source-pattern rules and checks pinned npm/PyPI dependencies against OSV. Source is processed transiently and reports are held in browser sessionStorage only. The private GitHub App, encrypted durable report storage and cross-instance quotas require external credentials; no payment collection is connected. The fictional example report is always labeled as a sample.
 
 The "Assess your application" buttons open /assess. The GitHub connection action there explains the current integration status. Legal pages describe the current state and must be reviewed once final operator details, provider configuration, private contact methods and data-handling processes are known.
 
@@ -56,7 +56,7 @@ The second product screen is now available at **/assess**. Landing CTAs navigate
 - No fake scan progress, invented customer findings, or false connection state.
 - Tests cover landing navigation, permissions, dialog, illustrative flow, Android-sized viewport and 320px overflow.
 
-**Important launch dependency:** Public GitHub source inspection needs no authorization, but the GitHub App has not been registered/configured for private repositories. The /assess screen provides an active public-repository URL form, **not an active private GitHub integration**. To enable real repository selection and scans later, implement GitHub App installation and verified callback/user authorization, least-privilege tokens, private analysis workers and secure session/report state. Do not trust an unverified GitHub installation_id callback parameter. Until then, the private connection button only explains its status. Public scans fetch public repository files when explicitly requested.
+**Important launch dependency:** Public GitHub source inspection needs no authorization, but the GitHub App has not been registered/configured for private repositories. The /assess screen provides an active public-repository URL form, **not an active private GitHub integration**. To enable authorized private repository scans, configure GitHub OAuth credentials, a selected-repository read-only installation, a session secret, the public OAuth callback and Upstash REST storage. Owner-scoped API permission checks, private GitHub blob reads and encrypted report recovery are implemented, but independent isolation and security review are still pending. Do not trust an unverified GitHub installation_id callback parameter. Until then, the private connection button only explains its status. Public scans fetch public repository files when explicitly requested.
 
 Official integration references:
 - https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/about-the-setup-url
@@ -72,7 +72,7 @@ Read the [scan-engine integration contract](docs/scan-engine-integration.md) bef
 
 The complete results experience is at **/assess/results**, accessible from the inspection screen's **View full sample** link. It includes all six clearly fictional findings, severity filters, file and line locations, evidence (masked when appropriate), risk explanations, remediation checklists, verification guidance, coverage disclosures, sample JSON export and a printable full report.
 
-**No payment is required or requested.** Actual public-source findings and all sample details are visible. Never show the sample as a real scan. The /api/assessments/[runId]/report GET endpoint intentionally returns 503 until authenticated jobs and authorization are implemented. A ?run= URL does not grant access, and the results screen does not substitute fictional findings for unavailable real ones.
+**No payment is required or requested.** Actual public-source findings and all sample details are visible. Never show the sample as a real scan. The /api/assessments/[runId]/report endpoint now checks GitHub login and user-owned encrypted report records. Without a valid login it returns 401; without configured storage, 503. A ?run= URL does not grant access, and the results screen does not substitute fictional findings for unavailable real ones.
 
 See the full-report schema in lib/report-contract.ts.
 
@@ -87,4 +87,4 @@ See the full-report schema in lib/report-contract.ts.
 
 ## Launch blockers
 
-Before supporting private repositories or deeper assessments: implement least-privilege authorization, isolated untrusted-code analysis, accurate scan coverage/evidence, secrets redaction, durable data retention controls and private support/security reporting. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
+Before broad private or commercial usage: confirm real Github App installation, hosting credentials, isolated job workers, tested source-retention limits, shared abuse controls, private vulnerability disclosure contact and an independent security review. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
