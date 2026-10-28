@@ -59,7 +59,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             data-start
             className="button button-dark price-cta"
           >
-            Run security agent <span aria-hidden="true">→</span>
+            Scan a public repository <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
             Public repository agent analysis is available now. Private GitHub access requires configured authorization.
