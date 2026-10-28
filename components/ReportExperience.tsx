@@ -69,7 +69,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
             <span className="experience-example">INTERACTIVE EXAMPLE · NOT A REAL SCAN</span>
           </div>
           <div className="experience-tabs" role="tablist" aria-label="Explore report views">
-            <button type="button" role="tab" aria-selected={view === "free"} aria-controls="demo-panel" className={view === "free" ? "is-active" : ""} onClick={() => setView("free")}>Free overview</button>
+            <button type="button" role="tab" aria-selected={view === "free"} aria-controls="demo-panel" className={view === "free" ? "is-active" : ""} onClick={() => setView("free")}>Overview</button>
             <button type="button" role="tab" aria-selected={view === "full"} aria-controls="demo-panel" className={view === "full" ? "is-active" : ""} onClick={() => setView("full")}>Full report <span>FREE</span></button>
           </div>
           <div id="demo-panel" role="tabpanel" className="experience-content">
@@ -82,7 +82,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
                       <div className="demo-severity-item" key={label}><span className={"demo-dot "+tone}></span><strong>{count}</strong><span>{label}</span></div>
                     ))}
                   </div>
-                  <div className="free-preview"><div className="free-preview-icon"><LockKeyhole size={20}/></div><div><strong>The exact findings come next.</strong><p>Locations, supporting evidence, potential impact and suggested fixes are included in the full free report.</p></div><button type="button" onClick={() => setView("full")} className="demo-inline-action">Preview details <ArrowRight size={15}/></button></div>
+                  <div className="free-preview"><div className="free-preview-icon"><LockKeyhole size={20}/></div><div><strong>All details are included.</strong><p>Locations, supporting evidence, potential impact and suggested fixes are included in the full free report.</p></div><button type="button" onClick={() => setView("full")} className="demo-inline-action">Preview details <ArrowRight size={15}/></button></div>
                 </motion.div>
               ) : (
                 <motion.div key="full" initial={reduceMotion ? false : { opacity: .5, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: .4, y: -8 }} transition={{ duration: reduceMotion ? 0 : .28 }}>
