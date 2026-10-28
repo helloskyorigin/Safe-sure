@@ -47,3 +47,24 @@ test("Secuvora shows confident AI-agent positioning without beta or launch-only 
   await expect(page.locator(".connect-header-mark")).toContainText("SECUVORA · SECURITY AGENT");
   await expect(page.locator("body")).not.toContainText(/\bbeta\b|not just before launch|before you ship/i);
 });
+
+
+test("Continuous Security roadmap badge stays honest, visible and within mobile viewport", async ({ browser }) => {
+  for (const width of [375, 1280]) {
+    const context = await browser.newContext({ viewport: { width, height: 850 } });
+    const page = await context.newPage();
+    await page.goto("/");
+    const badge = page.getByRole("note", { name: "Continuous Security is coming soon" });
+    await expect(badge).toBeVisible();
+    await expect(badge.getByText("Continuous Security")).toBeVisible();
+    await expect(badge.getByText("COMING SOON")).toBeVisible();
+    await expect(badge.locator("button, a")).toHaveCount(0);
+    const bounds = await badge.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow, "page overflow at " + width).toBeLessThanOrEqual(1);
+    await context.close();
+  }
+});
