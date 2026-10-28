@@ -12,12 +12,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ShipSafe — Know the risks before you ship",
+  title: "Secuvora — Your on-demand security agent",
   description:
-    "ShipSafe helps developers understand application security risks, why they matter, and how to fix them. Full report details included. Real read-only public GitHub scanning; private integration in development.",
+    "Secuvora is an on-demand automated security agent for GitHub repositories. It investigates supported source patterns, potential credentials, configuration risks and OSV dependency advisories, with evidence-based, free reports. AI model reasoning is not enabled.",
   openGraph: {
-    title: "ShipSafe — Know the risks before you ship",
-    description: "Clear, actionable application security. Full security report with evidence and fixes, no report paywall.",
+    title: "Secuvora — Your on-demand security agent",
+    description: "An evidence-backed security agent for developers. Read-only source analysis, published vulnerability intelligence and actionable findings, free.",
     type: "website",
   },
   icons: {
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        <Script id="shipsafe-disable-scroll-restore" strategy="beforeInteractive">{"try { history.scrollRestoration = 'manual'; } catch (e) {}"}</Script>
+        <Script id="secuvora-disable-scroll-restore" strategy="beforeInteractive">{"try { history.scrollRestoration = 'manual'; } catch (e) {}"}</Script>
         <meta name="theme-color" content="#fcfdff" />
       </head>
       <body>{children}</body>
