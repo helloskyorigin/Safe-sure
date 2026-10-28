@@ -74,7 +74,7 @@ export default function AssessmentDialog({ isOpen, onClose }: AssessmentDialogPr
         <p className="eyebrow">PRODUCT PREVIEW</p>
         <h2 id="dialog-title">Security assessments are coming soon.</h2>
         <p id="dialog-copy">
-          You&apos;re viewing ShipSafe&apos;s landing page. Source-code authorization and
+          You&apos;re viewing Secuvora&apos;s landing page. Source-code authorization and
           scanning are not connected yet. No application data has been accessed.
         </p>
         <button
