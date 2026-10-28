@@ -26,11 +26,11 @@ This is an interface and integration contract, not a working security scan:
 6. Use real worker events to update stage statuses; explicitly report skipped/failed checks and unsupported ecosystems.
 7. Implement idempotent, authenticated cancellation and distinguish request receipt from confirmed stop.
 8. Redact potential credentials in API status, logs and reports.
-9. On completion, navigate only to an authorized results screen; a paid report requires server-verified payment.
+9. On completion, navigate only to an authorized results screen; report access requires server-verified authorization; there is no current payment gate.
 10. Publish scope, retention and actual scan capabilities before accepting source code.
 
 ## Local verification
 
 Run npm install, npm run typecheck, npm run build and npm run test:e2e. GitHub Actions also runs these checks on commits.
 
-The GitHub App, analysis worker, report storage and payment unlock remain **not implemented**.
+The GitHub App, analysis worker, report storage and live report delivery remain **not implemented**.
