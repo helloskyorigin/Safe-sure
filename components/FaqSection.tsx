@@ -6,11 +6,11 @@ import { Plus } from "lucide-react";
 
 const faqs = [
   {
-    question: "Do I need a Secuvora account?",
-    answer: "No separate Secuvora signup is planned. Source access will still need explicit authorization through the connection provider.",
+    question: "Do I need an account to run the agent?",
+    answer: "No account is needed for public repository checks. Private GitHub repositories require explicit authorization when that integration is configured.",
   },
   {
-    question: "Will Secuvora modify my application?",
+    question: "Will the security agent change my code?",
     answer: "No. The agent performs bounded read-only source analysis and advisory lookups. It does not modify code or apply patches; you review and make changes yourself.",
   },
   {
