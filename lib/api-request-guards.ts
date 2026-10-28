@@ -15,7 +15,18 @@ export function isAllowedMutationOrigin(request: Request, expectedOrigin?: strin
     const supplied = new URL(origin);
     const allowed = new URL(expectedOrigin || process.env.SHIPSAFE_PUBLIC_ORIGIN || request.url);
     // Origin is a serialized origin, never a URL with path/userinfo/query.
-    if (origin !== supplied.origin || supplied.origin !== allowed.origin) return false;
+    if (origin !== supplied.origin) return false;
+    if (supplied.origin !== allowed.origin) {
+      // A local reverse proxy can expose 127.0.0.1 while Next.js sees localhost.
+      // Permit only equivalent loopback hosts with the SAME port, and ONLY when
+      // no canonical origin has been configured. Deployed origins stay strict.
+      const loopback = (host: string) => host === "localhost" || host === "127.0.0.1";
+      const localAlias = !expectedOrigin && !process.env.SHIPSAFE_PUBLIC_ORIGIN &&
+        supplied.protocol === "http:" && allowed.protocol === "http:" &&
+        loopback(supplied.hostname) && loopback(allowed.hostname) &&
+        supplied.port === allowed.port;
+      if (!localAlias) return false;
+    }
     return supplied.protocol === "https:" ||
       (supplied.protocol === "http:" && ["localhost", "127.0.0.1"].includes(supplied.hostname));
   } catch {
