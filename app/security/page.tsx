@@ -55,7 +55,7 @@ export default function SecurityPage() {
       <section id="secrets" className="legal-section">
         <h2>Secrets, retention and reports</h2>
         <p>A production assessment should avoid logging or reproducing complete credentials in user-facing reports. Findings should mask suspected secrets, restrict report access to the entitled recipient and state whether sensitive content is stored at all.</p>
-        <p>Before enabling source access, ShipSafe must set and publish retention, access revocation and deletion rules for code, scan artifacts, diagnostic logs and paid reports. There is no current repository ingestion or customer-report database in the public preview.</p>
+        <p>Before enabling source access, ShipSafe must set and publish retention, access revocation and deletion rules for code, scan artifacts, diagnostic logs and reports. There is no current repository ingestion or customer-report database in the public preview.</p>
       </section>
       <section id="limitations" className="legal-section">
         <h2>Accuracy and limitations</h2>
@@ -65,7 +65,7 @@ export default function SecurityPage() {
       <section id="reporting" className="legal-section">
         <h2>Reporting a security issue</h2>
         <p><strong>Do not publish sensitive vulnerability reports in public GitHub issues.</strong> Public issues are appropriate only for non-sensitive bugs and product feedback. Never post exploit details, credentials, customer information or vulnerable private endpoints there.</p>
-        <p>A dedicated private vulnerability-reporting method must be enabled and published before ShipSafe handles customer source code or accepts payments. We do not invent a security email address or claim an unverified private inbox exists today. See <Link href="/contact">Contact</Link> for the currently available public feedback channel.</p>
+        <p>A dedicated private vulnerability-reporting method must be enabled and published before ShipSafe handles customer source code or begins providing real reports. We do not invent a security email address or claim an unverified private inbox exists today. See <Link href="/contact">Contact</Link> for the currently available public feedback channel.</p>
       </section>
       <section id="incidents" className="legal-section">
         <h2>Incident readiness and changes</h2>
