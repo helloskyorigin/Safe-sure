@@ -15,6 +15,7 @@ import {
 } from "@/lib/report-contract";
 import { githubSourceUrl, priorityFindings, remediationMarkdown } from "@/lib/report-presentation";
 import { loadPublicReport } from "@/lib/browser-report-history";
+import ReportDeltaPanel from "@/components/ReportDeltaPanel";
 
 type ReportState =
   | { kind: "loading" }
@@ -51,6 +52,8 @@ function downloadText(filename: string, content: string, mime: string) {
   anchor.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+function HistoryIcon() { return <GitCommitHorizontal size={15}/>; }
 
 function readableDate(value: string) {
   const time = new Date(value);
@@ -158,7 +161,10 @@ export default function ResultsExperience() {
       <div className="result-container result-nav-inner">
         <Link className="brand" href="/" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
         <span className="result-nav-label"><span/> SECUVORA AGENT REPORT</span>
-        <Link href="/assess" className="result-nav-back"><ArrowLeft size={16}/> <span>New investigation</span></Link>
+        <div className="result-nav-actions">
+          <Link href="/assess/history" className="result-nav-back"><HistoryIcon/> <span>History</span></Link>
+          <Link href="/assess" className="result-nav-back"><ArrowLeft size={16}/> <span>New investigation</span></Link>
+        </div>
       </div>
     </header>
 
@@ -248,6 +254,7 @@ export default function ResultsExperience() {
           </div>
         </section>
 
+        {state.kind === "live" && <ReportDeltaPanel report={state.report} source={state.source}/>}
         <section className="result-workspace" aria-label="Detailed report">
           <div className="result-finding-panel" id="findings">
             <div className="result-panel-head">
