@@ -3,8 +3,8 @@ import AssessmentStart from "@/components/AssessmentStart";
 import "./assess.css";
 
 export const metadata: Metadata = {
-  title: "Assess your application | ShipSafe",
-  description: "Choose a public GitHub URL or connect an authorized private repository. One clear path to a full security report.",
+  title: "Run your security agent | Secuvora",
+  description: "Start your Secuvora security agent on a public GitHub repository, or authorize private source access when configured. Get evidence-backed findings, free.",
   robots: { index: false, follow: true },
 };
 
