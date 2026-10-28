@@ -13,8 +13,9 @@ test("scroll effects are attached to many landing sections, not only one reveal"
   await expect(target).toHaveAttribute("data-ship-motion", "rise");
   // It starts outside the first viewport and must not already be revealed.
   await expect(target).not.toHaveClass(/ship-motion-revealed/);
-  const opacity = await target.evaluate(el => getComputedStyle(el).opacity);
-  expect(Number(opacity)).toBeLessThan(0.1);
+  // CSS transition begins at hydration; let the entrance-to-hidden transition settle.
+  await expect.poll(async () => Number(await target.evaluate(el => getComputedStyle(el).opacity)),
+    { timeout: 2500 }).toBeLessThan(0.1);
 });
 
 test("scroll into view reveals all process steps in a stagger and never replays", async ({ page }) => {
