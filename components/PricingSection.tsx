@@ -55,7 +55,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             </li>
           </ul>
           <a
-            href="#assessment"
+            href="/assess"
             onClick={handleAssessmentClick}
             data-start
             className="button button-dark price-cta"
