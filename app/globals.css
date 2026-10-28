@@ -1938,3 +1938,71 @@ svg {
   .landing-motion-active [data-ship-motion="pop"] { translate: 0 22px; }
   .landing-motion-active [data-ship-motion].ship-motion-revealed { translate: 0 0; }
 }
+
+
+/* Secuvora roadmap signal: intentionally non-interactive, not a live feature. */
+.continuous-security-badge {
+  position: absolute;
+  z-index: 4;
+  top: -22px;
+  right: -12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  max-width: min(275px, 100%);
+  border: 1px solid #d8e4f3;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: 0 14px 35px rgba(34, 69, 111, .12);
+  border-radius: 12px;
+  padding: 11px 15px 11px 11px;
+  pointer-events: none;
+}
+.continuous-security-icon {
+  flex: none;
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  color: #557caa;
+  background: #edf4fd;
+  border: 1px solid #dae7f7;
+  border-radius: 10px;
+}
+.continuous-security-copy {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.continuous-security-copy strong {
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: -.015em;
+  line-height: 1.2;
+  color: #344c69;
+  white-space: nowrap;
+}
+.continuous-security-copy small {
+  color: #7590b1;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .1em;
+}
+@media (max-width: 860px) {
+  .continuous-security-badge {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: max-content;
+    margin: 0 0 15px auto;
+    box-shadow: 0 8px 22px rgba(34, 69, 111, .08);
+  }
+}
+@media (max-width: 375px) {
+  .continuous-security-badge {
+    padding: 9px 11px 9px 9px;
+    gap: 9px;
+  }
+  .continuous-security-icon { width: 31px; height: 31px; }
+  .continuous-security-copy strong { font-size: 10px; }
+}
