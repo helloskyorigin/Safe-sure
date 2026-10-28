@@ -47,10 +47,11 @@ test("coverage openly distinguishes complete and skipped checks", async ({ page 
 
 test("arbitrary run URLs never reveal sample report or pretend a scan completed", async ({ page, request }) => {
   const response = await request.get("/api/assessments/nonexistentRunId123/report");
-  expect(response.status()).toBe(503);
+  // User-scoped stored reports now fail closed for unauthenticated callers.
+  expect(response.status()).toBe(401);
   expect(response.headers()["cache-control"]).toContain("no-store");
   const data = await response.json();
-  expect(data.code).toBe("REPORT_ENGINE_NOT_CONFIGURED");
+  expect(data.error).toMatch(/login|required|unavailable/i);
   await page.goto("/assess/results?run=nonexistentRunId123");
   await expect(page.getByRole("heading", { name: /A verified report isn't available/i })).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(0);
