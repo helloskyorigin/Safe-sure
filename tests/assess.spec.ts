@@ -1,14 +1,14 @@
 import { test, expect } from "@playwright/test";
 
-test("landing assessment CTA opens exactly two choices without unnecessary fields", async ({ page }) => {
+test("landing starts a real public scan without an extra selector click", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator(".hero-action").getByRole("link", { name: /Run security agent/i }).click();
   await expect(page).toHaveURL(/\/assess$/);
-  await expect(page.getByRole("heading", { level: 1, name: /Which repository should your agent inspect/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Find the risks in your repository/i })).toBeVisible();
   await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
   await expect(page.getByRole("button", { name: /Public repository/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /Private repository/i })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: /GitHub repository URL/i })).toHaveCount(0);
+  await expect(page.getByRole("textbox", { name: /GitHub repository URL/i })).toBeVisible();
   await expect(page.getByText(/Explore the flow|What comes after connection|What will Secuvora look for/i)).toHaveCount(0);
 });
 
@@ -19,10 +19,10 @@ test("public choice reveals one URL field, validates, then opens scanning", asyn
   await expect(publicChoice).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://evil.example/my/repo");
-  await page.getByRole("button", { name: "Run security agent" }).click();
+  await page.getByRole("button", { name: "Scan this repository" }).click();
   await expect(page.locator("#connect-url-error")).toContainText("Enter a valid GitHub URL");
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("github.com/vercel/ms");
-  await page.getByRole("button", { name: "Run security agent" }).click();
+  await page.getByRole("button", { name: "Scan this repository" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 
@@ -59,7 +59,7 @@ test("private connected account selects a real authorized repo and continues to 
   const select = page.getByRole("combobox", { name: "Choose repository" });
   await expect(select.locator("option")).toHaveCount(2);
   await select.selectOption("founder/beta");
-  await page.getByRole("button", { name: "Run security agent" }).click();
+  await page.getByRole("button", { name: "Scan this repository" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?private=founder%2Fbeta/);
 });
 
