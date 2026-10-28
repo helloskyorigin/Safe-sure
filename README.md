@@ -8,6 +8,8 @@ Completed public scans automatically open the full Results Screen **only after**
 
 For deployment instructions, scope/accuracy limitations, private-repository milestones and remaining release blockers, see [Release and YC demo readiness](docs/release-readiness.md).
 
+For complete GitHub App registration, OAuth callback settings, selected-repository permissions, encrypted Upstash report storage and live private-scan validation, see [Private GitHub activation guide](docs/private-github-setup.md).
+
 
 
 ## What is included
