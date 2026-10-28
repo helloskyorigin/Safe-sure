@@ -189,6 +189,34 @@ export function analyzeSourceDetailed(files: Source[]): { findings: ReportFindin
           limitations:"Shell use can be safe with fixed commands and trusted inputs; no dataflow proof is provided.",
           evidence:"subprocess shell=True detected." },file.path,row,raw);
       }
+      // Agent and model integration risk signals: explicit opt-out flags, not
+      // claims of exploitability or interprocedural attacker-to-tool reachability.
+      if (python && /\ballow_dangerous_deserialization\s*=\s*True\b/.test(line)) {
+        add({ id:"SS-AGENT-001", title:"Unsafe model/vector-store deserialization explicitly enabled",
+          severity:"high", confidence:"medium", category:"AI agent trust boundary",
+          overview:"Source explicitly enables a dangerous deserialization mode in an AI integration.",
+          why:"Loading serialized data from untrusted model or vector-store files can execute code in the application process.",
+          steps:["Identify the serializer and source of the persisted files.",
+            "Disable the dangerous deserialization option for untrusted or user-provided files.",
+            "Use a safer file format or load only strictly authenticated, integrity-checked artifacts.",
+            "Restrict filesystem and runtime privileges of the loading service."],
+          verify:"Test with an untrusted serialized artifact and verify it is rejected without executing any code.",
+          limitations:"The explicit flag is a meaningful exposure signal, but safe trusted inputs and deployment context are not established here.",
+          evidence:"allow_dangerous_deserialization=True", redacted:false },file.path,row,raw);
+      }
+      if (python && /\ballow_dangerous_requests\s*=\s*True\b/.test(line)) {
+        add({ id:"SS-AGENT-002", title:"Agent request toolkit allows dangerous network requests",
+          severity:"medium", confidence:"medium", category:"AI agent tool permissions",
+          overview:"An AI tool integration explicitly permits network requests that may bypass framework safeguards.",
+          why:"When untrusted prompts can influence network destinations, an unrestricted request tool can reach sensitive internal services.",
+          steps:["Identify who can invoke the tool and how request destinations are chosen.",
+            "Disable the dangerous requests option where possible.",
+            "Enforce destination allowlists and block private/link-local/metadata networks at the network boundary.",
+            "Run the agent with least-privilege credentials and add SSRF regression tests."],
+          verify:"Confirm the tool rejects internal addresses, metadata endpoints and disallowed hosts from untrusted prompts.",
+          limitations:"This is a configuration signal. The scanner has not proven a user-controlled prompt or reachable internal endpoint.",
+          evidence:"allow_dangerous_requests=True", redacted:false },file.path,row,raw);
+      }
       if (python && /\bpickle\.loads?\s*\(/.test(line)) {
         add({ id:"SS-DESER-001", title:"Python pickle deserialization sink", severity:"medium", confidence:"low",
           category:"Deserialization", overview:"The source deserializes Python pickle data.",
@@ -233,7 +261,7 @@ export function analyzeSourceDetailed(files: Source[]): { findings: ReportFindin
       }
     }
   }
-  return { findings, truncated, inspectedLines, rulesRun: 12 };
+  return { findings, truncated, inspectedLines, rulesRun: 14 };
 }
 
 export function analyzeSource(files: Source[]): ReportFinding[] {
