@@ -14,7 +14,7 @@ ShipSafe is a developer-first application security product in **pre-launch devel
 
 ## What is not implemented
 
-**The product does not yet scan applications or collect payments.** Repository authorization, real scanning, storing reports, checkout, purchase validation and private support are not connected. The sample finding counts and examples are labeled as illustrative; no visual demo should be mistaken for a real security report.
+**Public GitHub scanning is active in the codebase**, via /api/scan/public. It fetches a pinned public revision, applies supported source-pattern rules and checks pinned npm/PyPI dependencies against OSV. Source is processed transiently and reports are held in browser sessionStorage only. Private GitHub authorization, persistent user report storage and payment collection are not connected. The fictional example report is always labeled as a sample.
 
 The "Assess your application" buttons open /assess. The GitHub connection action there explains the current integration status. Legal pages describe the current state and must be reviewed once final operator details, provider configuration, private contact methods and data-handling processes are known.
 
@@ -48,7 +48,7 @@ The second product screen is now available at **/assess**. Landing CTAs navigate
 - No fake scan progress, invented customer findings, or false connection state.
 - Tests cover landing navigation, permissions, dialog, illustrative flow, Android-sized viewport and 320px overflow.
 
-**Important launch dependency:** The ShipSafe GitHub App has not been registered/configured within the running application. The /assess screen is a production-buildable frontend, **not an active GitHub integration**. To enable real repository selection and scans later, implement GitHub App installation and verified callback/user authorization, least-privilege tokens, private analysis workers and secure session/report state. Do not trust an unverified GitHub installation_id callback parameter. Until then, the connect button explains the status and accesses no repositories.
+**Important launch dependency:** Public GitHub source inspection needs no authorization, but the GitHub App has not been registered/configured for private repositories. The /assess screen provides an active public-repository URL form, **not an active private GitHub integration**. To enable real repository selection and scans later, implement GitHub App installation and verified callback/user authorization, least-privilege tokens, private analysis workers and secure session/report state. Do not trust an unverified GitHub installation_id callback parameter. Until then, the private connection button only explains its status. Public scans fetch public repository files when explicitly requested.
 
 Official integration references:
 - https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/about-the-setup-url
@@ -56,7 +56,7 @@ Official integration references:
 
 ## Inspection console
 
-Screen 3 is implemented at **/assess/scanning** with a distinctive inspection lens, five interactive analysis layers, a worker-confirmed progress timeline and an honest no-run state. The connection screen links to the preview. The scan status/cancel API fails closed until authentication and a real worker are available.
+Screen 3 is implemented at **/assess/scanning** with a distinctive inspection lens, five interactive analysis layers, real streamed progress from /api/scan/public and a no-run state. The connection screen links to the preview. The scan status/cancel API fails closed until authentication and a real worker are available.
 
 Read the [scan-engine integration contract](docs/scan-engine-integration.md) before enabling application access.
 
@@ -64,7 +64,7 @@ Read the [scan-engine integration contract](docs/scan-engine-integration.md) bef
 
 The complete results experience is at **/assess/results**, accessible from the inspection screen's **View full sample** link. It includes all six clearly fictional findings, severity filters, file and line locations, evidence (masked when appropriate), risk explanations, remediation checklists, verification guidance, coverage disclosures, sample JSON export and a printable full report.
 
-**No payment is required or requested.** All details in the sample are visible. Never show the sample as a real scan. The /api/assessments/[runId]/report GET endpoint intentionally returns 503 until authenticated jobs and authorization are implemented. A ?run= URL does not grant access, and the results screen does not substitute fictional findings for unavailable real ones.
+**No payment is required or requested.** Actual public-source findings and all sample details are visible. Never show the sample as a real scan. The /api/assessments/[runId]/report GET endpoint intentionally returns 503 until authenticated jobs and authorization are implemented. A ?run= URL does not grant access, and the results screen does not substitute fictional findings for unavailable real ones.
 
 See the full-report schema in lib/report-contract.ts.
 
@@ -79,4 +79,4 @@ See the full-report schema in lib/report-contract.ts.
 
 ## Launch blockers
 
-Before accepting real security assessments: implement least-privilege authorization, isolated untrusted-code analysis, accurate scan coverage/evidence, secrets redaction, source retention limits, and private support/security reporting. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
+Before supporting private repositories or deeper assessments: implement least-privilege authorization, isolated untrusted-code analysis, accurate scan coverage/evidence, secrets redaction, durable data retention controls and private support/security reporting. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
