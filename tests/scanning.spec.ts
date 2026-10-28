@@ -8,7 +8,7 @@ test("scanning route renders honest idle state without invented progress", async
   await expect(page.getByText(/No progress data received/i)).toBeVisible();
   await expect(page.getByText(/No assessment activity yet/i)).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /Connect an application/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Scan a public repository/i })).toBeVisible();
 });
 
 test("inspectable check layers explain actual coverage and limitations", async ({ page }) => {
