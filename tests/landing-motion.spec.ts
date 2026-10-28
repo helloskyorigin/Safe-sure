@@ -30,7 +30,7 @@ test("scroll into view reveals all process steps in a stagger and never replays"
   await expect(heading).toHaveClass(/ship-motion-revealed/);
   const session = await first.getAttribute("data-ship-motion-key");
   expect(session).toBeTruthy();
-  const saved = await page.evaluate(() => JSON.parse(sessionStorage.getItem("shipsafe:landing-reveals:v2") || "[]") as string[]);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("shipsafe:landing-reveals:v2") || "[]") as string[]);
   expect(saved).toContain(session);
 
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
@@ -39,7 +39,7 @@ test("scroll into view reveals all process steps in a stagger and never replays"
   await expect(first).toHaveClass(/ship-motion-revealed/);
   await expect(first).toHaveCSS("opacity", "1");
 
-  // A same-tab revisit does not replay completed animations.
+  // A browser revisit does not replay completed animations.
   await page.goto("/assess");
   await page.goto("/");
   await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
