@@ -13,7 +13,7 @@ export default function FinalCTA({ onOpenAssessment }: { onOpenAssessment: () =>
           <span className="final-eyebrow"><ShieldCheck size={15}/> YOUR AI SECURITY AGENT</span>
           <h2 id="final-cta-title">Understand your code.<br/><em>Whenever you want.</em></h2>
           <p>Make security findings actionable. Investigate your GitHub repository, uncover supported risk signals and move from evidence to practical fixes in one clear report.</p>
-          <button type="button" className="button button-dark final-button" onClick={onOpenAssessment}>Run security agent <ArrowUpRight size={17}/></button>
+          <button type="button" className="button button-dark final-button" onClick={onOpenAssessment}>Start free scan <ArrowUpRight size={17}/></button>
           <small>Public repository access needs no signup · Complete reports free</small>
         </motion.div>
       </div>

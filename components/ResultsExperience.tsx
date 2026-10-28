@@ -125,6 +125,7 @@ export default function ResultsExperience() {
         .some(text => text.toLowerCase().includes(query))));
   }, [ordered, filter, search]);
   const active = found.find(f => f.id === selectedId) || found[0] || null;
+  const activeIndex = active ? found.findIndex(f => f.id === active.id) : -1;
 
   // Familiar developer shortcuts. Never intercept typing or modified keystrokes.
   useEffect(() => {
@@ -174,7 +175,7 @@ export default function ResultsExperience() {
     }
     setExportFeedback(kind === "sarif" ? "SARIF file downloaded" :
       kind === "json" ? "JSON report downloaded" : "Fix plan downloaded");
-    window.setTimeout(() => setExportFeedback(""), 2300);
+    window.setTimeout(() => setExportFeedback(""), 6500);
   }
 
   function selectFinding(finding: ReportFinding) {
@@ -226,7 +227,7 @@ export default function ResultsExperience() {
               <span className="result-date">{isSample ? "Fictional data" : readableDate(report.finishedAt)}</span>
             </div>
             <h1>Your agent report<span>.</span></h1>
-            <p>Your security agent investigated the available source. Review evidence, scope and recommended fixes.</p>
+            <p>{isSample ? "Explore a fictional example of the developer workflow. No repository was scanned." : "A bounded source review. Inspect candidate findings, exact file locations, coverage and suggested fixes."}</p>
           </div>
           <div className="result-toolbar">
             <button type="button" onClick={() => saveExport("plan")} className="result-action-secondary">
@@ -262,7 +263,7 @@ export default function ResultsExperience() {
               <span>{report.scanMetrics.rulesExecuted} source rules</span>
             </p>}
           </div>
-          <span className="result-included"><CheckCircle2 size={15}/> Complete agent report</span>
+          <span className="result-included"><CheckCircle2 size={15}/> Full available report · no paywall</span>
         </section>
 
         <section className="result-overview" aria-labelledby="result-overview-title">
@@ -286,7 +287,7 @@ export default function ResultsExperience() {
               {" "}{report.findings.length === 0
                 ? "Zero findings does not prove the repository is secure."
                 : "Static findings and advisory matches need manual context; they are not confirmed exploits."}</p>
-            <a href="#coverage">Coverage <ArrowRight size={14}/></a>
+            <div className="result-overview-actions"><a href="#findings">Review findings <ArrowRight size={14}/></a><a href="#coverage">Coverage <ArrowRight size={14}/></a></div>
           </div>
         </section>
 
@@ -308,7 +309,7 @@ export default function ResultsExperience() {
             <p className="result-keyboard-hint">Shortcuts <kbd>/</kbd> search · <kbd>J</kbd>/<kbd>K</kbd> navigate findings</p>
             <div className="result-filter-pills" aria-label="Severity filters">
               {levels.map(level => <button type="button" key={level} aria-pressed={filter === level}
-                onClick={() => setFilter(level)} className={filter === level ? "active" : ""}>{labels[level]}</button>)}
+                onClick={() => setFilter(level)} className={filter === level ? "active" : ""}>{labels[level]} <span aria-hidden="true" className="result-filter-count">{level === "all" ? report.findings.length : counts![level]}</span></button>)}
             </div>
             <div className="result-finding-list">
               {found.length === 0 ? <div className="result-no-findings">
@@ -342,6 +343,15 @@ export default function ResultsExperience() {
                   <span className={"result-detail-level " + active.severity}>{labels[active.severity]}</span></div>
                 <h2>{active.title}</h2>
                 <p>{active.overview}</p>
+                <nav className="result-finding-nav" aria-label="Move between filtered findings">
+                  <span>Finding {activeIndex + 1} of {found.length}</span>
+                  <div>
+                    <button type="button" onClick={() => selectFinding(found[activeIndex - 1])}
+                      disabled={activeIndex <= 0} aria-label="Previous finding"><ArrowLeft size={14}/> Previous</button>
+                    <button type="button" onClick={() => selectFinding(found[activeIndex + 1])}
+                      disabled={activeIndex >= found.length - 1} aria-label="Next finding">Next <ArrowRight size={14}/></button>
+                  </div>
+                </nav>
                 <div className="result-detail-ticket">
                   <small>Ready for your issue tracker</small>
                   <CopyButton label="Copy issue-ready finding" value={[
@@ -458,7 +468,7 @@ export default function ResultsExperience() {
         </section>
 
         <div className="result-bottom">
-          <p><ShieldCheck size={15}/> Full findings, evidence and fixes included. No paywall.</p>
+          <p><ShieldCheck size={15}/> All available findings and fix guidance included. Detection does not certify security.</p>
           <Link href="/assess">Scan another repository <ArrowRight size={16}/></Link>
         </div>
 

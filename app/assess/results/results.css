@@ -299,3 +299,33 @@
  .result-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
  .result-toolbar button{min-height:42px;white-space:normal}
 }
+
+
+/* Developer triage: severity counts + quick links + next/previous candidate. */
+.result-overview-actions{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:flex-end}
+.result-overview-actions>a{display:inline-flex;align-items:center;gap:5px;min-height:38px;
+ font-size:11px;font-weight:750;color:#4f78a7;white-space:nowrap}
+.result-overview-actions>a:hover{text-decoration:underline;text-underline-offset:3px}
+.result-filter-count{display:inline-grid;place-items:center;min-width:17px;padding:2px 4px;
+ border-radius:10px;background:#f0f4f9;color:#8498b2;font-size:9px;font-variant-numeric:tabular-nums}
+.result-filter-pills button.active .result-filter-count{background:#dcebf9;color:#376b9d}
+.result-finding-nav{margin:18px 0 4px;border-top:1px solid #e6edf5;border-bottom:1px solid #e6edf5;
+ padding:10px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.result-finding-nav>span{font-size:10px;font-weight:760;color:#8397af;font-variant-numeric:tabular-nums}
+.result-finding-nav>div{display:flex;align-items:center;gap:7px}
+.result-finding-nav button{min-height:37px;border-radius:8px;border:1px solid #dce5f0;background:#fff;
+ padding:8px 10px;color:#527499;display:inline-flex;align-items:center;gap:6px;justify-content:center;
+ font-family:inherit;font-weight:750;font-size:10px;cursor:pointer}
+.result-finding-nav button:not(:disabled):hover{background:#eff6fe;border-color:#b9d0e9}
+.result-finding-nav button:disabled{color:#b0becd;background:#f8fafc;cursor:not-allowed}
+.result-finding-nav button:focus-visible{outline:3px solid #7ca8d7;outline-offset:2px}
+@media(max-width:760px){.result-risk-note{align-items:flex-start;flex-wrap:wrap}
+ .result-overview-actions{width:100%;justify-content:flex-start;padding-left:28px}
+ .result-finding-nav button{min-height:44px}
+}
+@media(max-width:375px){.result-finding-nav{flex-wrap:wrap}
+ .result-finding-nav>div{width:100%}
+ .result-finding-nav button{flex:1}
+ .result-overview-actions{padding-left:0}
+}
+@media print{.result-finding-nav,.result-overview-actions{display:none!important}}

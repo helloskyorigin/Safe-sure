@@ -99,3 +99,18 @@
  .scan-page *,.scan-page *::before,.scan-page *::after{animation:none!important;transition:none!important}
  .scan-primary-link:hover{transform:none}
 }
+
+
+/* Clear source scope and readable 5-step verified workflow. */
+.scan-source-type{font-size:10px;line-height:1.6;font-weight:760;color:#7899bb;margin:7px 0 0}
+.scan-check-info{display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-start;gap:3px}
+.scan-check-info .scan-check-name{font-size:12px;flex:none;color:#35516d}
+.scan-check-info small{font-size:10px;line-height:1.5;font-weight:520;color:#94a4b7}
+.scan-check{min-height:57px;gap:12px}
+.scan-check-status{flex:none;min-width:49px;text-align:right}
+.scan-honesty{line-height:1.7}
+@media(max-width:450px){.scan-check{gap:8px}
+ .scan-check-info small{font-size:9px}
+ .scan-source-type{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.scan-inline-spinner,.scan-orbit-ring{animation:none!important}}
