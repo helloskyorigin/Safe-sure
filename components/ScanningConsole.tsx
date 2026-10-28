@@ -313,12 +313,12 @@ export default function ScanningConsole() {
               <div><p className="scan-rail-kicker">CHECK-BY-CHECK</p><h2 id="scan-rail-title">Inspection pipeline</h2></div>
               <span className="scan-rail-count">{snapshot ? checks.filter(c => c.status === "complete" || c.status === "skipped").length : "—"} / 05</span>
             </div>
-            <div className="scan-check-list" role="list">
+            <div className="scan-check-list">
               {checks.map((check, index) => {
                 const Icon = icons[check.key];
                 const selectedNow = selected === check.key;
                 return (
-                  <motion.button key={check.key} type="button" role="listitem" className={"scan-check "+(selectedNow ? "selected " : "")+"status-"+check.status}
+                  <motion.button key={check.key} type="button" className={"scan-check "+(selectedNow ? "selected " : "")+"status-"+check.status}
                     onClick={() => setSelected(check.key)} aria-pressed={selectedNow}
                     whileHover={reducedMotion ? undefined : { x: 3 }} transition={{ duration: .22 }}>
                     <span className="scan-check-step">{String(index + 1).padStart(2, "0")}</span>
