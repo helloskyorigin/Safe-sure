@@ -4,13 +4,13 @@
 Read-only source inspection pinned to a GitHub commit SHA. No application code execution, exploitation or credential validity probing.
 
 - Inspect up to 65 selected source, pinned lockfile and supported configuration files, with explicit file and size limits. Supported languages include JavaScript/TypeScript, Python, PHP, Ruby and Go, plus selected Terraform, GitHub Actions YAML and Dockerfiles.
-- Twelve curated static detector families: private-key boundaries, selected provider token patterns, credential-named literals, TLS validation bypass, JavaScript eval, React raw HTML, Django DEBUG, Python shell subprocess, pickle deserialization, request value to JS command execution, GitHub Actions write-all, and Terraform publicly_accessible.
+- Fourteen curated static detector families: private-key boundaries, selected provider token patterns, credential-named literals, TLS validation bypass, JavaScript eval, React raw HTML, Django DEBUG, Python shell subprocess, pickle deserialization, request value to JS command execution, GitHub Actions write-all, and Terraform publicly_accessible, explicit AI deserialization safety bypass and dangerous agent network-request allowances.
 - Check pinned npm package-lock and exact-version Python requirements/Pipfile.lock via OSV. Batch IDs are joined back to the exact package/version, followed by a verified advisory read. Publisher-reported severity and affected-package fixed-version events appear if provided.
 - Report actual path, line, detector ID, confidence, sanitized evidence, impact, human-review remediation, verification and limitations.
 - Report actual files inspected versus eligible, code/config lines, pinned packages queried and static rules executed.
 - Explicitly mark coverage limitations and provider failures rather than claiming a clean bill of health.
 
-## Accuracy boundaries
+## Agent-focused signals\n- SS-AGENT-001: explicit `allow_dangerous_deserialization=True` in Python AI model/vector-store integrations. Detects an opt-in unsafe deserialization path; not proof that untrusted files reach it.\n- SS-AGENT-002: explicit `allow_dangerous_requests=True` in Python agent request-tool integration. Detects a broad network-tool configuration; not proof that an untrusted prompt can trigger SSRF.\n- Both checks use redacted/constant evidence, stable rule IDs, normal fixture confidence downgrading and limited source scope.\n\n## Accuracy boundaries
 - Static matches are candidates, not confirmed vulnerabilities. This engine does not prove exploitability, reachable attack paths, token validity or production exposure.
 - The source detector is rule-based, **not** interprocedural AST-backed dataflow analysis. Context-aware confidence and placeholder exclusion reduce noise but can miss real exposures.
 - Missing publisher severity becomes a labeled Secuvora triage estimate (medium), not an invented CVSS.
