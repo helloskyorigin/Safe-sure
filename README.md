@@ -1,12 +1,14 @@
+# ShipSafe
+
+ShipSafe is a developer-first, read-only public-repository security scanning MVP. This Next.js 15 App Router project includes a premium landing, live public source scanning, full results, an illustrative sample report and legal pages. Private-repository access is not yet enabled.
+
 ## Auto-open results and public-scanner readiness
 
 Completed public scans automatically open the full Results Screen **only after** the full streamed report passes validation and is saved in the current browser tab. A failed, cancelled or malformed scan stays on the inspection screen with a clear error and Retry option. The full report is free, including supported checks with zero findings.
 
 For deployment instructions, scope/accuracy limitations, private-repository milestones and remaining release blockers, see [Release and YC demo readiness](docs/release-readiness.md).
 
-# ShipSafe
 
-ShipSafe is a developer-first application security product in **pre-launch development**. This repository contains a Next.js 15 App Router marketing website, an illustrative report explorer and informational legal pages.
 
 ## What is included
 
