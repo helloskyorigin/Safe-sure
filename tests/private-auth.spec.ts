@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("private source and saved report APIs fail closed before GitHub authentication", async ({ request }) => {
   const repos = await request.get("/api/github/repositories");
-  expect(repos.status()).toBe(401);
+  expect([401, 503]).toContain(repos.status()); // 503 when GitHub App not configured
   expect(repos.headers()["cache-control"]).toContain("no-store");
 
   const reports = await request.get("/api/reports");
