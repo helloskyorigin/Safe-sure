@@ -49,7 +49,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
             </a>
             <p className="under-cta">
               <span className="tiny-check">✓</span> Free initial assessment{" "}
-              <span className="dot-separator">·</span> Detailed fixes for $19
+              <span className="dot-separator">·</span> Full report included · free
             </p>
           </div>
         </div>
