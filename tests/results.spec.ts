@@ -58,11 +58,11 @@ test("arbitrary run URLs never reveal sample report or pretend a scan completed"
   await expect(page.getByRole("link", { name: /View clearly labeled sample report/i })).toBeVisible();
 });
 
-test("scanning links to complete sample report", async ({ page }) => {
+test("minimal scanning page has no sample-report distraction", async ({ page }) => {
   await page.goto("/assess/scanning");
-  await page.getByRole("link", { name: /View full sample/i }).click();
-  await expect(page).toHaveURL(/\/assess\/results$/);
-  await expect(page.locator(".result-finding-item")).toHaveCount(6);
+  await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /View full sample/i })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Scan a public repository/i })).toBeVisible();
 });
 
 test("all results widths avoid horizontal overflow", async ({ browser }) => {
