@@ -55,7 +55,7 @@ export default function RefundsPage() {
       <section id="questions" className="legal-section">
         <h2>Questions and contact</h2>
         <p>For non-sensitive product feedback, visit <Link href="/contact">Contact</Link>. Please do not post private application code, credentials or personal records in public support channels.</p>
-        <p className="legal-note"><strong>Product preview:</strong> Full example results are available now; real reports will be available only after the authorized scanning system is built and verified.</p>
+        <p className="legal-note"><strong>Current service:</strong> Public GitHub source scans can generate real, bounded reports today. Private repository scanning and durable recovery require operator configuration; the example remains illustrative.</p>
       </section>
     </LegalPage>
   );
