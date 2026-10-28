@@ -204,6 +204,17 @@ export default function ResultsExperience() {
               <div className="result-report-badge"><CheckCircle2 size={16}/> Full details included</div>
             </div>
 
+            {!isSample && <div className={"result-scan-summary " + (report.findings.length === 0 ? "zero" : "has-findings")} role="status">
+              <span className="result-scan-summary-icon">{report.findings.length === 0 ? <ShieldCheck size={21}/> : <FileSearch size={21}/>}</span>
+              <div>
+                <strong>{report.findings.length === 0 ? "No candidate findings in the supported checks" : report.findings.length + " candidate findings to review"}</strong>
+                <p>{report.findings.length === 0
+                  ? "This is not a clean bill of health. Unsupported files, skipped checks and runtime vulnerabilities may still exist."
+                  : "These are static source matches and dependency advisory signals—not confirmed exploits. Review the evidence, confidence and coverage below."}</p>
+              </div>
+              <a href="#coverage">Review coverage <ArrowRight size={15}/></a>
+            </div>}
+
             <div className="result-severities" aria-label="Finding severity filters">
               {(["critical", "high", "medium", "low"] as Severity[]).map((severity, index) => {
                 const Icon = labelIcon[severity];
@@ -233,7 +244,7 @@ export default function ResultsExperience() {
                     className={filter === level ? "active" : ""} onClick={() => setFilter(level)}>{levelNames[level]}</button>)}
                 </div>
                 <div className="result-finding-list">
-                  {findings.length === 0 ? <div className="result-no-findings"><FileSearch size={24}/><strong>No matching findings</strong><p>Try another search or reset the severity filter.</p></div> :
+                  {findings.length === 0 ? <div className="result-no-findings"><FileSearch size={24}/><strong>{report.findings.length === 0 ? "No findings flagged by these rules" : "No matching findings"}</strong><p>{report.findings.length === 0 ? "Review check coverage and limitations before drawing conclusions." : "Try another search or reset the severity filter."}</p></div> :
                     findings.map(finding => {
                       const Icon = labelIcon[finding.severity];
                       return <button type="button" key={finding.id}
@@ -291,7 +302,7 @@ export default function ResultsExperience() {
                     <section className="result-detail-section result-verify-box"><div className="result-section-title"><ClipboardCheck size={18}/><h3>How to verify</h3></div><p>{active.verification}</p></section>
                     {active.limitations && <section className="result-limitations"><ShieldQuestion size={17}/><div><strong>What this finding does not prove</strong><p>{active.limitations}</p></div></section>}
                   </motion.article>
-                </AnimatePresence> : <div className="result-no-detail"><FileSearch size={25}/><p>Select a finding to view its full details.</p></div>}
+                </AnimatePresence> : <div className="result-no-detail"><FileSearch size={25}/><p>{report.findings.length === 0 ? "No supported findings were reported. This does not prove the application is secure." : "Select a finding to view its full details."}</p><a href="#coverage">Review coverage and limitations</a></div>}
               </div>
             </section>
 
@@ -306,7 +317,7 @@ export default function ResultsExperience() {
               </motion.div>}</AnimatePresence>
             </section>
 
-            <section className="result-end"><div><p className="result-eyebrow">FROM FINDING TO FIX</p><h2>A report you can<br/>actually use.</h2><p>All detected candidates, evidence, fix guidance and coverage limits are included. Public GitHub source analysis is available now; private-repository access requires separate authorization.</p></div><div className="result-end-actions"><Link href="/assess" className="result-end-primary">Connect an application <ArrowUpRight size={17}/></Link><Link href="/security" className="result-end-secondary">Read our security approach <ArrowRight size={16}/></Link></div></section>
+            <section className="result-end"><div><p className="result-eyebrow">FROM FINDING TO FIX</p><h2>A report you can<br/>actually use.</h2><p>All detected candidates, evidence, fix guidance and coverage limits are included. Public GitHub source analysis is available now; private-repository access requires separate authorization.</p></div><div className="result-end-actions"><Link href="/assess" className="result-end-primary">Scan another repository <ArrowUpRight size={17}/></Link><Link href="/security" className="result-end-secondary">Read our security approach <ArrowRight size={16}/></Link></div></section>
 
             <div className="result-print-all">{report.findings.map(f=><article key={f.id}><h2>{f.id} · {f.title} ({f.severity})</h2><p>{f.location.path}:{f.location.line||"—"}</p><p>{f.overview}</p><p>{f.whyItMatters}</p><pre>{f.evidence}</pre><ol>{f.steps.map(step=><li key={step}>{step}</li>)}</ol><p><strong>Verify:</strong> {f.verification}</p><p><strong>Limitations:</strong> {f.limitations||"See report scope"}</p></article>)}</div>
           </>
