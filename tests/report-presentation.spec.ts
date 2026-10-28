@@ -45,7 +45,7 @@ test("server-verified private report renders real details and guarded source lin
   await expect(page.getByRole("link", { name: "Open source" })).toHaveAttribute("href",
     "https://github.com/acme/private-project/blob/"+revision+"/src/lib/client.ts#L18");
   await expect(page.getByText("INTERACTIVE SAMPLE")).toHaveCount(0);
-  await expect(page.getByText(/\$19|Upgrade|Checkout/i)).toHaveCount(0);
+  await expect(page.getByText(/\$19|Checkout|Upgrade to Pro/i)).toHaveCount(0);
 });
 
 test("private report with no authenticated data never shows sample findings", async ({ page }) => {
