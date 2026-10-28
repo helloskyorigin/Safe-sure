@@ -1,8 +1,6 @@
 {
   "name": "Secuvora",
-  "description": "Secuvora is an on-demand automated security agent that checks supported GitHub source, credential signals, configurations and OSV advisories. It generates evidence-backed, actionable reports; LLM analysis is not enabled.",
+  "description": "On-demand automated repository security agent powered by bounded source rules and OSV vulnerability intelligence. Model-powered AI reasoning is not enabled yet.",
   "permissions": [],
-  "capabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
+  "capabilities": []
 }
