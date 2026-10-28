@@ -87,7 +87,7 @@
 .scan-check-body small{font-size:10px;color:#94a2b4;line-height:1.5}
 .scan-check-trailing{color:#a2b0c1;display:flex;align-items:center;flex:none}
 .scan-check.status-complete .scan-check-trailing{color:#4f9a80}
-.scan-check.status-running .scan-check-trailing{color:#4d88bd;animation:scan-orbit 2s linear infinite}
+.scan-check.status-running .scan-check-trailing{color:#4d88bd;animation:scan-icon-spin 2s linear infinite}
 .scan-check.status-failed .scan-check-trailing{color:#c2786f}
 .scan-rail-bottom{display:flex;gap:11px;align-items:start;background:#f8fafc;border-top:1px solid #e8edf3;padding:19px 23px;margin-top:auto}
 .scan-rail-bottom-icon{background:#e9f1fc;color:#6689b2;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;flex:none}
@@ -137,6 +137,7 @@
 .scan-footer nav a{font-size:11px;color:#778ca5;font-weight:650}
 .scan-footer nav a:hover{color:#486d9e}
 @keyframes scan-orbit{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes scan-icon-spin{to{transform:rotate(360deg)}}
 @keyframes scan-heartbeat{50%{opacity:.45;box-shadow:0 0 0 7px #e0f2f2}}
 @media(max-width:1040px){
  .scan-container{width:calc(100% - 65px)}
