@@ -1,34 +1,36 @@
 import { test, expect } from "@playwright/test";
 
-test("scanning route renders honest idle state without invented progress", async ({ page }) => {
+test("idle scanning page stays minimal and never invents progress", async ({ page }) => {
   await page.goto("/assess/scanning");
-  await expect(page.getByRole("heading", { level: 1, name: /Under the surface/i })).toBeVisible();
-  await expect(page.getByText("Awaiting authorization")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Ready when your application is." })).toBeVisible();
-  await expect(page.getByText(/No progress data received/i)).toBeVisible();
-  await expect(page.getByText(/No assessment activity yet/i)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
+  await expect(page.getByText("Awaiting repository")).toBeVisible();
+  await expect(page.getByText("No repository selected")).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
+  await expect(page.locator(".scan-check")).toHaveCount(5);
   await expect(page.getByRole("link", { name: /Scan a public repository/i })).toBeVisible();
+  await expect(page.locator(".scan-detail-section, .scan-activity, .scan-footer-cta")).toHaveCount(0);
 });
 
-test("inspectable check layers explain actual coverage and limitations", async ({ page }) => {
+test("live scanning shows only five backend-driven stage labels", async ({ page }) => {
   await page.goto("/assess/scanning");
-  const button = page.getByRole("button", { name: /Dependency advisories/i });
-  await button.click();
-  await expect(button).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("heading", { name: /Know the risk in what you depend on/i })).toBeVisible();
-  await expect(page.getByText(/An advisory match alone does not prove/i)).toBeVisible();
-  await page.getByRole("button", { name: /Credential exposure/i }).click();
-  await expect(page.getByRole("heading", { name: /Credentials belong outside your code/i })).toBeVisible();
+  await expect(page.locator(".scan-check-name")).toHaveText([
+    "Source access",
+    "Secrets & credentials",
+    "Dependencies",
+    "Security patterns",
+    "Finalizing report",
+  ]);
+  await expect(page.locator(".scan-check-status")).toHaveText(["Waiting","Waiting","Waiting","Waiting","Waiting"]);
+  await expect(page.getByRole("progressbar")).toHaveCount(0);
 });
 
-test("connection screen has only the two repository paths, not a preview shortcut", async ({ page }) => {
+test("connection screen has exactly two repository choices", async ({ page }) => {
   await page.goto("/assess");
   await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
   await expect(page.getByRole("link", { name: /Preview scanning workspace/i })).toHaveCount(0);
 });
 
-test("scan API is fail-closed until authorization and worker are implemented", async ({ request }) => {
+test("legacy status API remains fail closed for unknown runs", async ({ request }) => {
   const runId = "safeTestRun123456";
   const status = await request.get("/api/assessments/" + runId);
   expect(status.status()).toBe(503);
@@ -40,20 +42,22 @@ test("scan API is fail-closed until authorization and worker are implemented", a
   expect(cancel.status()).toBe(503);
 });
 
-test("unconfigured run is never displayed as running or complete", async ({ page }) => {
+test("unknown run never shows an invented completed scan", async ({ page }) => {
   await page.goto("/assess/scanning?run=safeTestRun123456");
-  await expect(page.getByText("Integration required")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Ready when your application is." })).toBeVisible();
+  await expect(page.getByText("Scan interrupted")).toBeVisible();
+  await expect(page.getByText(/not configured/i)).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
 });
 
-test("desktop and mobile scanning routes avoid horizontal overflow", async ({ browser }) => {
+test("mobile and desktop scanning UI has no horizontal overflow", async ({ browser }) => {
   for (const width of [320, 375, 430, 768, 1280]) {
-    const context = await browser.newContext({ viewport: { width, height: 810 }, isMobile: width < 500, hasTouch: width < 500 });
+    const context = await browser.newContext({
+      viewport: { width, height: 810 }, isMobile: width < 500, hasTouch: width < 500,
+    });
     const page = await context.newPage();
     await page.goto("/assess/scanning");
-    await expect(page.getByRole("heading", { level: 1, name: /Under the surface/i })).toBeVisible();
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(overflow, "horizontal overflow at " + width + "px").toBeLessThanOrEqual(1);
     await context.close();
   }
