@@ -90,3 +90,7 @@ See the full-report schema in lib/report-contract.ts.
 ## Launch blockers
 
 Before broad private or commercial usage: confirm real Github App installation, hosting credentials, isolated job workers, tested source-retention limits, shared abuse controls, private vulnerability disclosure contact and an independent security review. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
+
+### Scanner v2: evidence-backed security assessment
+
+ShipSafe uses 12 curated source/config detector families, selected Terraform/GitHub Actions rules, exact-version npm/PyPI OSV advisory checks, redacted file/line evidence, rule IDs, confidence and actual file/line/package scope metrics. This is bounded static analysis, not an exhaustive SAST/DAST scanner or certification. See [Scanner v2: detection scope, precision limits and tests](docs/scanner-v2-evidence.md).
