@@ -131,10 +131,10 @@ export default function ResultsExperience() {
       const result = isSample
         ? { ...report, sample: true, notice: "Fictional demonstration, not a security scan." }
         : { ...report, notice: "Limited source-level scan. Findings require context and verification." };
-      downloadText(isSample ? "shipsafe-sample-full-report.json" : "shipsafe-security-report.json",
+      downloadText(isSample ? "secuvora-sample-full-report.json" : "secuvora-security-report.json",
         JSON.stringify(result, null, 2), "application/json;charset=utf-8");
     } else {
-      downloadText(isSample ? "shipsafe-sample-fix-plan.md" : "shipsafe-fix-plan.md",
+      downloadText(isSample ? "secuvora-sample-fix-plan.md" : "secuvora-fix-plan.md",
         remediationMarkdown(report, isSample), "text/markdown;charset=utf-8");
     }
     setExportFeedback(kind === "json" ? "JSON report downloaded" : "Fix plan downloaded");
@@ -156,8 +156,8 @@ export default function ResultsExperience() {
     <a className="skip-link" href="#report-main">Skip to report</a>
     <header className="result-nav">
       <div className="result-container result-nav-inner">
-        <Link className="brand" href="/" aria-label="ShipSafe homepage">shipsafe<span>.</span></Link>
-        <span className="result-nav-label"><span/> SECURITY REPORT</span>
+        <Link className="brand" href="/" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
+        <span className="result-nav-label"><span/> SECURITY AGENT REPORT</span>
         <Link href="/assess" className="result-nav-back"><ArrowLeft size={16}/> <span>New scan</span></Link>
       </div>
     </header>
@@ -186,8 +186,8 @@ export default function ResultsExperience() {
               </span>
               <span className="result-date">{isSample ? "Fictional data" : readableDate(report.finishedAt)}</span>
             </div>
-            <h1>Your security report<span>.</span></h1>
-            <p>Understand the findings. Prioritize what matters. Fix with confidence.</p>
+            <h1>Your agent report<span>.</span></h1>
+            <p>Your security agent investigated the available source. Review evidence, scope and recommended fixes.</p>
           </div>
           <div className="result-toolbar">
             <button type="button" onClick={() => saveExport("plan")} className="result-action-secondary">
@@ -220,7 +220,7 @@ export default function ResultsExperience() {
               <span>{report.scanMetrics.rulesExecuted} source rules</span>
             </p>}
           </div>
-          <span className="result-included"><CheckCircle2 size={15}/> Complete report</span>
+          <span className="result-included"><CheckCircle2 size={15}/> Complete agent report</span>
         </section>
 
         <section className="result-overview" aria-labelledby="result-overview-title">
@@ -414,7 +414,7 @@ export default function ResultsExperience() {
     </main>
 
     <footer className="result-footer"><div className="result-container result-footer-inner">
-      <Link href="/" className="brand">shipsafe<span>.</span></Link>
+      <Link href="/" className="brand">secuvora<span>.</span></Link>
       <span>Read-only source scanning · No security guarantee</span>
       <nav aria-label="Footer links"><Link href="/privacy">Privacy</Link><Link href="/security">Security</Link></nav>
     </div></footer>
