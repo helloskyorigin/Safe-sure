@@ -38,7 +38,7 @@ export default function HowItWorks() {
             </div>
             <h3>Review findings</h3>
             <p>
-              See a free overview of potential critical, high, medium and low
+              See critical, high, medium and low
               security issues.
             </p>
           </article>
@@ -52,10 +52,10 @@ export default function HowItWorks() {
               </div>
               <span>03</span>
             </div>
-            <h3>Unlock detailed fixes</h3>
+            <h3>Understand and resolve</h3>
             <p>
-              Get affected files, supporting evidence, suggested fixes and potential
-              impact for $19.
+              Access affected files, supporting evidence, impact and actionable
+              fix guidance in the same full report.
             </p>
           </article>
         </div>
