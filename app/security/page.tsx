@@ -25,14 +25,14 @@ export default function SecurityPage() {
       lead="Security claims should match the system that actually exists. Learn the principles guiding ShipSafe and the boundaries of its current preview."
       sections={sections}
       summary={[
-        "Bounded, read-only public-source scanning is available. Private GitHub authorization and runtime penetration testing are not active.",
+        "Public read-only scanning is available. Optional private GitHub authorization and encrypted reports require configured credentials; runtime penetration testing is not performed.",
         "The planned assessment will prioritize explicit authorization, least privilege and evidence-based findings.",
         "No certification, zero-risk guarantee or private vulnerability-reporting inbox is claimed.",
       ]}
     >
       <section id="status" className="legal-section">
         <h2>Current security scope</h2>
-        <p>ShipSafe now includes a read-only public GitHub source scanner. It fetches a pinned revision, applies supported static rules and optionally checks pinned dependencies against OSV. Separately, the fictional report remains a demonstration. Private repository authorization, persistent customer reports, active penetration testing and payment processing are not enabled.</p>
+        <p>ShipSafe now includes a read-only public GitHub source scanner. It fetches a pinned revision, applies supported static rules and optionally checks pinned dependencies against OSV. Separately, the fictional report remains a demonstration. Private repository authorization and seven-day encrypted report recovery are implemented but unavailable until the operator configures the GitHub App and database. Active penetration testing and payments are not enabled.</p>
         <p>This page documents current boundaries and future engineering requirements. It does not claim SOC 2, ISO 27001, a completed penetration test, an audit certification or any other third-party security attestation.</p>
       </section>
       <section id="permissions" className="legal-section">
@@ -55,7 +55,7 @@ export default function SecurityPage() {
       <section id="secrets" className="legal-section">
         <h2>Secrets, retention and reports</h2>
         <p>A production assessment should avoid logging or reproducing complete credentials in user-facing reports. Findings should mask suspected secrets, restrict report access to the entitled recipient and state whether sensitive content is stored at all.</p>
-        <p>Public source is processed transiently in a scan request, and report JSON is kept in the user's browser tab sessionStorage. No source upload storage or durable report database is configured. Hosting logs may exist separately. Before private-source access, ShipSafe must document verified retention, revocation and deletion processes.</p>
+        <p>Public source is processed transiently in a scan request, and report JSON is kept in the user's browser tab sessionStorage. Private reports, when configured, use owner-scoped AES-GCM authenticated encryption in a server-side Redis store with seven-day expiry and delete support. No complete source archive is intentionally retained. Hosting logs may exist separately; actual operational policies and independent testing must be confirmed before enabling private scans.</p>
       </section>
       <section id="limitations" className="legal-section">
         <h2>Accuracy and limitations</h2>
