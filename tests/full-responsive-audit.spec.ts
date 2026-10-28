@@ -38,6 +38,14 @@ for (const width of widths) {
       expect(state.overflow, route + " creates horizontal page overflow at " + width).toBeLessThanOrEqual(2);
       expect(state.titleOverflow, route + " title clipped outside viewport at " + width).toBeLessThanOrEqual(3);
 
+      // SSR-visible repository selection: a motion opacity=0 state used to
+      // leave the entire connector blank in captured first paint screenshots.
+      if (route === "/assess") {
+        const opacity = await page.locator(".connect-content").evaluate(el =>
+          Number.parseFloat(getComputedStyle(el).opacity));
+        expect(opacity, "repository connector should be painted on first render").toBeGreaterThanOrEqual(.99);
+      }
+
       if (screenshotWidths.has(width) && screenshotRoutes.has(route)) {
         await mkdir("test-results/ux-snapshots", { recursive: true });
         const slug = route === "/" ? "home" : route.replaceAll("/", "-").replace(/^-/, "");
@@ -121,4 +129,19 @@ test("policy pages have real links, a unique primary heading and no fictional co
   await expect(page.getByText(/individual reports from Agent history/)).toBeVisible();
   await page.goto("/legal");
   await expect(page.getByText(/Real public-source scanning is available/)).toBeVisible();
+});
+
+test("repository selector remains visible without client hydration or motion scripts", async ({ browser }) => {
+  const ctx = await browser.newContext({
+    viewport: { width: 320, height: 780 }, javaScriptEnabled: false,
+    reducedMotion: "reduce",
+  });
+  const page = await ctx.newPage();
+  await page.goto("/assess");
+  const content = page.locator(".connect-content");
+  await expect(content.getByRole("heading", { level: 1 })).toBeVisible();
+  const opacity = await content.evaluate(el => Number.parseFloat(getComputedStyle(el).opacity));
+  expect(opacity).toBeGreaterThanOrEqual(.99);
+  await expect(content.getByRole("button", { name: /Public repository/i })).toBeVisible();
+  await ctx.close();
 });
