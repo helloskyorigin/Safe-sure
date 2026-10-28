@@ -24,16 +24,15 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> APPLICATION SECURITY
+            <span className="eyebrow-dash"></span> AUTOMATED SECURITY AGENT
           </p>
           <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
-            Know the risks
+            Meet your security agent.
             <br />
-            before you <em>ship.</em>
+            <em>Know every risk.</em>
           </motion.h1>
           <p className="hero-sub animate delay-2">
-            Identify security issues in your application, understand their impact,
-            and get clear steps to resolve them.
+            Connect a GitHub repository whenever you want. Secuvora's automated agent investigates supported code, credentials, dependencies and configurations—then explains the evidence and next fixes.
           </p>
           <div className="hero-action animate delay-3">
             <a
@@ -42,13 +41,13 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
               data-start
               className="button button-dark button-primary"
             >
-              Assess your application{" "}
+              Run security agent{" "}
               <span className="button-arrow" aria-hidden="true">
                 →
               </span>
             </a>
             <p className="under-cta">
-              <span className="tiny-check">✓</span> Free initial assessment{" "}
+              <span className="tiny-check">✓</span> Read-only security review{" "}
               <span className="dot-separator">·</span> Full report included · free
             </p>
           </div>
@@ -59,7 +58,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
           <div className="preview">
             <div className="preview-top">
               <strong className="preview-brand">
-                shipsafe<span>.</span>
+                secuvora<span>.</span>
               </strong>
               <span className="example-tag">
                 <span className="example-dot"></span> ILLUSTRATIVE REPORT
@@ -68,8 +67,8 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
             <div className="preview-body">
               <div className="preview-heading">
                 <div>
-                  <div className="preview-overline">APPLICATION SECURITY</div>
-                  <h2>Security assessment</h2>
+                  <div className="preview-overline">AUTOMATED SECURITY AGENT</div>
+                  <h2>Agent security report</h2>
                   <p>
                     example-app <span>·</span> Illustrative results
                   </p>
@@ -134,8 +133,8 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
                 <div className="finding">
                   <div className="finding-symbol symbol-yellow">!</div>
                   <div className="finding-copy">
-                    <strong>Missing security header</strong>
-                    <small>Browser protection configuration</small>
+                    <strong>TLS verification override</strong>
+                    <small>Insecure certificate validation</small>
                   </div>
                   <span className="pill pill-medium">Medium</span>
                 </div>
@@ -143,7 +142,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
 
               <div className="preview-bottom">
                 <span>
-                  <i></i> Evidence-backed security checks
+                  <i></i> Evidence-backed agent analysis
                 </span>
                 <span>Preview only</span>
               </div>
