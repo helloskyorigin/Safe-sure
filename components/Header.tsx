@@ -79,7 +79,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             <a href="#product">The report</a>
             <a href="#how">How it works</a>
             <a href="#security">Security</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#pricing">Free report</a>
             <a href="#faq">FAQ</a>
           </nav>
           <a
