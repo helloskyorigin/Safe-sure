@@ -205,3 +205,13 @@
  .assess-page *,.assess-page *::before,.assess-page *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
  .assess-step-card:hover,.assess-primary:hover{transform:none!important}
 }
+
+/* Scan workflow preview: explicit non-running navigation */
+.assess-scan-preview{margin-top:18px;padding:15px 16px;border:1px solid #dfe8f4;border-radius:12px;background:linear-gradient(110deg,#f3f8fe,#fff);display:flex;align-items:center;gap:13px;box-shadow:0 6px 22px #3554790a}
+.assess-scan-preview-icon{width:41px;height:41px;border-radius:11px;display:grid;place-items:center;background:#e7f0fc;color:#648ab9;flex:none}
+.assess-scan-preview>div{flex:1;min-width:0}
+.assess-scan-preview strong{font-size:11px;color:#3a526f}
+.assess-scan-preview p{color:#8497ac;font-size:10px;line-height:1.6;margin:5px 0 0}
+.assess-scan-preview>a{width:35px;height:35px;border-radius:10px;background:#fff;border:1px solid #dbe5f1;color:#5e83b4;display:grid;place-items:center;flex:none;transition:transform .25s,background .25s}
+.assess-scan-preview>a:hover{background:#e7f0fb;transform:translateX(3px)}
+@media(max-width:375px){.assess-scan-preview{gap:9px;padding:12px}.assess-scan-preview-icon{width:35px;height:35px}}
