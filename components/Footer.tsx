@@ -19,7 +19,7 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
       </div>
       <div className="container copyright">
         <span>© {new Date().getFullYear()} ShipSafe. All rights reserved.</span>
-        <span className="footer-preview"><span className="status-light" /> Product preview · assessments coming soon</span>
+        <span className="footer-preview"><span className="status-light" /> Public source scanning available · private access in development</span>
         <button type="button" onClick={onOpenAssessment}>Explore ShipSafe <ArrowUpRight size={14}/></button>
       </div>
     </footer>
