@@ -10,6 +10,7 @@ import {
   ShieldCheck, Square,
 } from "lucide-react";
 import { isAssessmentReport } from "@/lib/report-contract";
+import { savePublicReport } from "@/lib/browser-report-history";
 import {
   CHECKS, isAssessmentSnapshot,
   type AssessmentSnapshot, type CheckKey, type CheckStatus,
@@ -116,6 +117,7 @@ export default function ScanningConsole() {
                 throw new Error("The scanner returned an invalid report.");
               try {
                 sessionStorage.setItem("shipsafe:report:" + latestId, JSON.stringify(message.report));
+                savePublicReport(message.report); // best-effort persistent history; tab report is fallback
               } catch {
                 throw new Error("Unable to save the report in this browser tab. Check site storage and retry.");
               }
