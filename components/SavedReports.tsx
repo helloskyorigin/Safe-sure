@@ -120,7 +120,7 @@ export default function SavedReports() {
 
       <section className="history-group" aria-labelledby="public-history-heading">
         <div className="history-group-heading">
-          <div className="history-group-label"><HardDrive size={19}/><h2 id="public-history-heading">Public scans</h2></div>
+          <div className="history-group-label"><HardDrive size={19}/><h2 id="public-history-heading">Public investigations</h2></div>
           <span>{publicReports.length} saved</span>
         </div>
         <p className="history-hint">Saved only in this browser, for up to 30 days. Clearing site data deletes them.</p>
@@ -131,7 +131,7 @@ export default function SavedReports() {
 
       <section className="history-group" aria-labelledby="private-history-heading">
         <div className="history-group-heading">
-          <div className="history-group-label"><Github size={19}/><h2 id="private-history-heading">Private scans</h2></div>
+          <div className="history-group-label"><Github size={19}/><h2 id="private-history-heading">Private investigations</h2></div>
           <span>{privateStatus === "ready" ? privateReports.length + " saved" : "GitHub account"}</span>
         </div>
         <p className="history-hint">Only your authorized GitHub private reports are retrieved from encrypted server storage, when configured.</p>
