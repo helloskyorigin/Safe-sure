@@ -13,8 +13,11 @@ function key() {
   return createHash("sha256").update(secret).digest();
 }
 export function configuredGithubOAuth() {
-  return Boolean(process.env.GITHUB_APP_CLIENT_ID && process.env.GITHUB_APP_CLIENT_SECRET &&
-    process.env.SHIPSAFE_SESSION_SECRET && process.env.SHIPSAFE_SESSION_SECRET.length >= 32);
+  const origin = process.env.SHIPSAFE_PUBLIC_ORIGIN || "";
+  return Boolean(/^https:\/\/[A-Za-z0-9.-]+(?::\d+)?$/.test(origin) ||
+    /^http:\/\/localhost(?::\d+)?$/.test(origin)) &&
+    Boolean(process.env.GITHUB_APP_CLIENT_ID && process.env.GITHUB_APP_CLIENT_SECRET &&
+      process.env.SHIPSAFE_SESSION_SECRET && process.env.SHIPSAFE_SESSION_SECRET.length >= 32);
 }
 
 export function seal(value: string): string {
