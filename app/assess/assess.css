@@ -228,3 +228,18 @@
 .assess-or-separator{display:flex;align-items:center;gap:12px;color:#a2b0c1;font-size:9px;letter-spacing:.12em;font-weight:800;margin:10px 0}
 .assess-or-separator span{height:1px;flex:1;background:#e5ecf4}
 .assess-live-form .assess-availability{margin:0 0 5px}
+
+/* Authorized private repository picker */
+.assess-private-panel{display:grid;gap:14px}
+.assess-private-panel>p:first-child{display:flex;align-items:start;gap:9px;color:#7b8ea7;font-size:11px;line-height:1.75;margin:0}
+.assess-private-panel>p:first-child svg{margin-top:2px;color:#6786ac}
+.assess-identity{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:11px;color:#607894}
+.assess-identity span{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.assess-identity svg{color:#68a48c}
+.assess-identity button{border:1px solid #dce6f1;border-radius:7px;padding:8px 11px;background:#fff;color:#607c9c;font-size:10px;font-weight:700}
+.assess-private-label{font-size:11px;font-weight:750;color:#425974}
+.assess-private-select{width:100%;min-height:49px;border:1px solid #dce6f1;border-radius:9px;background:#f9fbfe;color:#324b6d;padding:10px 12px;font-size:12px}
+.assess-private-select:focus-visible{outline:2px solid #6a9dd0;outline-offset:2px}
+.assess-private-panel .assess-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.assess-private-links{display:flex;align-items:center;flex-wrap:wrap;gap:15px}
+.assess-private-links a{font-size:10px;color:#4d79aa;font-weight:700;text-decoration:underline;text-underline-offset:3px}
