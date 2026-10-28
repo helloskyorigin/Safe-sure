@@ -27,20 +27,20 @@ export default function TermsPage() {
       lead="A straightforward explanation of what ShipSafe offers today, how the preview may be used and what to expect before the service goes live."
       sections={sections}
       summary={[
-        "The current site is a public preview and does not provide live vulnerability scanning or paid reports.",
+        "The current website offers a sample full report; real vulnerability scanning and authenticated live reports are not enabled.",
         "Example assessments are illustrative, not results from your website or source code.",
         "Only applications you own or are expressly authorized to test may be assessed when scanning becomes available.",
       ]}
     >
       <section id="agreement" className="legal-section">
         <h2>About these terms</h2>
-        <p>These terms apply to access to the ShipSafe website and its publicly available product demonstrations. “ShipSafe” means the project presented on this website; this wording does not assert that a separately incorporated company exists. Additional verified operator and business-identification information will be published before commercial checkout is enabled.</p>
+        <p>These terms apply to access to the ShipSafe website and its publicly available product demonstrations. “ShipSafe” means the project presented on this website; this wording does not assert that a separately incorporated company exists. Additional operator identification and private support details will be published before handling sensitive application data.</p>
         <p>By using this preview, you agree to use it lawfully and respect the restrictions below. If you do not agree, you should not use the website. Where mandatory legal rights apply, nothing here is intended to remove them.</p>
       </section>
       <section id="availability" className="legal-section">
         <h2>What is available today</h2>
-        <p>The website contains product descriptions, a pricing proposal, an interactive sample report and informational pages. <strong>No real application scanning, GitHub authorization, production report delivery or payment processing is enabled at this stage.</strong> Interface controls marked as examples demonstrate intended functionality only.</p>
-        <p>The proposed commercial service is a one-time detailed assessment report. Before it becomes available, the scope, payment terms and service-specific agreement will be published and displayed at the relevant transaction point.</p>
+        <p>The website contains product descriptions, a free full-report demonstration, an interactive sample report and informational pages. <strong>No real application scanning, GitHub authorization, production report delivery or payment processing is enabled at this stage.</strong> Interface controls marked as examples demonstrate intended functionality only.</p>
+        <p>When assessment functionality launches, the current plan is to provide complete findings and remediation guidance without a report paywall. Scope, permission requirements and service-specific conditions will be disclosed before accessing an application.</p>
       </section>
       <section id="acceptable-use" className="legal-section">
         <h2>Acceptable use</h2>
@@ -55,7 +55,7 @@ export default function TermsPage() {
       <section id="results" className="legal-section">
         <h2>Reliability of information</h2>
         <p>Software security assessments are inherently limited by available code or endpoints, implemented checks, configuration and context. Automated findings may be incomplete, may require manual review or may be false positives. A low finding count does not establish that an application is safe.</p>
-        <p>Examples shown in the current report preview are fabricated solely to illustrate the intended interface and must not be treated as factual vulnerability findings. Future paid reports should disclose their assessment scope and supporting evidence.</p>
+        <p>Examples shown in the current report preview are fabricated solely to illustrate the intended interface and must not be treated as factual vulnerability findings. Future authorized reports must disclose their assessment scope and supporting evidence.</p>
       </section>
       <section id="ownership" className="legal-section">
         <h2>Intellectual property</h2>
@@ -73,9 +73,9 @@ export default function TermsPage() {
       </section>
       <section id="revisions" className="legal-section">
         <h2>Updates and questions</h2>
-        <p>We may update these website terms as the preview evolves. Any active paid service must provide the applicable commercial terms before a purchase takes place, including operator identity, required legal notices and the available complaint and refund process.</p>
+        <p>We may update these website terms as the preview evolves. If a commercial service is ever offered, its operator identity, support contacts, complete purchase terms and mandatory rights must be disclosed before a transaction.</p>
         <p>For ordinary non-sensitive feedback see <Link href="/contact">Contact</Link>. For information about the present data practices and planned security controls, see <Link href="/privacy">Privacy</Link> and <Link href="/security">Security</Link>.</p>
-        <p className="legal-note"><strong>Important:</strong> These terms govern the currently published preview. They do not pretend that a live paid scanning service, registered corporate identity or private customer-support desk already exists.</p>
+        <p className="legal-note"><strong>Important:</strong> These terms govern the currently published preview. They do not pretend that a live scanning service, registered corporate identity or private customer-support desk already exists.</p>
       </section>
     </LegalPage>
   );
