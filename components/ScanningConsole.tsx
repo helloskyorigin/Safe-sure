@@ -100,10 +100,12 @@ export default function ScanningConsole() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const privateRepo = params.get("private");
     const publicRepo = params.get("repo");
-    if (publicRepo) {
-      setPublicRepoName(publicRepo);
-      if (!/^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9_.-]{1,100}$/.test(publicRepo)) {
+    const sourceRepo = privateRepo || publicRepo;
+    if (sourceRepo) {
+      setPublicRepoName(sourceRepo);
+      if (!/^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9_.-]{1,100}$/.test(sourceRepo)) {
         setLoad({ type: "invalid" }); return;
       }
       let stopped = false;
@@ -113,10 +115,10 @@ export default function ScanningConsole() {
       setLocalReportId(null);
       async function streamPublicScan() {
         try {
-          const response = await fetch("/api/scan/public", {
+          const response = await fetch(privateRepo ? "/api/scan/private" : "/api/scan/public", {
             method: "POST", cache: "no-store", credentials: "same-origin",
             signal: controller.signal, headers: { "content-type": "application/json" },
-            body: JSON.stringify({ repo: publicRepo }),
+            body: JSON.stringify({ repo: sourceRepo }),
           });
           if (!response.ok) {
             const payload = await response.json().catch(() => ({})) as { error?: string };
@@ -131,7 +133,7 @@ export default function ScanningConsole() {
             if (!line.trim() || stopped) return;
             const packet: unknown = JSON.parse(line);
             if (!packet || typeof packet !== "object" || !("type" in packet)) return;
-            const event = packet as { type: string; snapshot?: unknown; report?: unknown; message?: unknown };
+            const event = packet as { type: string; snapshot?: unknown; report?: unknown; runId?: unknown; message?: unknown };
             if (event.type === "snapshot" && event.snapshot && typeof event.snapshot === "object" &&
               "runId" in event.snapshot && typeof event.snapshot.runId === "string" &&
               isAssessmentSnapshot(event.snapshot, event.snapshot.runId)) {
@@ -139,7 +141,15 @@ export default function ScanningConsole() {
               setLoad({ type: "live", snapshot: event.snapshot });
             }
             if (event.type === "error") throw new Error(typeof event.message === "string" ? event.message : "The scan failed.");
-            if (event.type === "report") {
+            if (event.type === "stored" && privateRepo) {
+              if (typeof event.runId !== "string" || event.runId !== lastId ||
+                  !/^[0-9a-f-]{36}$/i.test(lastId))
+                throw new Error("Stored private report confirmation was invalid.");
+              sawReport = true;
+              completedId = lastId;
+              setLocalReportId(lastId);
+            }
+            if (event.type === "report" && !privateRepo) {
               if (!lastId || !isAssessmentReport(event.report, lastId)) throw new Error("The scanner returned an invalid report.");
               try {
                 sessionStorage.setItem("shipsafe:report:" + lastId, JSON.stringify(event.report));
@@ -165,7 +175,7 @@ export default function ScanningConsole() {
           // Navigation is deliberately gated behind the complete, validated,
           // successfully stored report and clean end of the server stream.
           if (!stopped && !controller.signal.aborted) {
-            router.replace("/assess/results?local=" + encodeURIComponent(completedId));
+            router.replace("/assess/results?" + (privateRepo ? "run=" : "local=") + encodeURIComponent(completedId));
           }
         } catch (error) {
           if (stopped) return;
@@ -389,7 +399,7 @@ export default function ScanningConsole() {
               {load.type === "error" && publicRepoName ? (
                 <div className="scan-retry-actions">
                   <button type="button" className="scan-primary-link" onClick={() => {
-                    window.location.assign("/assess/scanning?repo=" + encodeURIComponent(publicRepoName));
+                    window.location.assign("/assess/scanning?" + (new URLSearchParams(window.location.search).has("private") ? "private=" : "repo=") + encodeURIComponent(publicRepoName));
                   }}><RefreshCw size={17}/> Retry this scan <ArrowRight size={17}/></button>
                   <Link className="scan-change-target" href="/assess">Choose another repository</Link>
                 </div>
