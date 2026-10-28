@@ -53,7 +53,8 @@ export async function POST(req: Request) {
           last = snapshot;
           send({ type: "snapshot", snapshot });
         });
-        if (last) send({ type: "snapshot", snapshot: { ...last, status: "completed", updatedAt: new Date().toISOString() } });
+        const completedSnapshot = last as AssessmentSnapshot | null;
+        if (completedSnapshot) send({ type: "snapshot", snapshot: { ...completedSnapshot, status: "completed", updatedAt: new Date().toISOString() } });
         send({ type: "report", report });
       } catch (error) {
         const reason = work.signal.aborted ? "Scan interrupted or timed out." :
