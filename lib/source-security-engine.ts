@@ -151,7 +151,7 @@ export function analyzeSourceDetailed(files: Source[]): { findings: ReportFindin
       }
       if (js && /\beval\s*\(|\bnew\s+Function\s*\(/.test(line)) {
         const dangerousInput = /\b(?:req(?:uest)?\.(?:body|query|params)|location\.(?:search|hash)|userInput)\b/.test(line);
-        add({ id:"SS-INJECT-001", title:"Dynamic JavaScript evaluation sink", severity:dangerousInput?"high":"medium",
+        add({ id:"SS-INJECT-001", title:"Dynamic code execution sink", severity:dangerousInput?"high":"medium",
           confidence:dangerousInput?"medium":"low", category:"Code injection",
           overview:dangerousInput?"An evaluation primitive appears near a request-controlled value.":"A dynamic JavaScript execution primitive needs source-level review.",
           why:"If attacker-controlled input reaches an evaluator, the application may execute unintended JavaScript.",
