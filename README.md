@@ -6,9 +6,9 @@ ShipSafe is a developer-first application security product in **pre-launch devel
 
 - Premium responsive white/off-white marketing page
 - Scroll-linked progress indicator, subtle hero parallax, spring-like cards, hover details and scroll reveals
-- Interactive illustrative report: switch between a free severity overview and three example detailed findings
+- Interactive illustrative full report, plus a dedicated full findings screen at /assess/results
 - Animated and keyboard-accessible FAQ, mobile navigation and accessible assessment-preview dialog
-- Sections explaining the planned workflow, product value, trust principles and one-time $19 pricing
+- Sections explaining the planned workflow, product value, trust principles and free full-report access
 - Public routes: **/privacy**, **/terms**, **/refunds**, **/security**, **/contact**
 - Reduced-motion support and defensive visibility rules to avoid blank animated content
 
@@ -16,7 +16,7 @@ ShipSafe is a developer-first application security product in **pre-launch devel
 
 **The product does not yet scan applications or collect payments.** Repository authorization, real scanning, storing reports, checkout, purchase validation and private support are not connected. The sample finding counts and examples are labeled as illustrative; no visual demo should be mistaken for a real security report.
 
-The "Assess your application" buttons deliberately open a pre-launch informational dialog. Legal pages describe the current state and must be reviewed once final operator details, provider configuration, private contact methods and data-handling processes are known.
+The "Assess your application" buttons open /assess. The GitHub connection action there explains the current integration status. Legal pages describe the current state and must be reviewed once final operator details, provider configuration, private contact methods and data-handling processes are known.
 
 ## Run locally
 
@@ -60,6 +60,14 @@ Screen 3 is implemented at **/assess/scanning** with a distinctive inspection le
 
 Read the [scan-engine integration contract](docs/scan-engine-integration.md) before enabling application access.
 
+## Full results screen
+
+The complete results experience is at **/assess/results**, accessible from the inspection screen's **View full sample** link. It includes all six clearly fictional findings, severity filters, file and line locations, evidence (masked when appropriate), risk explanations, remediation checklists, verification guidance, coverage disclosures, sample JSON export and a printable full report.
+
+**No payment is required or requested.** All details in the sample are visible. Never show the sample as a real scan. The /api/assessments/[runId]/report GET endpoint intentionally returns 503 until authenticated jobs and authorization are implemented. A ?run= URL does not grant access, and the results screen does not substitute fictional findings for unavailable real ones.
+
+See the full-report schema in lib/report-contract.ts.
+
 ## Architecture
 
 - `app/page.tsx` assembles the landing page
@@ -71,4 +79,4 @@ Read the [scan-engine integration contract](docs/scan-engine-integration.md) bef
 
 ## Launch blockers
 
-Before accepting real security assessments or payments: implement least-privilege authorization, isolated untrusted-code analysis, accurate scan coverage/evidence, secrets redaction, source retention limits, payment confirmation, and private support/security reporting. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
+Before accepting real security assessments: implement least-privilege authorization, isolated untrusted-code analysis, accurate scan coverage/evidence, secrets redaction, source retention limits, and private support/security reporting. Replace pre-launch legal disclosures with reviewed final policies. Do not imply audits, certifications or customer logos that do not exist.
