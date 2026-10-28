@@ -14,29 +14,29 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
     <section id="pricing" className="section bordered pricing-section">
       <div className="container pricing-grid">
         <div className="pricing-intro reveal visible">
-          <p className="eyebrow">SIMPLE PRICING</p>
+          <p className="eyebrow">FULL ACCESS, NO PAYWALL</p>
           <h2>
-            Clear, affordable
+            All the detail,
             <br />
-            security.
+            nothing hidden.
           </h2>
           <p>
-            Start with a free summary of security findings by severity. Unlock exact
-            details and remediation guidance only when you need them.
+            Explore every finding, its source location, supporting evidence and
+            recommended fixes together—without locked report sections.
           </p>
           <div className="no-renew">
-            <span>✓</span> No subscription. No renewal.
+            <span>✓</span> Full results included. No checkout.
           </div>
         </div>
 
         <div className="price-card reveal visible">
           <div className="price-top">
             <div>
-              <small>ONE-TIME DETAILED REPORT</small>
-              <h3>Understand every finding</h3>
+              <small>COMPLETE SECURITY REPORT</small>
+              <h3>See the full picture</h3>
             </div>
             <div className="price">
-              $19<span>one-time</span>
+              FREE<span>full report</span>
             </div>
           </div>
           <div className="price-divider"></div>
@@ -63,7 +63,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             Assess your application <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
-            Initial severity summary is free. No subscription required.
+            Full report access is planned to be free. Scanning is not live yet.
           </p>
         </div>
       </div>
