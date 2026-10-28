@@ -31,7 +31,7 @@ test("distributed quota sends one atomic EVAL with expiry instead of INCR + EXPI
       expect(command[1]).toContain("redis.call('INCR',KEYS[1])");
       expect(command[1]).toContain("redis.call('EXPIRE',KEYS[1],ARGV[1])");
       expect(command[2]).toBe(1);
-      expect(String(command[3])).toMatch(/^shipsafe:quota:v1:user:123:\\d+$/);
+      expect(String(command[3])).toMatch(/^shipsafe:quota:v1:user:123:\d+$/);
       expect(command[4]).toBe(120);
     }
   } finally {
