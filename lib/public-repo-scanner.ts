@@ -290,6 +290,9 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   if (incomplete) coverage.push({ id:"limits", label:"Exhaustive repository coverage", status:"skipped", note:"File count, finding caps, source size or advisory limits prevented a full repository review." });
   send("evidence","complete","Produced "+findings.length+" potential findings and coverage disclosures");
   return { runId, appName:target, revision:sha, finishedAt:new Date().toISOString(), findings, coverage,
+    scanMetrics: { filesInspected: files.length, eligibleFiles: eligible.length,
+      linesInspected: analyzed.inspectedLines, dependencyVersions: deps.deps.length,
+      rulesExecuted: analyzed.rulesRun },
     scopeNote:"Read-only "+(privateToken ? "authorized private" : "public")+" source scan pinned to "+sha.slice(0,12)+". Curated source/config rules and pinned-package OSV advisories only. No runtime testing, exploit verification or security guarantee."+
       (incomplete?" Some supported content was omitted by safety limits.":"") };
 }
