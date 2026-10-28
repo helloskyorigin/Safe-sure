@@ -250,3 +250,26 @@
  .result-print-all p,.result-print-all li{font-size:10px;line-height:1.65}
  .result-print-all pre{font-size:9px;white-space:pre-wrap;overflow-wrap:anywhere}
 }
+
+
+/* Real scope signals, not a fabricated security health score. */
+.result-repo-info .result-scanned-metrics{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:7px;
+  margin:11px 0 0;
+}
+.result-scanned-metrics span{
+  color:#527aa4;
+  border:1px solid #e0eaf6;
+  background:#f2f7fe;
+  padding:6px 9px;
+  border-radius:6px;
+  font-size:10px;
+  font-weight:690;
+  font-variant-numeric:tabular-nums;
+}
+@media print{
+  .result-scanned-metrics span{background:#fff;border:1px solid #ccc;color:#333}
+}
