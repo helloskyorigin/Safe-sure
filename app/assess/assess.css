@@ -403,3 +403,19 @@
 @media(max-width:400px){
  .connect-header-actions .assess-back:last-child span{display:none}
 }
+
+
+/* First-use onboarding: real public scan available immediately, explanatory steps. */
+.connect-field-hint{margin:-5px 0 0;font-size:11px;line-height:1.6;color:#8295ad}
+.connect-workflow-note{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding-top:10px;border-top:1px solid #e9eef5;
+ color:#7288a4;font-size:10px;font-weight:650;line-height:1.65}
+.connect-workflow-note span{display:inline-flex;align-items:center;min-width:0}
+.connect-workflow-note span:not(:last-child)::after{content:"→";color:#a3b4c9;margin-left:8px}
+.connect-example-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;
+ margin-top:4px;color:#5d82af;font-size:11px;font-weight:750;text-decoration:none}
+.connect-example-link:hover{text-decoration:underline;text-underline-offset:4px}
+.connect-example-link:focus-visible{outline:3px solid #8caeda;outline-offset:3px;border-radius:6px}
+@media(max-width:620px){.connect-workflow-note{display:grid;gap:6px}
+ .connect-workflow-note span:not(:last-child)::after{content:""}
+ .connect-subtitle{line-height:1.75}
+}
