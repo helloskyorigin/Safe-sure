@@ -12,7 +12,7 @@ const sections: LegalSection[] = [
   { id: "feedback", title: "Product feedback" },
   { id: "security-reports", title: "Sensitive security issues" },
   { id: "privacy", title: "Privacy requests" },
-  { id: "billing", title: "Billing and report support" },
+  { id: "billing", title: "Report access and support" },
   { id: "updates", title: "Future contact options" },
 ];
 
@@ -26,7 +26,7 @@ export default function ContactPage() {
       summary={[
         "Public GitHub issues are open for non-sensitive website bugs, suggestions and general product questions.",
         "Do not post private source code, credentials, security weaknesses or personal records in public issues.",
-        "Dedicated private support, privacy and billing channels must be published before the paid security service launches.",
+        "Dedicated private support, privacy and security-reporting channels must be published before sensitive customer data is accepted.",
       ]}
     >
       <section id="feedback" className="legal-section">
@@ -51,7 +51,7 @@ export default function ContactPage() {
       </section>
       <section id="billing" className="legal-section">
         <h2>Billing and report support</h2>
-        <p>There is currently no live checkout or customer billing record. A dedicated channel for failed payments, report delivery, duplicates, disputes and refunds will be published before any real transaction can occur. For the current status read <Link href="/refunds">Payments & refunds</Link>.</p>
+        <p>There is currently no live checkout or customer billing record. A dedicated channel for private report delivery and access issues must be published before real reports are enabled. For the current status read <Link href="/refunds">Payments & refunds</Link>.</p>
       </section>
       <section id="updates" className="legal-section">
         <h2>Future contact options</h2>
