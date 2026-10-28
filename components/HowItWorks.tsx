@@ -2,13 +2,13 @@ export default function HowItWorks() {
   return (
     <section id="how" className="section">
       <div className="container">
-        <div className="section-heading reveal visible">
+        <div className="section-heading ">
           <p className="eyebrow">THE PROCESS</p>
           <h2>How ShipSafe works</h2>
           <p>From assessment to clarity in three simple steps.</p>
         </div>
         <div className="steps">
-          <article className="step reveal visible">
+          <article className="step ">
             <div className="step-head">
               <div className="step-icon">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -26,7 +26,7 @@ export default function HowItWorks() {
               with no code changes.
             </p>
           </article>
-          <article className="step reveal visible">
+          <article className="step ">
             <div className="step-head">
               <div className="step-icon">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -42,7 +42,7 @@ export default function HowItWorks() {
               security issues.
             </p>
           </article>
-          <article className="step reveal visible">
+          <article className="step ">
             <div className="step-head">
               <div className="step-icon">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
