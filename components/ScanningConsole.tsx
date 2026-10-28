@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Circle, CircleAlert,
-  FileCheck2, Github, LoaderCircle, RefreshCw, ScanSearch,
+  FileCheck2, Github, LoaderCircle, RefreshCw, Bot,
   ShieldCheck, Square,
 } from "lucide-react";
 import { isAssessmentReport } from "@/lib/report-contract";
@@ -288,7 +288,7 @@ export default function ScanningConsole() {
       <header className="scan-nav">
         <div className="scan-container scan-nav-inner">
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
-          <span className="scan-nav-center"><span/> SECURITY AGENT · LIVE</span>
+          <span className="scan-nav-center"><span/> SECUVORA AGENT · LIVE</span>
           <Link href="/assess" className="scan-nav-return"><ArrowLeft size={16}/> Back</Link>
         </div>
       </header>
@@ -305,7 +305,7 @@ export default function ScanningConsole() {
           <div className={"scan-orbit-scene" + (ongoing && !isFailure ? " is-active" : "")} aria-hidden="true">
             <div className="scan-orbit-ring scan-ring-outer"/>
             <div className="scan-orbit-ring scan-ring-inner"/>
-            <div className="scan-orbit-core"><ScanSearch size={44} strokeWidth={1.4}/></div>
+            <div className="scan-orbit-core"><Bot size={44} strokeWidth={1.4}/></div>
           </div>
 
           <div className="scan-visual-bottom">
@@ -371,7 +371,7 @@ export default function ScanningConsole() {
               <Link href="/assess" className="scan-primary-link"><Github size={17}/> Start a new investigation <ArrowRight size={17}/></Link>
             )}
             {actionError && <p role="alert" className="scan-action-error">{actionError}</p>}
-            <p className="scan-honesty"><ShieldCheck size={15}/> Read-only scan · Results open automatically</p>
+            <p className="scan-honesty"><ShieldCheck size={15}/> Read-only agent review · Results open automatically</p>
           </div>
         </motion.section>
       </main>
