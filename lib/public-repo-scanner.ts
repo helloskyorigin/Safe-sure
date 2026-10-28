@@ -221,7 +221,7 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
       checks: checks.map(c => ({ ...c })), events: events.slice(-25),
       progress: { done: checks.filter(c => ["complete","skipped","failed"].includes(c.status)).length, total: 5 } });
   };
-  const ghHeaders = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
+  const ghHeaders = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "ShipSafe-PublicSourceScanner/1.0",
     ...(process.env.GITHUB_TOKEN ? { Authorization: "Bearer " + process.env.GITHUB_TOKEN } : {}) };
   send("access","running","Verifying public repository and pinning source revision");
   const meta = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo, signal, 150_000, { headers: ghHeaders })) as { private?: boolean; default_branch?: string; size?: number };
