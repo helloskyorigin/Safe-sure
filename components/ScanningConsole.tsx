@@ -268,7 +268,7 @@ export default function ScanningConsole() {
               <p>{running
                 ? "The steps at right reflect verified status received from the assessment service."
                 : snapshot?.status === "completed"
-                ? "The worker reported completion. The results experience will be linked after its secure implementation."
+                ? "The worker reported completion. A full report can appear only once authenticated report access is connected."
                 : load.type === "unavailable"
                 ? "The security engine is not configured. A run cannot be started or verified from this preview."
                 : load.type === "error"
@@ -365,6 +365,12 @@ export default function ScanningConsole() {
             <ol className="scan-events">{snapshot.events.map(event => <li key={event.id}><Clock3 size={16}/><span>{event.message}</span><time dateTime={event.at}>{timeText(event.at)}</time></li>)}</ol>
           ) : <div className="scan-empty-events"><ScanLine size={21}/><p><strong>No assessment activity yet.</strong><span>Verified worker events will appear here once an authorized scan is started.</span></p></div>}
           <div className="scan-activity-foot"><CircleAlert size={15}/><p>ShipSafe is not a security certification. Uncompleted checks, errors and false-positive limitations remain visible to the user.</p></div>
+        </section>
+
+        <section className="scan-results-preview">
+          <div className="scan-results-preview-icon"><FileSearch size={20}/></div>
+          <div><strong>Explore the full results experience</strong><p>Open a complete sample report—with all findings, evidence, and remediation visible. This is not your application's scan.</p></div>
+          <Link href="/assess/results">View full sample <ArrowRight size={16}/></Link>
         </section>
 
         <section className="scan-footer-cta">
