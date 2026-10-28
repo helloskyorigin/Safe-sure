@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft, ArrowRight, AlertCircle, Check, CheckCircle2, ChevronDown, ChevronUp,
@@ -66,6 +66,7 @@ export default function ResultsExperience() {
   const [state, setState] = useState<ReportState>({ kind: "loading" });
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
   const [selectedId, setSelectedId] = useState("");
   const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
   const [coverageOpen, setCoverageOpen] = useState(false);
@@ -123,6 +124,32 @@ export default function ResultsExperience() {
         .some(text => text.toLowerCase().includes(query))));
   }, [ordered, filter, search]);
   const active = found.find(f => f.id === selectedId) || found[0] || null;
+
+  // Familiar developer shortcuts. Never intercept typing or modified keystrokes.
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.ctrlKey || event.metaKey || event.altKey || event.defaultPrevented) return;
+      const target = event.target as HTMLElement | null;
+      const editing = !!target && (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) ||
+        target.isContentEditable);
+      if (event.key === "/" && !editing) {
+        event.preventDefault();
+        searchRef.current?.focus();
+      } else if (event.key === "Escape" && target === searchRef.current) {
+        setSearch("");
+        searchRef.current?.blur();
+      } else if (!editing && (event.key === "j" || event.key === "k") && found.length > 0) {
+        event.preventDefault();
+        const index = found.findIndex(f => f.id === active?.id);
+        const next = event.key === "j"
+          ? Math.min(index + 1, found.length - 1)
+          : Math.max(index - 1, 0);
+        setSelectedId(found[next].id);
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [found, active?.id]);
   const doneCoverage = report?.coverage.filter(c => c.status === "complete").length || 0;
   const otherCoverage = report?.coverage.filter(c => c.status !== "complete").length || 0;
   const reviewedCount = active?.steps.filter((_, i) => reviewed[active.id + ":" + i]).length || 0;
@@ -265,10 +292,11 @@ export default function ResultsExperience() {
             <label className="result-search">
               <Search size={16}/>
               <span className="result-visually-hidden">Search findings</span>
-              <input type="search" placeholder="Search finding or file…" value={search}
+              <input ref={searchRef} type="search" placeholder="Search finding or file…" value={search}
                 onChange={event => setSearch(event.target.value)}/>
               {search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={15}/></button>}
             </label>
+            <p className="result-keyboard-hint">Shortcuts <kbd>/</kbd> search · <kbd>J</kbd>/<kbd>K</kbd> navigate findings</p>
             <div className="result-filter-pills" aria-label="Severity filters">
               {levels.map(level => <button type="button" key={level} aria-pressed={filter === level}
                 onClick={() => setFilter(level)} className={filter === level ? "active" : ""}>{labels[level]}</button>)}
@@ -305,6 +333,32 @@ export default function ResultsExperience() {
                   <span className={"result-detail-level " + active.severity}>{labels[active.severity]}</span></div>
                 <h2>{active.title}</h2>
                 <p>{active.overview}</p>
+                <div className="result-detail-ticket">
+                  <small>Ready for your issue tracker</small>
+                  <CopyButton label="Copy issue-ready finding" value={[
+                    "## [" + active.severity.toUpperCase() + "] " + active.title,
+                    "",
+                    "**Repository:** " + report.appName,
+                    "**Location:** " + active.location.path + (active.location.line ? ":" + active.location.line : ""),
+                    "**Confidence:** " + active.confidence,
+                    "**Rule:** " + (active.ruleId || "Unspecified"),
+                    "",
+                    active.overview,
+                    "",
+                    "### Evidence (scanner output)",
+                    "```text",
+                    active.evidence,
+                    "```",
+                    "",
+                    "### Recommended review",
+                    ...active.steps.map(s => "- [ ] " + s),
+                    "",
+                    "### Verification",
+                    active.verification,
+                    "",
+                    "**Note:** Static detection is not a confirmed exploit. Review scan coverage before closing.",
+                  ].join("\\n")}/>
+                </div>
                 <div className="result-detail-meta"><span><Code2 size={14}/>{active.category}</span>
                   <span><ShieldCheck size={14}/>{active.confidence} confidence</span>
                   {active.ruleId && <span><FileSearch size={14}/> Rule {active.ruleId}</span>}</div>
