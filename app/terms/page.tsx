@@ -24,12 +24,12 @@ export default function TermsPage() {
     <LegalPage
       eyebrow="POLICY / TERMS"
       title="Terms of use."
-      lead="A straightforward explanation of what Secuvora offers today, how the preview may be used and what to expect before the service goes live."
+      lead="A straightforward explanation of what Secuvora offers today, how the preview may be used and what to expect as private integrations are activated."
       sections={sections}
       summary={[
         "Read-only public source scanning is available. Private scanning and owner-scoped encrypted seven-day reports are conditional on GitHub App and database configuration.",
         "Example assessments are illustrative, not results from your website or source code.",
-        "Only applications you own or are expressly authorized to test may be assessed when scanning becomes available.",
+        "Only applications you own or are expressly authorized to test may be assessed using the public or configured private scanner.",
       ]}
     >
       <section id="agreement" className="legal-section">
@@ -68,7 +68,7 @@ export default function TermsPage() {
       </section>
       <section id="disclaimers" className="legal-section">
         <h2>Disclaimers and liability</h2>
-        <p>The pre-launch website and its illustrative content are provided for general information and evaluation, without a promise of uninterrupted availability or error-free information. The examples do not constitute a security certification, penetration-test engagement, legal opinion or professional assurance of system safety.</p>
+        <p>The public website, limited on-demand scanner and illustrative sample are provided for general information and evaluation, without a promise of uninterrupted availability or error-free information. The examples do not constitute a security certification, penetration-test engagement, legal opinion or professional assurance of system safety.</p>
         <p>To the extent permitted by applicable law, the project does not accept responsibility for decisions made solely on the basis of illustrative content or for third-party products linked here. Nothing in these terms limits liability or remedies that cannot lawfully be excluded.</p>
       </section>
       <section id="revisions" className="legal-section">
