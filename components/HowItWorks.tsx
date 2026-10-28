@@ -4,7 +4,7 @@ export default function HowItWorks() {
       <div className="container">
         <div className="section-heading ">
           <p className="eyebrow">THE PROCESS</p>
-          <h2>How Secuvora works</h2>
+          <h2>How your security agent works</h2>
           <p>An automated security investigation, on demand. No launch deadline required.</p>
         </div>
         <div className="steps">
