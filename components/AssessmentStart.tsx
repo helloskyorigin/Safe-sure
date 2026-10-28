@@ -31,7 +31,7 @@ export default function AssessmentStart() {
   function submitPublic(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const value = publicRepo.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
-    const match = /^(?:https:\/\/github\.com\/)?([A-Za-z0-9-]{1,39})\/([A-Za-z0-9_.-]{1,100})$/i.exec(value);
+    const match = /^(?:(?:https:\/\/)?(?:www\.)?github\.com\/)?([A-Za-z0-9-]{1,39})\/([A-Za-z0-9_.-]{1,100})$/i.exec(value);
     if (!match || match[1].startsWith("-") || !/^[a-zA-Z0-9]/.test(match[2])) {
       setError("Enter a valid GitHub URL, for example github.com/owner/repo.");
       return;
