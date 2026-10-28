@@ -7,6 +7,9 @@ export type Confidence = "high" | "medium" | "low";
 export type ResultStatus = "complete" | "skipped" | "failed";
 export type ReportFinding = {
   id: string;
+  /** Stable detector identity; remains the same for the same rule across runs. */
+  ruleId?: string;
+  ruleEngine?: string;
   severity: Severity;
   title: string;
   category: string;
@@ -55,6 +58,8 @@ export function isAssessmentReport(value: unknown, runId: string): value is Asse
     if (!isObject(f) || !str(f.id, 100) || seen.has(f.id) ||
         !severities.has(f.severity as Severity) ||
         !confidences.has(f.confidence as Confidence) ||
+        (f.ruleId !== undefined && !str(f.ruleId, 100)) ||
+        (f.ruleEngine !== undefined && !str(f.ruleEngine, 140)) ||
         !str(f.title, 180) || !str(f.category, 100) ||
         !str(f.overview, 1200) || !str(f.whyItMatters, 1500) ||
         !str(f.evidence, 1500) || typeof f.redacted !== "boolean" ||
