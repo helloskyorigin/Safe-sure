@@ -3,8 +3,8 @@ import Link from "next/link";
 import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Security & Responsible Use | ShipSafe",
-  description: "ShipSafe's security commitments, assessment scope, responsible-use requirements, reporting boundaries and current service status.",
+  title: "Security & Responsible Use | Secuvora",
+  description: "Secuvora's security commitments, assessment scope, responsible-use requirements, reporting boundaries and current service status.",
 };
 
 const sections: LegalSection[] = [
@@ -22,7 +22,7 @@ export default function SecurityPage() {
     <LegalPage
       eyebrow="TRUST / SECURITY"
       title="Security practices."
-      lead="Security claims should match the system that actually exists. Learn the principles guiding ShipSafe and the boundaries of its current preview."
+      lead="Security claims should match the system that actually exists. Learn the principles guiding Secuvora and the boundaries of its current preview."
       sections={sections}
       summary={[
         "Public read-only scanning is available. Optional private GitHub authorization and encrypted reports require configured credentials; runtime penetration testing is not performed.",
@@ -32,7 +32,7 @@ export default function SecurityPage() {
     >
       <section id="status" className="legal-section">
         <h2>Current security scope</h2>
-        <p>ShipSafe now includes a read-only public GitHub source scanner. It fetches a pinned revision, applies supported static rules and optionally checks pinned dependencies against OSV. Separately, the fictional report remains a demonstration. Private repository authorization and seven-day encrypted report recovery are implemented but unavailable until the operator configures the GitHub App and database. Active penetration testing and payments are not enabled.</p>
+        <p>Secuvora now includes a read-only public GitHub source scanner. It fetches a pinned revision, applies supported static rules and optionally checks pinned dependencies against OSV. Separately, the fictional report remains a demonstration. Private repository authorization and seven-day encrypted report recovery are implemented but unavailable until the operator configures the GitHub App and database. Active penetration testing and payments are not enabled.</p>
         <p>This page documents current boundaries and future engineering requirements. It does not claim SOC 2, ISO 27001, a completed penetration test, an audit certification or any other third-party security attestation.</p>
       </section>
       <section id="permissions" className="legal-section">
@@ -55,7 +55,7 @@ export default function SecurityPage() {
       <section id="secrets" className="legal-section">
         <h2>Secrets, retention and reports</h2>
         <p>A production assessment should avoid logging or reproducing complete credentials in user-facing reports. Findings should mask suspected secrets, restrict report access to the entitled recipient and state whether sensitive content is stored at all.</p>
-        <p>Public source is processed transiently in a scan request, and report JSON is kept in the user's browser tab sessionStorage. Private reports, when configured, use owner-scoped AES-GCM authenticated encryption in a server-side Redis store with seven-day expiry and delete support. No complete source archive is intentionally retained. Hosting logs may exist separately; actual operational policies and independent testing must be confirmed before enabling private scans.</p>
+        <p>Public source is processed transiently in a scan request, and validated public reports are stored in the browser's localStorage for up to 30 days. Private reports, when configured, use owner-scoped AES-GCM authenticated encryption in a server-side Redis store with seven-day expiry and delete support. No complete source archive is intentionally retained. Hosting logs may exist separately; actual operational policies and independent testing must be confirmed before enabling private scans.</p>
       </section>
       <section id="limitations" className="legal-section">
         <h2>Accuracy and limitations</h2>
@@ -69,9 +69,9 @@ export default function SecurityPage() {
       </section>
       <section id="incidents" className="legal-section">
         <h2>Incident readiness and changes</h2>
-        <p>Before handling sensitive data, ShipSafe must establish incident triage, response ownership, a private communication channel, log-review practices and applicable regulatory reporting procedures. Response guarantees and certification statements will only be displayed once supported by actual operating procedures.</p>
+        <p>Before handling sensitive data, Secuvora must establish incident triage, response ownership, a private communication channel, log-review practices and applicable regulatory reporting procedures. Response guarantees and certification statements will only be displayed once supported by actual operating procedures.</p>
         <p>Material changes to access permissions, hosting, scan coverage, report retention or payments should be reflected in the <Link href="/privacy">privacy notice</Link>, <Link href="/terms">terms</Link> and this page before the affected functionality goes live.</p>
-        <p className="legal-note"><strong>Security is not a badge.</strong> ShipSafe's aim is accurate, explainable application security guidance—not misleading scores, false guarantees or unverified compliance claims.</p>
+        <p className="legal-note"><strong>Security is not a badge.</strong> Secuvora's aim is accurate, explainable application security guidance—not misleading scores, false guarantees or unverified compliance claims.</p>
       </section>
     </LegalPage>
   );
