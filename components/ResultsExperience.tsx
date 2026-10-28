@@ -175,7 +175,7 @@ export default function ResultsExperience() {
     }
     setExportFeedback(kind === "sarif" ? "SARIF file downloaded" :
       kind === "json" ? "JSON report downloaded" : "Fix plan downloaded");
-    window.setTimeout(() => setExportFeedback(""), 2300);
+    window.setTimeout(() => setExportFeedback(""), 6500);
   }
 
   function selectFinding(finding: ReportFinding) {
