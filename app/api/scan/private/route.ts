@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getGithubSession } from "@/lib/github-auth";
 import { authorizePrivateRepo } from "@/lib/github-installations";
 import { durableStoreConfigured, enforceSharedQuota, saveUserReport } from "@/lib/durable-reports";
-import { parsePublicRepo, scanPublicRepository } from "@/lib/public-repo-scanner";
+import { parsePublicRepo, scanPublicRepository, ScanError } from "@/lib/public-repo-scanner";
+import { isAllowedMutationOrigin, readBoundedJson, RequestBodyError } from "@/lib/api-request-guards";
 import type { AssessmentSnapshot } from "@/lib/assessment-contract";
 
 export const runtime = "nodejs";
@@ -11,18 +12,17 @@ export const maxDuration = 60;
 const headers = { "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff" };
 
 export async function POST(req: Request) {
-  const site = req.headers.get("sec-fetch-site");
-  if (site && site !== "same-origin" && site !== "none")
-    return NextResponse.json({ error: "Cross-site requests are denied." }, { status: 403, headers });
+  // Preserve 401 for unauthenticated users; authenticated mutations are then
+  // protected against cross-origin requests before any repository access.
   const session = await getGithubSession();
   if (!session) return NextResponse.json({ error: "GitHub sign-in required." }, { status: 401, headers });
+  if (!isAllowedMutationOrigin(req))
+    return NextResponse.json({ error: "Cross-origin requests are denied." }, { status: 403, headers });
   if (!durableStoreConfigured())
     return NextResponse.json({ error: "Secure report storage must be configured before private scanning." }, { status: 503, headers });
   let repo = "";
   try {
-    const text = await req.text();
-    if (text.length > 1000) return NextResponse.json({ error: "Request too large." }, { status: 413, headers });
-    const value: unknown = JSON.parse(text);
+    const value = await readBoundedJson(req, 1000);
     if (!value || typeof value !== "object" || !("repo" in value) || typeof value.repo !== "string")
       return NextResponse.json({ error: "Select one authorized repository." }, { status: 400, headers });
     const parsed = parsePublicRepo(value.repo);
@@ -33,7 +33,11 @@ export async function POST(req: Request) {
         !(await enforceSharedQuota("global", 50)))
       return NextResponse.json({ error: "Shared scan quota reached; retry shortly." },
         { status: 429, headers: { ...headers, "Retry-After": "60" } });
-  } catch {
+  } catch (error) {
+    if (error instanceof RequestBodyError)
+      return NextResponse.json({ error: error.message }, { status: error.status, headers });
+    if (error instanceof ScanError)
+      return NextResponse.json({ error: error.message }, { status: error.status, headers });
     return NextResponse.json({ error: "Could not verify repository access or scan capacity." },
       { status: 503, headers });
   }
