@@ -24,7 +24,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> AI SECURITY AGENT · BETA
+            <span className="eyebrow-dash"></span> AI SECURITY AGENT
           </p>
           <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
             Meet Secuvora.
@@ -32,7 +32,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
             <em>Your AI security agent.</em>
           </motion.h1>
           <p className="hero-sub animate delay-2">
-            Your security agent for any stage of development. Today's beta investigates source code, credentials, dependencies and configurations using real rules and published advisories. Model-powered reasoning is coming next.
+            Expose potential risks hiding in your code. Secuvora examines credentials, dependencies and security-sensitive configurations—then shows the evidence, affected files and next steps that matter.
           </p>
           <div className="hero-action animate delay-3">
             <a
