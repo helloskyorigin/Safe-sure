@@ -54,6 +54,12 @@ Official integration references:
 - https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/about-the-setup-url
 - https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app
 
+## Inspection console
+
+Screen 3 is implemented at **/assess/scanning** with a distinctive inspection lens, five interactive analysis layers, a worker-confirmed progress timeline and an honest no-run state. The connection screen links to the preview. The scan status/cancel API fails closed until authentication and a real worker are available.
+
+Read the [scan-engine integration contract](docs/scan-engine-integration.md) before enabling application access.
+
 ## Architecture
 
 - `app/page.tsx` assembles the landing page
