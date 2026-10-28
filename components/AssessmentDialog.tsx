@@ -72,7 +72,7 @@ export default function AssessmentDialog({ isOpen, onClose }: AssessmentDialogPr
           </svg>
         </span>
         <p className="eyebrow">PRODUCT PREVIEW</p>
-        <h2 id="dialog-title">Security assessments are coming soon.</h2>
+        <h2 id="dialog-title">The security agent is available for public repositories.</h2>
         <p id="dialog-copy">
           You&apos;re viewing Secuvora&apos;s landing page. Source-code authorization and
           scanning are not connected yet. No application data has been accessed.
