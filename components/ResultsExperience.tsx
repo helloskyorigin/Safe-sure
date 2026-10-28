@@ -213,6 +213,12 @@ export default function ResultsExperience() {
             <span>{isSample ? "DEMONSTRATION REPOSITORY" : state.kind === "live" && state.source === "private" ? "AUTHORIZED PRIVATE REPOSITORY" : "PUBLIC REPOSITORY"}</span>
             <h2>{report.appName}</h2>
             <p><GitCommitHorizontal size={14}/> <span title={report.revision || "Unknown commit"}>{isSample ? "Example revision" : report.revision ? report.revision.slice(0, 12) : "Revision unavailable"}</span> <span aria-hidden="true">·</span> Read-only source assessment</p>
+            {report.scanMetrics && <p className="result-scanned-metrics">
+              <span>{report.scanMetrics.filesInspected} files inspected</span>
+              <span>{report.scanMetrics.linesInspected.toLocaleString()} lines reviewed</span>
+              <span>{report.scanMetrics.dependencyVersions} pinned packages</span>
+              <span>{report.scanMetrics.rulesExecuted} source rules</span>
+            </p>}
           </div>
           <span className="result-included"><CheckCircle2 size={15}/> Complete report</span>
         </section>
@@ -293,7 +299,8 @@ export default function ResultsExperience() {
                 <h2>{active.title}</h2>
                 <p>{active.overview}</p>
                 <div className="result-detail-meta"><span><Code2 size={14}/>{active.category}</span>
-                  <span><ShieldCheck size={14}/>{active.confidence} confidence</span></div>
+                  <span><ShieldCheck size={14}/>{active.confidence} confidence</span>
+                  {active.ruleId && <span><FileSearch size={14}/> Rule {active.ruleId}</span>}</div>
               </div>
 
               <div className="result-file-location">
@@ -390,7 +397,7 @@ export default function ResultsExperience() {
           {priorityFindings(report.findings).map(f => <article key={f.id}>
             <h3>{f.id} — {f.title} ({f.severity.toUpperCase()})</h3>
             <p><strong>File:</strong> {f.location.path}{f.location.line ? ":" + f.location.line : ""}</p>
-            <p><strong>Confidence:</strong> {f.confidence} · <strong>Category:</strong> {f.category}</p>
+            <p><strong>Confidence:</strong> {f.confidence} · <strong>Category:</strong> {f.category}{f.ruleId ? " · Rule: " + f.ruleId : ""}</p>
             <p>{f.overview}</p>
             <p><strong>Why it matters:</strong> {f.whyItMatters}</p>
             <pre>{f.evidence}</pre>
