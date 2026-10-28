@@ -1960,3 +1960,7 @@ svg {
  .header .brand{font-size:22px}
  .mobile-nav:not([inert]){padding-inline:17px}
 }
+
+/* Decorative radial glows extend 370px past the hero. Clip that decoration
+   at the section boundary instead of expanding the document scroll width. */
+.hero{overflow-x:clip}
