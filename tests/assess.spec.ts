@@ -59,7 +59,7 @@ test("private connected account selects a real authorized repo and continues to 
   const select = page.getByRole("combobox", { name: "Choose repository" });
   await expect(select.locator("option")).toHaveCount(2);
   await select.selectOption("founder/beta");
-  await page.getByRole("button", { name: "Scan this repository" }).click();
+  await page.getByRole("button", { name: "Run security agent" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?private=founder%2Fbeta/);
 });
 
