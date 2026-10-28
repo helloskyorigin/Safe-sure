@@ -8,7 +8,7 @@ test("verified report shows actual scan scope, stable detector ID and no invente
     revision:"a".repeat(40),
     scanMetrics:{ filesInspected:12,eligibleFiles:27,linesInspected:4321,dependencyVersions:48,rulesExecuted:12 },
     findings:SAMPLE_REPORT.findings.map((f,index)=>index===0? {
-      ...f,ruleId:"SS-SECRET-002",ruleEngine:"ShipSafe static rules v2",
+      ...f,ruleId:"SS-SECRET-002",ruleEngine:"Secuvora static rules v2",
     }:f),
   };
   await page.route("**/api/assessments/*/report", route => route.fulfill({
