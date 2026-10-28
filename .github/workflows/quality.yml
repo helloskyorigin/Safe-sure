@@ -28,3 +28,5 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Verify homepage scroll and mobile navigation
         run: npm run test:e2e
+        env:
+          RUN_LIVE_SCAN: '1'
