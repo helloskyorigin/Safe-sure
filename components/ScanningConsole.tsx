@@ -288,16 +288,13 @@ export default function ScanningConsole() {
       <header className="scan-nav">
         <div className="scan-container scan-nav-inner">
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
-          <span className="scan-nav-center"><span/> SECUVORA AGENT · LIVE</span>
+          <span className="scan-nav-center"><span/> {ongoing ? "LIVE SOURCE REVIEW" : "READ-ONLY SOURCE REVIEW"}</span>
           <Link href="/assess" className="scan-nav-return"><ArrowLeft size={16}/> Back</Link>
         </div>
       </header>
 
       <main className="scan-container scan-main" id="scan-main">
-        <motion.section className="scan-card" aria-labelledby="scan-heading"
-          initial={reducedMotion ? false : { opacity: 0, y: 13 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reducedMotion ? 0 : .55 }}>
+        <section className="scan-card" aria-labelledby="scan-heading">
           <div className={"scan-state-tag" + (isFailure ? " is-error" : "")} role="status" aria-live="polite">
             <span className="scan-state-dot"/>{stateLabel}
           </div>
@@ -313,6 +310,7 @@ export default function ScanningConsole() {
               isFinishing ? (savedId ? "Opening your results" : "Finalizing your report") :
               hasSource ? "Agent investigating" : "Ready to scan"}</h1>
             <p className="scan-repo-name">{source?.name || "No repository selected"}</p>
+            {hasSource && <p className="scan-source-type">{source?.private ? "Authorized private repository" : "Public GitHub repository"} · Read-only</p>}
             {!isFailure && <p className="scan-current-action" aria-live="polite">
               {ongoing && <LoaderCircle size={15} className="scan-inline-spinner"/>}
               {hasSource ? liveDescription : "Select a repository to begin."}
@@ -322,7 +320,7 @@ export default function ScanningConsole() {
 
           <div className="scan-progress">
             <div className="scan-progress-row">
-              <span>Agent progress</span>
+              <span>Verified check progress</span>
               <strong>{snapshot?.progress ? snapshot.progress.done + " of " + snapshot.progress.total + " checks" : "—"}</strong>
             </div>
             <div className="scan-progress-track"
@@ -334,7 +332,7 @@ export default function ScanningConsole() {
               <motion.div className="scan-progress-fill" animate={{ width: percent === null ? "0%" : percent + "%" }}
                 transition={{ duration: reducedMotion ? 0 : .45 }}/>
             </div>
-            <span className="scan-progress-caption">{count === null ? "Checking backend status…" : count + " / 5 stages resolved"}</span>
+            <span className="scan-progress-caption">{count === null ? "Waiting for real scan updates…" : count + " of " + checks.length + " stages resolved"}</span>
           </div>
 
           <div className="scan-check-list" aria-label="Security checks">
@@ -347,7 +345,7 @@ export default function ScanningConsole() {
                     state === "failed" ? <CircleAlert size={20}/> :
                     state === "skipped" ? <Circle size={19}/> : <Circle size={19}/>}
                 </span>
-                <span className="scan-check-name">{displayNames[check.key]}</span>
+                <span className="scan-check-info"><span className="scan-check-name">{displayNames[check.key]}</span><small>{check.short}</small></span>
                 <span className="scan-check-status">{statusName(state)}</span>
               </div>;
             })}
@@ -371,9 +369,9 @@ export default function ScanningConsole() {
               <Link href="/assess" className="scan-primary-link"><Github size={17}/> Start a new investigation <ArrowRight size={17}/></Link>
             )}
             {actionError && <p role="alert" className="scan-action-error">{actionError}</p>}
-            <p className="scan-honesty"><ShieldCheck size={15}/> Read-only agent review · Results open automatically</p>
+            <p className="scan-honesty"><ShieldCheck size={15}/> Bounded source checks · No code execution · Findings need verification</p>
           </div>
-        </motion.section>
+        </section>
       </main>
     </div>
   );
