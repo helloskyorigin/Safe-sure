@@ -18,6 +18,10 @@ const faqs = [
     answer: "Public scans already provide full findings, evidence, impact, remediation and verification guidance without a paywall.",
   },
   {
+    question: "Is the agent powered by AI models yet?",
+    answer: "Not in the current beta. Secuvora is an AI-security-agent product in development; the live analysis uses deterministic security rules and OSV vulnerability intelligence. Model-based reasoning is planned, not represented as already running.",
+  },
+  {
     question: "Does the agent guarantee my code is secure?",
     answer: "No. Secuvora currently uses automated static rules and OSV advisories; it does not perform full runtime, cross-file taint analysis or LLM reasoning. Findings can be incomplete and require human verification.",
   },
