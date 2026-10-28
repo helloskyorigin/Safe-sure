@@ -15,8 +15,8 @@ export default function ValueSection() {
     <section className="value-section section" aria-labelledby="value-heading">
       <div className="container">
         <motion.div className="value-heading" initial={{ y: 24 }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: reduceMotion ? 0 : .7 }}>
-          <div><p className="eyebrow">MADE FOR BUILDERS</p><h2 id="value-heading">A security agent<br/>you can trust.</h2></div>
-          <p>Secuvora turns actual source signals and published advisories into a focused security investigation—with evidence you can review.</p>
+          <div><p className="eyebrow">MADE FOR BUILDERS</p><h2 id="value-heading">An AI security agent<br/>built on evidence.</h2></div>
+          <p>Today, Secuvora investigates real source signals and published advisories with explainable rules. Future AI reasoning will build on this evidence—not invent it.</p>
         </motion.div>
         <div className="value-grid">
           {cards.map((card, i) => (
