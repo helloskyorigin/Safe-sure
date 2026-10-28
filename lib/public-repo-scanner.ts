@@ -1,6 +1,6 @@
 import type { AssessmentReport, CoverageItem, ReportFinding, Severity } from "@/lib/report-contract";
 import type { AssessmentCheck, AssessmentSnapshot, CheckKey } from "@/lib/assessment-contract";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { analyzeSourceDetailed } from "@/lib/source-security-engine";
 export { analyzeSource } from "@/lib/source-security-engine";
 
@@ -97,7 +97,7 @@ export function parseDependencies(files: Source[]) {
   return { deps, manifestFound, truncated };
 }
 
-async function osvScan(deps: Dependency[], signal: AbortSignal) {
+export async function osvScan(deps: Dependency[], signal: AbortSignal) {
   // OSV querybatch returns *IDs*, not severity or fix versions. Always look up
   // original advisory records before making vulnerability-specific claims.
   const body = JSON.stringify({ queries: deps.map(d => ({
@@ -162,7 +162,7 @@ async function osvScan(deps: Dependency[], signal: AbortSignal) {
         (fixed.length === 1 ? ": " : "s: ") + fixed.slice(0, 3).join(", ") + "." : "";
       const overview = dep.name + "@" + dep.version + " returned an exact-version match for OSV advisory " + id + ".";
       return {
-        id: "OSV-" + randomUUID().slice(0, 8) + "-" + id.slice(0, 24),
+        id: "OSV-" + createHash("sha256").update(id + "|" + dep.ecosystem + "|" + dep.name + "|" + dep.version).digest("hex").slice(0, 16),
         ruleId: "OSV-MATCH", ruleEngine: "OSV published advisory",
         severity, confidence: "high" as const, category: "Dependency advisory",
         title: "Advisory " + id + " affects " + dep.name + "@" + dep.version,
