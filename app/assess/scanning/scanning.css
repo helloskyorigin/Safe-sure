@@ -242,3 +242,9 @@
 .scan-results-preview>a:hover{transform:translateY(-2px);box-shadow:0 10px 20px #1d385321}
 @media(max-width:600px){.scan-results-preview{flex-wrap:wrap;padding:17px}.scan-results-preview>a{margin-left:60px}}
 @media(max-width:365px){.scan-results-preview>a{margin-left:0;width:100%;justify-content:center}}
+
+/* One-click recovery after a real failed scan */
+.scan-retry-actions{display:grid;gap:11px}
+.scan-retry-actions .scan-primary-link{border:0;cursor:pointer;width:100%;font-family:inherit}
+.scan-change-target{text-align:center;color:#5d7ea8;font-size:11px;font-weight:700}
+.scan-change-target:hover{text-decoration:underline;text-underline-offset:3px}
