@@ -3,12 +3,12 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, BookOpen, CreditCard, Fingerprint, Headphones, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Legal Center | ShipSafe",
-  description: "The official ShipSafe website policies and security information, organized in one place.",
+  title: "Legal Center | Secuvora",
+  description: "The official Secuvora website policies and security information, organized in one place.",
 };
 
 const pages = [
-  { href: "/privacy", title: "Privacy policy", desc: "What is processed when you visit ShipSafe, what is not collected and your choices.", icon: Fingerprint, section: "DATA" },
+  { href: "/privacy", title: "Privacy policy", desc: "What is processed when you visit Secuvora, what is not collected and your choices.", icon: Fingerprint, section: "DATA" },
   { href: "/terms", title: "Terms of use", desc: "How the public preview may be used and what authorized assessments will require.", icon: BookOpen, section: "TERMS" },
   { href: "/refunds", title: "Pricing & billing", desc: "Full report access without a paywall, current billing status and user protections.", icon: CreditCard, section: "BILLING" },
   { href: "/security", title: "Security practices", desc: "Security principles, assessment limits and responsible vulnerability reporting.", icon: ShieldCheck, section: "TRUST" },
@@ -19,9 +19,9 @@ export default function LegalCenter() {
   return (
     <div className="legal-site">
       <a href="#main" className="skip-link">Skip to content</a>
-      <header className="legal-nav"><div className="container legal-nav-inner"><Link className="brand" href="/">shipsafe<span>.</span></Link><Link className="legal-back" href="/"><ArrowLeft size={16}/> Back to ShipSafe</Link></div></header>
+      <header className="legal-nav"><div className="container legal-nav-inner"><Link className="brand" href="/">secuvora<span>.</span></Link><Link className="legal-back" href="/"><ArrowLeft size={16}/> Back to Secuvora</Link></div></header>
       <main id="main" className="container legal-center">
-        <p className="eyebrow">SHIPSAFE / TRUST & TRANSPARENCY</p>
+        <p className="eyebrow">SECUVORA / TRUST & TRANSPARENCY</p>
         <h1>Clarity is part<br/>of security.</h1>
         <p className="legal-center-lead">Everything you need to know about the current website, the planned service and our approach to handling security information—organized without legal-page clutter.</p>
         <div className="legal-center-meta">Five published documents <span>·</span> Reviewed 27 October 2026</div>
@@ -35,9 +35,9 @@ export default function LegalCenter() {
             </Link>
           ))}
         </div>
-        <div className="legal-center-foot"><ShieldCheck size={18}/><p>ShipSafe is currently a public product preview. These pages describe the present implementation and will be updated before live scanning or payment collection begins.</p></div>
+        <div className="legal-center-foot"><ShieldCheck size={18}/><p>Secuvora is currently a public product preview. These pages describe the present implementation and will be updated before live scanning or payment collection begins.</p></div>
       </main>
-      <footer className="legal-footer"><div className="container legal-footer-inner"><Link href="/" className="brand">shipsafe<span>.</span></Link><nav aria-label="Footer legal navigation">{pages.map(item => <Link href={item.href} key={item.href}>{item.title}</Link>)}</nav></div></footer>
+      <footer className="legal-footer"><div className="container legal-footer-inner"><Link href="/" className="brand">secuvora<span>.</span></Link><nav aria-label="Footer legal navigation">{pages.map(item => <Link href={item.href} key={item.href}>{item.title}</Link>)}</nav></div></footer>
     </div>
   );
 }
