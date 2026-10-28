@@ -51,8 +51,8 @@ export default function AssessmentStart() {
       <a href="#connect-main" className="skip-link">Skip to repository connection</a>
       <header className="assess-header connect-header">
         <div className="assess-container assess-header-inner">
-          <Link href="/" className="brand" aria-label="ShipSafe home">shipsafe<span>.</span></Link>
-          <span className="connect-header-mark"><span/> APPLICATION SECURITY</span>
+          <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
+          <span className="connect-header-mark"><span/> AUTOMATED SECURITY AGENT</span>
           <Link href="/" className="assess-back"><ArrowLeft size={16}/> <span>Back</span></Link>
         </div>
       </header>
@@ -60,8 +60,8 @@ export default function AssessmentStart() {
       <main id="connect-main" className="connect-main">
         <motion.div className="connect-content" {...entrance}>
           <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
-          <h1>What are we <em>scanning?</em></h1>
-          <p className="connect-subtitle">Choose how to access your repository.</p>
+          <h1>Which repository should your <em>agent inspect?</em></h1>
+          <p className="connect-subtitle">Choose a public repository or authorize private access. Your agent runs a read-only security investigation.</p>
 
           <div className="connect-choices" role="group" aria-label="Repository visibility">
             <button type="button" className={"connect-choice" + (mode === "public" ? " selected" : "")}
@@ -97,19 +97,19 @@ export default function AssessmentStart() {
                   </div>
                   {error && <p className="connect-error" role="alert" id="connect-url-error">{error}</p>}
                   <button type="submit" className="connect-submit">
-                    Scan repository <ArrowRight size={18}/>
+                    Run security agent <ArrowRight size={18}/>
                   </button>
                 </form>
               ) : <PrivateRepoConnector/>}
             </motion.div>}
           </AnimatePresence>
 
-          <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only scanning <span/> Full results, free</p>
+          <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only agent analysis <span/> Full results, free</p>
         </motion.div>
       </main>
 
       <footer className="connect-footer">
-        <span>© 2026 ShipSafe</span>
+        <span>© 2026 Secuvora</span>
         <nav aria-label="Legal links"><Link href="/privacy">Privacy</Link><Link href="/security">Security</Link></nav>
       </footer>
     </div>
