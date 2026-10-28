@@ -157,8 +157,8 @@ export default function ResultsExperience() {
     <header className="result-nav">
       <div className="result-container result-nav-inner">
         <Link className="brand" href="/" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
-        <span className="result-nav-label"><span/> SECURITY AGENT REPORT</span>
-        <Link href="/assess" className="result-nav-back"><ArrowLeft size={16}/> <span>New scan</span></Link>
+        <span className="result-nav-label"><span/> SECUVORA AGENT REPORT</span>
+        <Link href="/assess" className="result-nav-back"><ArrowLeft size={16}/> <span>New investigation</span></Link>
       </div>
     </header>
 
@@ -182,7 +182,7 @@ export default function ResultsExperience() {
             <div className="result-heading-kicker">
               <span className={"result-status " + (isSample ? "sample" : "verified")}>
                 {isSample ? <Info size={14}/> : <CheckCircle2 size={15}/>}
-                {isSample ? "INTERACTIVE SAMPLE" : "SCAN COMPLETE"}
+                {isSample ? "INTERACTIVE SAMPLE" : "AGENT REVIEW COMPLETE"}
               </span>
               <span className="result-date">{isSample ? "Fictional data" : readableDate(report.finishedAt)}</span>
             </div>
@@ -415,7 +415,7 @@ export default function ResultsExperience() {
 
     <footer className="result-footer"><div className="result-container result-footer-inner">
       <Link href="/" className="brand">secuvora<span>.</span></Link>
-      <span>Read-only source scanning · No security guarantee</span>
+      <span>Read-only automated analysis · Rules + OSV · No security guarantee</span>
       <nav aria-label="Footer links"><Link href="/privacy">Privacy</Link><Link href="/security">Security</Link></nav>
     </div></footer>
     {exportFeedback && <div className="result-toast" role="status">{exportFeedback}</div>}
