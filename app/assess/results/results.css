@@ -273,3 +273,22 @@
 @media print{
   .result-scanned-metrics span{background:#fff;border:1px solid #ccc;color:#333}
 }
+
+
+/* Developer navigation and keyboard discoverability, without invented scores. */
+.result-nav-actions{display:flex;align-items:center;gap:22px}
+.result-nav-actions .result-nav-back:focus-visible{outline:3px solid #92b9e7;outline-offset:4px;border-radius:4px}
+.result-keyboard-hint{display:flex;align-items:center;gap:5px;font-size:10px;color:#93a4b9;margin-top:8px}
+.result-keyboard-hint kbd{font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;border:1px solid #dfe8f2;background:#f7faff;border-radius:4px;padding:2px 5px;color:#5d7796}
+.result-detail-ticket{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0 0 12px}
+.result-detail-ticket small{font-size:10px;color:#90a0b4}
+@media(max-width:500px){
+ .result-nav-actions{gap:12px}
+ .result-nav-actions .result-nav-back{font-size:10px}
+}
+@media print{.result-keyboard-hint,.result-detail-ticket{display:none!important}}
+
+@media(max-width:400px){
+ .result-nav-actions .result-nav-back:last-child span{display:none}
+ .result-nav-actions{gap:12px}
+}

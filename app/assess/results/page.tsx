@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ResultsExperience from "@/components/ResultsExperience";
 import "./results.css";
+import "./delta.css";
 
 export const metadata: Metadata = {
   title: "Security agent findings | Secuvora",

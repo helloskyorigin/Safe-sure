@@ -14,7 +14,7 @@ test("v2 produces stable reproducible evidence and never returns credential mate
   const first = analyzeSourceDetailed(files);
   const again = analyzeSourceDetailed(files);
   expect(first.findings).toHaveLength(5);
-  expect(first.rulesRun).toBe(12);
+  expect(first.rulesRun).toBe(14);
   expect(first.inspectedLines).toBe(5);
   expect(first.findings.map(f => f.id)).toEqual(again.findings.map(f => f.id));
   expect(new Set(first.findings.map(f => f.ruleId)).size).toBe(5);
@@ -68,4 +68,21 @@ test("report validator accepts real scanner rule identity and scope metrics, rej
   expect(isAssessmentReport(valid, valid.runId)).toBe(true);
   expect(isAssessmentReport({ ...valid, scanMetrics:{ ...valid.scanMetrics,filesInspected:9 } },valid.runId)).toBe(false);
   expect(isAssessmentReport({ ...valid, findings:valid.findings.map(f=>({ ...f, ruleId:"" })) },valid.runId)).toBe(false);
+});
+
+test("agent integration bypass flags are reported with bounded evidence and explicit uncertainty", () => {
+  const files = [
+    { path:"agents/vector.py",content:"db = FAISS.load_local(store, emb, allow_dangerous_deserialization=True)" },
+    { path:"agents/browser.py",content:"toolkit = RequestsToolkit(requests_wrapper=client, allow_dangerous_requests=True)" },
+    { path:"tests/agent_config.test.py",content:"# allow_dangerous_requests=True\\n" +
+      "allow_dangerous_requests=False\\n" },
+  ];
+  const result = analyzeSourceDetailed(files);
+  expect(result.findings.map(f => f.ruleId)).toEqual(["SS-AGENT-001","SS-AGENT-002"]);
+  expect(result.findings[0].severity).toBe("high");
+  expect(result.findings[1].severity).toBe("medium");
+  expect(result.findings.every(f => f.confidence === "medium" &&
+    f.limitations?.toLowerCase().includes("not") || false)).toBe(true);
+  expect(result.findings.every(f => !f.evidence.includes("FAISS.load_local"))).toBe(true);
+  expect(result.rulesRun).toBe(14);
 });

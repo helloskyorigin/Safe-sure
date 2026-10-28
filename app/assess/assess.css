@@ -378,3 +378,28 @@
  .history-hint{margin-bottom:15px}
 }
 @media(max-width:360px){.history-report-icon{height:34px;width:34px}.history-report-info{flex-basis:calc(100% - 46px)}.history-open{margin-left:0}}
+
+
+/* Secuvora developer workflow: consistent tool navigation and repeat-scan actions. */
+.connect-header-actions{display:flex;align-items:center;gap:22px;min-width:0}
+.connect-header-actions .assess-back{white-space:nowrap}
+.history-row-actions{display:flex;align-items:center;gap:15px;flex-wrap:wrap;justify-content:flex-end}
+.history-rescan{display:inline-flex;align-items:center;gap:6px;border:1px solid #dbe5f2;border-radius:8px;padding:8px 10px;color:#5c7897;font-size:10px;font-weight:760;white-space:nowrap;background:#f9fbff}
+.history-rescan:hover{color:#2f618e;border-color:#a5bfdc;background:#eff6ff}
+.history-report-row:focus-within{background:#fbfdff}
+.history-report-row .history-open:focus-visible,.history-rescan:focus-visible{outline:3px solid #9dc0e9;outline-offset:3px}
+@media(max-width:650px){
+ .connect-header-actions{gap:12px}
+ .connect-header-actions .assess-back{font-size:11px}
+ .history-row-actions{margin-left:49px;justify-content:flex-start}
+ .history-row-actions .history-open{margin-left:0}
+}
+@media(max-width:400px){
+ .connect-header-mark{display:none}
+ .connect-header-actions{gap:10px}
+ .history-row-actions{margin-left:0}
+}
+
+@media(max-width:400px){
+ .connect-header-actions .assess-back:last-child span{display:none}
+}

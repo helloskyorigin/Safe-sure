@@ -91,7 +91,11 @@ export default function SavedReports() {
         <strong>{item.appName}</strong>
         <p>{formatDate(item.finishedAt)} <span aria-hidden="true">·</span> {item.findings} candidate {item.findings === 1 ? "finding" : "findings"}</p>
       </div>
-      <Link href={url} className="history-open">Open report <ArrowRight size={15}/></Link>
+      <div className="history-row-actions">
+        <Link href={url} className="history-open">Open report <ArrowRight size={15}/></Link>
+        <Link href={"/assess/scanning?" + (kind === "public" ? "repo=" : "private=") + encodeURIComponent(item.appName)}
+          className="history-rescan"><RefreshCw size={14}/> Rescan</Link>
+      </div>
       <button type="button" className="history-delete" aria-label={"Delete report for " + item.appName}
         disabled={deleting === item.runId}
         onClick={() => { if (kind === "public") void removePublic(item as LocalReportSummary);

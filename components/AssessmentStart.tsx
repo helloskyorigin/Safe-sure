@@ -53,7 +53,10 @@ export default function AssessmentStart() {
         <div className="assess-container assess-header-inner">
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
           <span className="connect-header-mark"><span/> SECUVORA · SECURITY AGENT</span>
-          <Link href="/" className="assess-back"><ArrowLeft size={16}/> <span>Back</span></Link>
+          <div className="connect-header-actions">
+            <Link href="/assess/history" className="assess-back"><Github size={16}/> <span>Agent history</span></Link>
+            <Link href="/" aria-label="Back to homepage" className="assess-back"><ArrowLeft size={16}/> <span>Back</span></Link>
+          </div>
         </div>
       </header>
 

@@ -1,0 +1,59 @@
+/* Evidence-backed scan delta: developer-first diff experience. */
+.delta-panel{margin:0 0 30px;border:1px solid #d9e4f1;background:linear-gradient(130deg,#fff 30%,#f5f9ff 100%);border-radius:16px;overflow:hidden;box-shadow:0 16px 48px #253f6410}
+.delta-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:23px 25px;border-bottom:1px solid #e6edf6}
+.delta-heading-main{display:flex;align-items:center;gap:14px;min-width:0}
+.delta-emblem{width:44px;height:44px;border:1px solid #cbdcf1;color:#527da9;background:#edf5ff;border-radius:12px;display:grid;place-items:center;flex:none}
+.delta-eyebrow{font-size:9px;font-weight:800;letter-spacing:.17em;color:#7796b8}
+.delta-heading h2{font-size:20px;line-height:1.25;letter-spacing:-.045em;color:#1f344e;margin:6px 0 0}
+.delta-rescan{min-height:37px;padding:9px 13px;background:#22364d;color:white!important;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;font-size:11px;font-weight:750}
+.delta-rescan:hover{background:#345677}
+.delta-muted{padding:23px 25px;font-size:12px;color:#788ca5;margin:0}
+.delta-compare-bar{display:flex;align-items:center;gap:12px 19px;flex-wrap:wrap;padding:15px 25px;border-bottom:1px solid #ecf1f7;font-size:11px;color:#7790ab}
+.delta-compare-bar>span:first-child{display:flex;align-items:center;gap:7px;color:#435e7a;font-weight:700}
+.delta-compare-bar>a{margin-left:auto;display:flex;align-items:center;gap:5px;color:#476f9b;font-weight:780}
+.delta-commit{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:10px;color:#8292a5}
+.delta-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;padding:20px 25px}
+.delta-metric{border:1px solid #e0e9f3;border-radius:11px;background:#fff;padding:18px 17px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.delta-metric strong{font-size:33px;letter-spacing:-.06em;line-height:1;color:#29476b;font-variant-numeric:tabular-nums}
+.delta-metric.new strong{color:#ba695d}
+.delta-metric.absent strong{color:#658d75}
+.delta-metric span{font-size:11px;font-weight:800;color:#405c77}
+.delta-metric small{font-size:10px;line-height:1.5;color:#8195ab}
+.delta-new-findings{margin:0 25px 18px;padding:18px;background:#fff;border-radius:11px;border:1px solid #e0e9f3}
+.delta-new-findings>strong{color:#2d4561;font-size:12px}
+.delta-new-findings ul{list-style:none;display:grid;gap:12px;margin:14px 0 0;padding:0}
+.delta-new-findings li{display:flex;gap:10px;align-items:flex-start;font-size:11px;font-weight:700;line-height:1.4;color:#4c617b}
+.delta-new-findings li>span:last-child{flex:1;min-width:0;overflow-wrap:anywhere}
+.delta-new-findings small{display:block;color:#8ea0b5;margin-top:3px;font-size:10px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-weight:400}
+.delta-severity{text-transform:uppercase;font-size:8px;font-weight:800;padding:5px 7px;border-radius:5px;background:#f5f7fb;color:#6c829c}
+.delta-severity.critical,.delta-severity.high{background:#fdf0ef;color:#b56463}
+.delta-severity.medium{background:#edf4fd;color:#5d83b3}
+.delta-baseline{padding:25px;display:flex;gap:15px;align-items:flex-start;color:#7c9cbd}
+.delta-baseline>svg{flex:none}
+.delta-baseline strong{font-size:13px;color:#2f4965}
+.delta-baseline p{font-size:11px;color:#7489a2;line-height:1.7;max-width:680px;margin:7px 0 0}
+.delta-baseline .delta-data-note{font-size:10px;color:#8c9db1}
+.delta-caution,.delta-disclaimer{margin:0 25px 16px;display:flex;align-items:flex-start;gap:9px;font-size:11px;line-height:1.6;color:#847555;background:#fffaf0;border:1px solid #efe4c6;border-radius:9px;padding:12px 14px}
+.delta-caution svg,.delta-disclaimer svg{flex:none;margin-top:1px}
+.delta-disclaimer{background:none;border:0;color:#8495a9;padding:2px 0 6px;font-size:10px}
+@media(max-width:760px){
+ .delta-heading{padding:18px;align-items:flex-start;flex-direction:column}
+ .delta-heading h2{font-size:18px}
+ .delta-rescan{width:100%}
+ .delta-compare-bar{padding:12px 18px}
+ .delta-compare-bar>a{margin-left:0}
+ .delta-metrics{padding:16px 18px;gap:7px}
+ .delta-metric{padding:13px 10px}
+ .delta-metric strong{font-size:28px}
+ .delta-metric span{font-size:10px}
+ .delta-metric small{font-size:9px}
+ .delta-new-findings{margin:0 18px 16px}
+ .delta-baseline{padding:18px}
+ .delta-caution,.delta-disclaimer{margin-left:18px;margin-right:18px}
+}
+@media(max-width:350px){
+ .delta-metrics{grid-template-columns:1fr}
+ .delta-metric{flex-direction:row;align-items:center;flex-wrap:wrap;gap:9px}
+ .delta-metric small{flex-basis:100%}
+}
+@media print{.delta-panel{display:none!important}}

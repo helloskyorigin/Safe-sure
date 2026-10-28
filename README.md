@@ -1,5 +1,7 @@
 # Secuvora
 
+> **Release status:** working public-source security MVP with a developer investigation workflow. Production private-repository access and continuous autonomous security require additional operator setup and validation. See [Production gates + YC demo runbook](docs/production-gates.md) for exact requirements.
+
 Secuvora is an on-demand automated security agent for GitHub repository source investigations. Today its autonomous workflow runs bounded security rules and OSV advisories; it does not use an LLM for reasoning. This Next.js 15 App Router project includes a premium landing, live public source scanning, full results, an illustrative sample report and legal pages. Private-repository OAuth/source scanning and encrypted seven-day recovery are now implemented as opt-in server components; activation requires the operator to configure a GitHub App and Upstash Redis.
 
 ## Auto-open results and public-scanner readiness
@@ -93,4 +95,4 @@ Before broad private or commercial usage: confirm real Github App installation, 
 
 ### Scanner v2: evidence-backed security assessment
 
-Secuvora uses 12 curated source/config detector families, selected Terraform/GitHub Actions rules, exact-version npm/PyPI OSV advisory checks, redacted file/line evidence, rule IDs, confidence and actual file/line/package scope metrics. This is bounded static analysis, not an exhaustive SAST/DAST scanner or certification. See [Scanner v2: detection scope, precision limits and tests](docs/scanner-v2-evidence.md).
+Secuvora uses 14 curated source/config detector families, selected Terraform/GitHub Actions rules, two explicit AI agent integration safety-bypass checks, exact-version npm/PyPI OSV advisory checks, redacted file/line evidence, rule IDs, confidence and actual file/line/package scope metrics. This is bounded static analysis, not an exhaustive SAST/DAST scanner or certification. See [Scanner v2: detection scope, precision limits and tests](docs/scanner-v2-evidence.md).
