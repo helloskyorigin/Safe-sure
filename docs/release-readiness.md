@@ -1,4 +1,4 @@
-# ShipSafe — release and YC demo readiness
+# Secuvora — release and YC demo readiness
 
 ## Current working experience
 
