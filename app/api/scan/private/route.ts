@@ -12,10 +12,12 @@ export const maxDuration = 60;
 const headers = { "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff" };
 
 export async function POST(req: Request) {
-  if (!isAllowedMutationOrigin(req))
-    return NextResponse.json({ error: "Cross-origin requests are denied." }, { status: 403, headers });
+  // Preserve 401 for unauthenticated users; authenticated mutations are then
+  // protected against cross-origin requests before any repository access.
   const session = await getGithubSession();
   if (!session) return NextResponse.json({ error: "GitHub sign-in required." }, { status: 401, headers });
+  if (!isAllowedMutationOrigin(req))
+    return NextResponse.json({ error: "Cross-origin requests are denied." }, { status: 403, headers });
   if (!durableStoreConfigured())
     return NextResponse.json({ error: "Secure report storage must be configured before private scanning." }, { status: 503, headers });
   let repo = "";
