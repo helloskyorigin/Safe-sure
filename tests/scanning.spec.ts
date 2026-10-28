@@ -7,7 +7,7 @@ test("idle scanning page stays minimal and never invents progress", async ({ pag
   await expect(page.getByText("No repository selected")).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
   await expect(page.locator(".scan-check")).toHaveCount(5);
-  await expect(page.getByRole("link", { name: /Scan a public repository/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Start a new investigation/i })).toBeVisible();
   await expect(page.locator(".scan-detail-section, .scan-activity, .scan-footer-cta")).toHaveCount(0);
 });
 
@@ -92,7 +92,7 @@ test("live progress and stage statuses follow the real stream, never a fake time
     };
   }, { id: runId, keys: stageNames });
   await page.goto("/assess/scanning?repo=acme%2Ftestapp");
-  await expect(page.getByRole("heading", { name: "Scanning your app" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Agent investigating" })).toBeVisible();
   await expect(page.getByRole("progressbar", { name: "Assessment progress" })).toHaveAttribute("aria-valuenow", "20");
   await expect(page.locator(".scan-check-status")).toHaveText(["Done", "Scanning", "Waiting", "Waiting", "Waiting"]);
   await expect(page.getByText("1 of 5 checks")).toBeVisible();
