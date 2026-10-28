@@ -52,7 +52,7 @@ export default function AssessmentStart() {
       <header className="assess-header connect-header">
         <div className="assess-container assess-header-inner">
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
-          <span className="connect-header-mark"><span/> AUTOMATED SECURITY AGENT</span>
+          <span className="connect-header-mark"><span/> SECUVORA · AI AGENT BETA</span>
           <Link href="/" className="assess-back"><ArrowLeft size={16}/> <span>Back</span></Link>
         </div>
       </header>
@@ -61,7 +61,7 @@ export default function AssessmentStart() {
         <motion.div className="connect-content" {...entrance}>
           <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
           <h1>Which repository should your <em>agent inspect?</em></h1>
-          <p className="connect-subtitle">Choose a public repository or authorize private access. Your agent runs a read-only security investigation.</p>
+          <p className="connect-subtitle">Connect a public or authorized private GitHub repository. Secuvora's current agent runs a real, read-only investigation with curated security checks.</p>
 
           <div className="connect-choices" role="group" aria-label="Repository visibility">
             <button type="button" className={"connect-choice" + (mode === "public" ? " selected" : "")}
