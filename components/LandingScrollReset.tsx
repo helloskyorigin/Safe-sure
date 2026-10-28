@@ -20,6 +20,7 @@ export default function LandingScrollReset() {
     let raf = 0;
     const timers: number[] = [];
     const root = document.documentElement;
+    root.dataset.shipsafeScrollGuard = "active";
     const previousInlineScrollBehavior = root.style.scrollBehavior;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -41,6 +42,7 @@ export default function LandingScrollReset() {
     function cleanup() {
       if (!active) return;
       active = false;
+      delete root.dataset.shipsafeScrollGuard;
       window.cancelAnimationFrame(raf);
       for (const id of timers) window.clearTimeout(id);
       root.style.scrollBehavior = previousInlineScrollBehavior;
