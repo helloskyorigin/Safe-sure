@@ -5,7 +5,7 @@ export default function HowItWorks() {
         <div className="section-heading ">
           <p className="eyebrow">THE AGENT WORKFLOW</p>
           <h2>How your security agent investigates</h2>
-          <p>Secuvora is building toward AI-guided security investigations. The current agent uses real, explainable checks on demand.</p>
+          <p>From repository access to actionable evidence. Secuvora reviews supported security signals, checks published advisories and turns findings into a clear plan of action.</p>
         </div>
         <div className="steps">
           <article className="step ">
