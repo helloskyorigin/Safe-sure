@@ -39,6 +39,14 @@ test("mutation guard rejects malformed origins and permits localhost development
     method: "POST", headers: { origin: "http://localhost:3000" },
   });
   expect(isAllowedMutationOrigin(localhost, "http://localhost:3000")).toBe(true);
+
+  // Next.js/Playwright can proxy localhost <-> 127.0.0.1 in development.
+  const loopbackAlias = new Request("http://localhost:3000/api/scan/private", {
+    method: "POST", headers: { origin: "http://127.0.0.1:3000", "sec-fetch-site": "same-origin" },
+  });
+  expect(isAllowedMutationOrigin(loopbackAlias)).toBe(true);
+  // Explicit canonical origin (production-like) must never permit aliases.
+  expect(isAllowedMutationOrigin(loopbackAlias, "http://localhost:3000")).toBe(false);
 });
 
 test("bounded JSON reader rejects oversized streaming content even without Content-Length", async () => {
