@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
@@ -8,7 +9,6 @@ import SecuritySection from "@/components/SecuritySection";
 import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
-import AssessmentDialog from "@/components/AssessmentDialog";
 import ReportExperience from "@/components/ReportExperience";
 import ValueSection from "@/components/ValueSection";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -16,7 +16,8 @@ import LandingScrollReset from "@/components/LandingScrollReset";
 import FinalCTA from "@/components/FinalCTA";
 
 export default function Home() {
-  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+  const router = useRouter();
+  const openAssessment = () => router.push("/assess");
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
@@ -50,25 +51,21 @@ export default function Home() {
     <>
       <LandingScrollReset />
       <ScrollProgress />
-      <Header onOpenAssessment={() => setIsAssessmentOpen(true)} />
+      <Header onOpenAssessment={openAssessment} />
       <main id="main">
-        <Hero onOpenAssessment={() => setIsAssessmentOpen(true)} />
+        <Hero onOpenAssessment={openAssessment} />
         <div className="container">
           <div className="divider"></div>
         </div>
         <HowItWorks />
         <ValueSection />
-        <ReportExperience onOpenAssessment={() => setIsAssessmentOpen(true)} />
+        <ReportExperience onOpenAssessment={openAssessment} />
         <SecuritySection />
-        <PricingSection onOpenAssessment={() => setIsAssessmentOpen(true)} />
+        <PricingSection onOpenAssessment={openAssessment} />
         <FaqSection />
-        <FinalCTA onOpenAssessment={() => setIsAssessmentOpen(true)} />
+        <FinalCTA onOpenAssessment={openAssessment} />
       </main>
-      <Footer onOpenAssessment={() => setIsAssessmentOpen(true)} />
-      <AssessmentDialog
-        isOpen={isAssessmentOpen}
-        onClose={() => setIsAssessmentOpen(false)}
-      />
+      <Footer onOpenAssessment={openAssessment} />
     </>
   );
 }
