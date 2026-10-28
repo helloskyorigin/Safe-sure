@@ -22,11 +22,10 @@ test("inspectable check layers explain actual coverage and limitations", async (
   await expect(page.getByRole("heading", { name: /Credentials belong outside your code/i })).toBeVisible();
 });
 
-test("connection screen explicitly links to a non-running inspection preview", async ({ page }) => {
+test("connection screen has only the two repository paths, not a preview shortcut", async ({ page }) => {
   await page.goto("/assess");
-  await page.getByRole("link", { name: "Preview scanning workspace" }).click();
-  await expect(page).toHaveURL(/\/assess\/scanning$/);
-  await expect(page.getByText(/No assessment activity yet/i)).toBeVisible();
+  await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
+  await expect(page.getByRole("link", { name: /Preview scanning workspace/i })).toHaveCount(0);
 });
 
 test("scan API is fail-closed until authorization and worker are implemented", async ({ request }) => {
