@@ -42,7 +42,7 @@ export default function ContactPage() {
       <section id="security-reports" className="legal-section">
         <h2>Sensitive security issues</h2>
         <div className="legal-caution"><CircleAlert size={18} aria-hidden="true"/><p><strong>Do not disclose vulnerabilities publicly.</strong> Never post tokens, private source code, customer data, working exploits or unpatched vulnerabilities in GitHub issues.</p></div>
-        <p>A verified confidential reporting route has not yet been published. Before ShipSafe enables scanning, payments or customer data collection, that route and a responsible disclosure process must be configured. This page will be updated once the channel is active.</p>
+        <p>A verified confidential reporting route has not yet been published. Before handling private source or sensitive disclosures, a confidential contact route and disclosure process must be configured. This page will be updated once the channel is active.</p>
       </section>
       <section id="privacy" className="legal-section">
         <h2>Privacy requests</h2>
@@ -51,7 +51,7 @@ export default function ContactPage() {
       </section>
       <section id="billing" className="legal-section">
         <h2>Billing and report support</h2>
-        <p>There is currently no live checkout or customer billing record. A dedicated channel for private report delivery and access issues must be published before real reports are enabled. For the current status read <Link href="/refunds">Payments & refunds</Link>.</p>
+        <p>There is currently no live checkout or customer billing record. Public scan reports are temporarily available in the same browser tab; there is no account-based recovery. A private channel is still needed for sensitive report and access issues. For the current status read <Link href="/refunds">Payments & refunds</Link>.</p>
       </section>
       <section id="updates" className="legal-section">
         <h2>Future contact options</h2>
