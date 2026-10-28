@@ -27,6 +27,7 @@ export function parsePublicRepo(raw: string) {
 }
 const IGNORED = /(^|\/)(node_modules|vendor|dist|build|coverage|\.next|\.venv|venv|__pycache__|target|generated|fixtures|\.git|\.cache)(\/|$)/i;
 const CODE = /\.(js|jsx|ts|tsx|cjs|mjs|py|php|rb|go)$/i;
+const CONFIG = /(?:^|\/)(?:Dockerfile(?:\.[\w-]+)?|[\w.-]+\.tf|[\w.-]+\.ya?ml)$/i;
 const MANIFEST = /(^|\/)(package-lock\.json|requirements(?:-[\w-]+)?\.txt|Pipfile\.lock)$/i;
 const parseJson = (s: string): unknown => JSON.parse(s);
 async function download(url: string, signal: AbortSignal, limit: number, opts: RequestInit = {}) {
@@ -219,7 +220,11 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   const tree = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo+"/git/trees/"+treeSha+"?recursive=1", signal, 2_000_000, { headers: ghHeaders })) as { tree?: TreeEntry[]; truncated?: boolean };
   if (!Array.isArray(tree.tree)) throw new ScanError("Repository tree could not be read.", 502);
   const eligible = tree.tree.filter(x => x.type === "blob" && !IGNORED.test(x.path) &&
-    (CODE.test(x.path) || MANIFEST.test(x.path))).sort((a,b) => Number(MANIFEST.test(b.path)) - Number(MANIFEST.test(a.path)));
+    (CODE.test(x.path) || CONFIG.test(x.path) || MANIFEST.test(x.path)))
+    .sort((a,b) => {
+      const score = (p: string) => MANIFEST.test(p) ? 0 : CONFIG.test(p) && /(?:^|\/)\.github\/workflows\//.test(p) ? 1 : CONFIG.test(p) ? 2 : 3;
+      return score(a.path) - score(b.path) || a.path.localeCompare(b.path);
+    });
   const chosen = eligible.filter(x => typeof x.size === "number" && x.size <= (MANIFEST.test(x.path)?MANIFEST_LIMIT:SOURCE_LIMIT)).slice(0, FILE_LIMIT);
   if (!chosen.length) throw new ScanError("No supported source files were found.", 422);
   let incomplete = !!tree.truncated || chosen.length < eligible.length;
@@ -258,7 +263,7 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   send("secrets","running","Inspecting source for potential secrets and unsafe patterns");
   const analyzed = analyzeSourceDetailed(files);
   const findings = analyzed.findings;
-  send("secrets","complete","Source patterns reviewed. Findings remain candidates until verified");
+  send("secrets","complete","Analyzed source and configuration rules; findings remain candidates until verified");
   send("dependencies","running","Reading dependency versions and consulting OSV");
   const deps = parseDependencies(files);
   let osvFailed = false, osvPartial = false;
