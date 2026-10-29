@@ -80,7 +80,7 @@ export default function PrivateRepoConnector() {
     )}
     <button type="button" className="connect-submit" disabled={!selected || loadingRepos}
       onClick={() => router.push("/assess/scanning?private=" + encodeURIComponent(selected))}>
-      Run security agent <ArrowRight size={18}/>
+      Begin analysis <ArrowRight size={18}/>
     </button>
   </div>;
 }
