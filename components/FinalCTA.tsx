@@ -14,7 +14,7 @@ export default function FinalCTA({ onOpenAssessment }: { onOpenAssessment: () =>
           <h2 id="final-cta-title">Know the risks.<br/><em>Follow the evidence.</em></h2>
           <p>Review supported risks, see the evidence, and decide what to fix.</p>
           <button type="button" className="button button-dark final-button" onClick={onOpenAssessment}>Start investigation <ArrowUpRight size={17}/></button>
-          <small>Public repository access needs no signup · Complete reports free</small>
+          <small>Read-only GitHub access · No source changes</small>
         </motion.div>
       </div>
     </section>
