@@ -39,7 +39,7 @@ test("server-verified private report renders real details and guarded source lin
     status: 200, contentType: "application/json", body: JSON.stringify(live),
   }));
   await page.goto("/assess/results?run=" + runId);
-  await expect(page.getByText("AUTHORIZED PRIVATE REPOSITORY")).toBeVisible();
+  await expect(page.getByText("AUTHORIZED GITHUB REPOSITORY")).toBeVisible();
   await expect(page.getByText("AGENT REVIEW COMPLETE")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
   await expect(page.getByRole("link", { name: "Open source" })).toHaveAttribute("href",
