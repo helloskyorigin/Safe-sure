@@ -58,7 +58,7 @@ test("connected source screen exposes GitHub repository access management", asyn
     status: 200, contentType: "application/json", body: JSON.stringify({ repositories: [] }),
   }));
   await page.goto("/assess");
-  await expect(page.getByText("No authorized repositories")).toBeVisible();
+  await expect(page.locator(".connect-empty-repos")).toContainText("No authorized repositories");
   const manage = page.getByRole("link", { name: /Manage repository access/i });
   await expect(manage).toHaveAttribute("href", "https://github.com/settings/installations");
   await expect(page.getByText(/add repositories in GitHub/i)).toBeVisible();
