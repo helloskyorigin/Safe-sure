@@ -89,3 +89,28 @@ test("scanner rejects completed status with an unfinished final stage", async ({
   await expect(page.getByText(/before every stage was resolved/i)).toBeVisible();
   await expect(page).toHaveURL(/\/assess\/scanning\?/);
 });
+
+
+test("completed connected report persists through Results refresh and Agent history navigation", async ({ page }) => {
+  await page.route("**/api/assessments/*/report", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...SAMPLE_REPORT, runId, appName: name, revision: "a".repeat(40) }),
+  }));
+  await page.route("**/api/reports", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ reports: [{
+      runId, appName: name, finishedAt: SAMPLE_REPORT.finishedAt,
+      findings: SAMPLE_REPORT.findings.length, revision: "a".repeat(40),
+    }] }),
+  }));
+  await page.goto("/assess/results?run=" + runId);
+  await expect(page.getByRole("heading", { name })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { name })).toBeVisible();
+  await page.goto("/assess/history");
+  const row = page.locator(".history-report-row").filter({ hasText: name });
+  await expect(row).toBeVisible();
+  await row.getByRole("link", { name: "Open report" }).click();
+  await expect(page).toHaveURL(new RegExp("/assess/results\\?run=" + runId));
+  await expect(page.getByRole("heading", { name })).toBeVisible();
+});
