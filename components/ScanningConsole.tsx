@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { isAssessmentReport } from "@/lib/report-contract";
 import ThemeToggle from "@/components/ThemeToggle";
+import Brand from "@/components/Brand";
 import { savePublicReport } from "@/lib/browser-report-history";
 import {
   CHECKS, isAssessmentSnapshot,
@@ -289,7 +290,7 @@ export default function ScanningConsole() {
       <a href="#scan-main" className="skip-link">Skip to analysis</a>
       <header className="scan-nav">
         <div className="scan-container scan-nav-inner">
-          <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
+          <Brand />
           <span className="scan-nav-center"><span/> SECUVORA / ANALYSIS</span>
           <div className="scan-nav-actions"><ThemeToggle/><Link href="/assess" className="scan-nav-return"><ArrowLeft size={16}/> Back</Link></div>
         </div>

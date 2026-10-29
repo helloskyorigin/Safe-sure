@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import Brand from "@/components/Brand";
 
 export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => void }) {
   return (
     <footer className="footer">
       <div className="container footer-main">
         <div className="footer-identity">
-          <a href="#top" className="brand" aria-label="Secuvora home">secuvora<span>.</span></a>
+          <Brand href="#top" />
           <p>Evidence and next steps for your application's security.</p>
           <span className="footer-independence">Evidence-backed investigations across supported source rules, configuration checks and published dependency advisories.</span>
         </div>
@@ -18,7 +19,7 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
         </div>
       </div>
       <div className="container copyright">
-        <span>© {new Date().getFullYear()} Secuvora. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} Secuvora — All rights reserved.</span>
         <span className="footer-preview"><span className="status-light" /> Read-only GitHub investigations · selected-repository access</span>
         <button type="button" onClick={onOpenAssessment}>Start investigation <ArrowUpRight size={14}/></button>
       </div>

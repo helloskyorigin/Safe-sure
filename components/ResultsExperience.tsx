@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
+import Brand from "@/components/Brand";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
@@ -228,7 +229,7 @@ export default function ResultsExperience() {
     <a className="skip-link" href="#report-main">Skip to report</a>
     <header className="result-nav">
       <div className="result-container result-nav-inner">
-        <Link className="brand" href="/" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
+        <Brand label="Secuvora homepage" />
         <span className="result-nav-label"><span/> SECUVORA AGENT REPORT</span>
         <div className="result-nav-actions">
           <ThemeToggle/>
@@ -572,7 +573,7 @@ export default function ResultsExperience() {
     </main>
 
     <footer className="result-footer"><div className="result-container result-footer-inner">
-      <Link href="/" className="brand">secuvora<span>.</span></Link>
+      <Brand />
       <span>Read-only automated analysis · Rules + OSV · No security guarantee</span>
       <nav aria-label="Footer links"><Link href="/privacy">Privacy</Link><Link href="/security">Security</Link></nav>
     </div></footer>

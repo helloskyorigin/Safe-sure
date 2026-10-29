@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, BookOpen, CreditCard, Fingerprint, Headphones, ShieldCheck } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import Brand from "@/components/Brand";
 
 export const metadata: Metadata = {
   title: "Legal Center | Secuvora",
@@ -20,7 +21,7 @@ export default function LegalCenter() {
   return (
     <div className="legal-site">
       <a href="#main" className="skip-link">Skip to content</a>
-      <header className="legal-nav"><div className="container legal-nav-inner"><Link className="brand" href="/">secuvora<span>.</span></Link><div className="legal-nav-actions"><ThemeToggle/><Link className="legal-back" href="/"><ArrowLeft size={16}/> Back to Secuvora</Link></div></div></header>
+      <header className="legal-nav"><div className="container legal-nav-inner"><Brand /><div className="legal-nav-actions"><ThemeToggle/><Link className="legal-back" href="/"><ArrowLeft size={16}/> Back to Secuvora</Link></div></div></header>
       <main id="main" className="container legal-center">
         <p className="eyebrow">SECUVORA / TRUST & TRANSPARENCY</p>
         <h1>Clarity is part<br/>of security.</h1>
@@ -38,7 +39,7 @@ export default function LegalCenter() {
         </div>
         <div className="legal-center-foot"><ShieldCheck size={18}/><p>Secuvora supports read-only GitHub-connected repository investigations and short-term encrypted report recovery when the required deployment services are available. The scanner is bounded automated analysis, not a penetration test or certification. Customer billing is not enabled.</p></div>
       </main>
-      <footer className="legal-footer"><div className="container legal-footer-inner"><Link href="/" className="brand">secuvora<span>.</span></Link><nav aria-label="Footer legal navigation">{pages.map(item => <Link href={item.href} key={item.href}>{item.title}</Link>)}</nav></div></footer>
+      <footer className="legal-footer"><div className="container legal-footer-inner"><Brand /><nav aria-label="Footer legal navigation">{pages.map(item => <Link href={item.href} key={item.href}>{item.title}</Link>)}</nav></div></footer>
     </div>
   );
 }

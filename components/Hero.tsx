@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import Brand from "@/components/Brand";
 
 interface HeroProps {
   onOpenAssessment: () => void;

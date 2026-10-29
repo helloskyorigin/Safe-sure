@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Check, Code2, FileWarning, LockKeyhole, SearchCheck } from "lucide-react";
+import { ArrowRight, Check, Code2, FileWarning, LockKeyhole } from "lucide-react";
+import { SecuvoraMark } from "@/components/Brand";
 
 type FindingKey = "credential" | "dependency" | "headers";
 type View = "free" | "full";
@@ -65,7 +66,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
         </div>
         <motion.div className="experience-shell" initial={{ y: 26 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.13 }} transition={{ duration: reduceMotion ? 0 : .8, ease }}>
           <div className="experience-toolbar">
-            <div className="experience-app"><span className="app-symbol"><SearchCheck size={17}/></span><div><strong>Secuvora findings report</strong><small>example-application / illustrative demo</small></div></div>
+            <div className="experience-app"><span className="app-symbol"><SecuvoraMark /></span><div><strong>Secuvora findings report</strong><small>example-application / illustrative demo</small></div></div>
             <span className="experience-example">INTERACTIVE EXAMPLE · NOT A REAL SCAN</span>
           </div>
           <div className="experience-tabs" role="tablist" aria-label="Explore report views">

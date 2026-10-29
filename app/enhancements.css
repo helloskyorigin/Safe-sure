@@ -1023,3 +1023,63 @@ html[data-theme="dark"] .legal-footer-bottom{border-top-color:#222d3b}
 @media(prefers-reduced-motion:reduce){
   .theme-icon-toggle{transition:none!important;transform:none!important}
 }
+
+
+/* Secuvora identity system */
+:root{
+  --secuvora-shell:#0b2345;
+  --secuvora-core:#1677ff;
+  --secuvora-word:#111827;
+  --premium-ui-font:"Avenir Next","SF Pro Display","Segoe UI Variable Display",var(--font-inter),system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.secuvora-brand{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  color:var(--secuvora-word);
+  letter-spacing:-.055em;
+  font-family:var(--premium-ui-font);
+  font-weight:800;
+}
+.secuvora-brand .secuvora-mark{width:27px;height:27px;display:block;flex:none}
+.secuvora-brand .secuvora-wordmark{
+  color:var(--secuvora-word)!important;
+  font-size:inherit;
+  line-height:1;
+}
+.secuvora-mark{display:block;overflow:visible}
+.secuvora-mark-shell{fill:var(--secuvora-shell)}
+.secuvora-mark-core,.secuvora-mark-core-top{fill:var(--secuvora-core)}
+.preview-brand.secuvora-brand{gap:7px;font-size:15px;letter-spacing:-.04em}
+.preview-brand.secuvora-brand .secuvora-mark{width:22px;height:22px}
+.app-symbol{padding:5px}
+.app-symbol .secuvora-mark{width:29px;height:29px}
+.top-cta,.button-primary,.preview,.experience-shell{
+  font-family:var(--premium-ui-font);
+  font-feature-settings:"kern" 1,"liga" 1;
+}
+.top-cta,.button-primary{
+  font-weight:760;
+  letter-spacing:-.025em;
+}
+.preview :is(h2,h3,strong,.severity-name,.pill),
+.experience-shell :is(h3,h4,strong,button){
+  font-family:var(--premium-ui-font);
+}
+.preview :is(h2,h3),.experience-shell :is(h3,h4){
+  letter-spacing:-.035em;
+}
+html[data-theme="dark"]{
+  --secuvora-shell:#f1f5fb;
+  --secuvora-core:#3b8cff;
+  --secuvora-word:#f2f6fb;
+}
+html[data-theme="dark"] .secuvora-brand .secuvora-wordmark{color:var(--secuvora-word)!important}
+html[data-theme="dark"] .app-symbol{background:#142033;border-color:#31445e}
+@media(max-width:850px){
+  .secuvora-brand{gap:8px}
+  .secuvora-brand .secuvora-mark{width:29px;height:29px}
+}
+@media(prefers-reduced-motion:reduce){
+  .secuvora-brand,.secuvora-mark{transition:none!important}
+}
