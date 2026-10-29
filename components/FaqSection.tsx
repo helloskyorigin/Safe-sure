@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Plus } from "lucide-react";
 
 const faqs = [
@@ -33,7 +32,6 @@ const faqs = [
 
 export default function FaqSection() {
   const [open, setOpen] = useState<number | null>(null);
-  const reduceMotion = useReducedMotion();
 
   return (
     <section id="faq" className="section bordered faq-section">
@@ -45,18 +43,19 @@ export default function FaqSection() {
               <h3>
                 <button className="faq-trigger" type="button" onClick={() => setOpen(open === index ? null : index)}
                   aria-expanded={open === index} aria-controls={"faq-answer-" + index}>
-                  <span>{faq.question}</span><motion.span className="faq-plus" aria-hidden="true" animate={{ rotate: open === index ? 45 : 0 }} transition={{ duration: reduceMotion ? 0 : .25 }}><Plus size={20}/></motion.span>
+                  <span>{faq.question}</span><span className="faq-plus" aria-hidden="true"><Plus size={20}/></span>
                 </button>
               </h3>
-              <AnimatePresence initial={false}>
-                {open === index && (
-                  <motion.div key="content" id={"faq-answer-" + index} initial={reduceMotion ? false : { height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }} exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
-                    transition={{ duration: reduceMotion ? 0 : .34, ease: "easeInOut" }} style={{ overflow: "hidden" }}>
-                    <p className="faq-answer">{faq.answer}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div
+                id={"faq-answer-" + index}
+                className="faq-answer-wrap"
+                data-open={open === index ? "true" : "false"}
+                aria-hidden={open !== index}
+              >
+                <div className="faq-answer-inner">
+                  <p className="faq-answer">{faq.answer}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
