@@ -37,7 +37,7 @@ test("mobile first paint shows hero and supports real touch scrolling", async ({
 
 test("Secuvora shows confident AI-agent positioning without beta or launch-only language", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /your application/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /your application/i })).toBeVisible();
   await expect(page.locator(".hero .eyebrow")).toContainText("APPLICATION SECURITY AGENT");
   await expect(page.locator(".hero-sub")).toContainText("Secuvora checks your application");
   await expect(page).toHaveTitle("Secuvora — AI Security Agent for Developers");
