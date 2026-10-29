@@ -24,7 +24,7 @@ test("application-first hero is concise and does not repeat agent language", asy
 
 test("application check CTA keeps the working GitHub-source flow", async ({ page }) => {
   await page.goto("/");
-  await page.locator(".hero").getByRole("link",{name:"Begin analysis"}).click();
+  await page.locator(".hero").getByRole("link",{name:"Start investigation"}).click();
   await expect(page).toHaveURL(/\/assess$/);
   await expect(page.getByRole("heading",{level:1})).toContainText("What should Secuvora");
   await expect(page.getByRole("button",{name:/Public repository/})).toHaveAttribute("aria-pressed","true");
