@@ -60,9 +60,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
           <div className="preview-halo" aria-hidden="true"></div>
           <div className="preview">
             <div className="preview-top">
-              <strong className="preview-brand">
-                secuvora<span>.</span>
-              </strong>
+              <Brand href={null} className="preview-brand" label="Secuvora" />
               <span className="example-tag">
                 <span className="example-dot"></span> ILLUSTRATIVE REPORT
               </span>
