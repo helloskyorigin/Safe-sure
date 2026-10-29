@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
@@ -230,6 +231,7 @@ export default function ResultsExperience() {
         <Link className="brand" href="/" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
         <span className="result-nav-label"><span/> SECUVORA AGENT REPORT</span>
         <div className="result-nav-actions">
+          <ThemeToggle/>
           <Link href="/assess/history" className="result-nav-back"><HistoryIcon/> <span>History</span></Link>
           <Link href="/assess" aria-label="New investigation" className="result-nav-back"><ArrowLeft size={16}/> <span>New investigation</span></Link>
         </div>
