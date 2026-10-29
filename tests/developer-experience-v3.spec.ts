@@ -19,16 +19,16 @@ test("public scan is the ready-to-use default; private connector remains a choic
   const input = page.getByRole("textbox", { name: "GitHub repository URL" });
   await expect(input).toBeVisible();
   await expect(page.getByText(/No account required/)).toBeVisible();
-  await expect(page.getByRole("button", {name:"Start investigation"})).toBeVisible();
-  await expect(page.getByText(/Read pinned source/)).toBeVisible();
-  await expect(page.getByRole("link", {name:/Explore an illustrative report/i})).toHaveAttribute("href", "/assess/results");
+  await expect(page.getByRole("button", {name:"Begin analysis"})).toBeVisible();
+  await expect(page.getByRole("heading", {name:/What should Secuvora investigate/})).toBeVisible();
+  await expect(page.locator(".connect-reassurance")).toContainText("No source changes");
 
   await page.getByRole("button", {name:/Private repository/i}).click();
   await expect(page.getByRole("textbox", {name:"GitHub repository URL"})).toHaveCount(0);
   await page.getByRole("button", {name:/Public repository/i}).click();
   await expect(input).toBeVisible();
   await input.fill("https://github.com/vercel/ms.git");
-  await page.getByRole("button", {name:"Start investigation"}).click();
+  await page.getByRole("button", {name:"Begin analysis"}).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 
