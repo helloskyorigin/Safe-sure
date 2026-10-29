@@ -13,23 +13,26 @@ test("landing gives both real-scan and explicitly illustrative-report routes", a
   await expect(page.getByText(/No application was connected, scanned or found vulnerable/)).toBeVisible();
 });
 
-test("public scan is the ready-to-use default; private connector remains a choice", async ({ page }) => {
+test("GitHub connection is the single source-selection experience", async ({ page }) => {
+  await page.route("**/api/auth/github/status", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ configured: true, connected: true, login: "founder" }),
+  }));
+  await page.route("**/api/github/repositories", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ repositories: [
+      { fullName: "founder/app", private: true },
+      { fullName: "founder/open", private: false },
+    ] }),
+  }));
   await page.goto("/assess");
-  await expect(page.getByRole("button", { name:/Public repository/i })).toHaveAttribute("aria-pressed", "true");
-  const input = page.getByRole("textbox", { name: "GitHub repository URL" });
-  await expect(input).toBeVisible();
-  await expect(page.getByText(/No account required/)).toBeVisible();
-  await expect(page.getByRole("button", {name:"Begin analysis"})).toBeVisible();
-  await expect(page.getByRole("heading", {name:/What should Secuvora investigate/})).toBeVisible();
+  await expect(page.getByRole("heading", {name:/Choose the codebase to investigate/})).toBeVisible();
   await expect(page.locator(".connect-reassurance")).toContainText("No source changes");
-
-  await page.getByRole("button", {name:/Private repository/i}).click();
-  await expect(page.getByRole("textbox", {name:"GitHub repository URL"})).toHaveCount(0);
-  await page.getByRole("button", {name:/Public repository/i}).click();
-  await expect(input).toBeVisible();
-  await input.fill("https://github.com/vercel/ms.git");
+  const select = page.getByRole("combobox", { name: "Repository" });
+  await expect(select.locator("option")).toHaveCount(2);
+  await select.selectOption("founder/open");
   await page.getByRole("button", {name:"Begin analysis"}).click();
-  await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
+  await expect(page).toHaveURL(/\/assess\/scanning\?github=founder%2Fopen/);
 });
 
 test("scan stages explain what checks do without inventing activity", async ({ page }) => {
@@ -57,7 +60,6 @@ test("finding pager moves through filtered results and respects disabled bounds"
   await expect(pager).toContainText("Finding 2 of 6");
   await pager.getByRole("button", {name:"Previous finding"}).click();
   await expect(pager).toContainText("Finding 1 of 6");
-
   await page.locator(".result-filter-pills").getByRole("button", { name:"High" }).click();
   await expect(pager).toContainText("Finding 1 of 2");
   await pager.getByRole("button", {name:"Next finding"}).click();
