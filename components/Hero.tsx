@@ -24,15 +24,15 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> APPLICATION SECURITY AGENT
+            <span className="eyebrow-dash"></span> SECUVORA / SECURITY AGENT
           </p>
           <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
-            See the risks inside
+            Security risks.
             <br />
-            <em>your application.</em>
+            <em>Under investigation.</em>
           </motion.h1>
           <p className="hero-sub animate delay-2">
-            Secuvora checks your application’s source and dependencies for supported security risks—then shows the evidence, affected files and what to fix.
+            Secuvora examines security signals, surfaces evidence, and shows what needs attention.
           </p>
           <div className="hero-action animate delay-3">
             <div className="hero-cta-row">
@@ -42,16 +42,15 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
               data-start
               className="button button-dark button-primary"
             >
-              Check my application{" "}
+              Start investigation{" "}
               <span className="button-arrow" aria-hidden="true">
                 →
               </span>
             </a>
-            <a href="/assess/results" className="hero-preview-link">View sample report <span aria-hidden="true">↗</span></a>
+            <a href="/assess/results" className="hero-preview-link">Explore sample report <span aria-hidden="true">↗</span></a>
             </div>
             <p className="under-cta">
-              <span className="tiny-check">✓</span> Read-only checks{" "}
-              <span className="dot-separator">·</span> File-level evidence <span className="dot-separator">·</span> No account for public checks
+              <span className="tiny-check">✓</span> Read-only <span className="dot-separator">·</span> Free public-source review
             </p>
           </div>
         </div>
@@ -70,8 +69,8 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
             <div className="preview-body">
               <div className="preview-heading">
                 <div>
-                  <div className="preview-overline">REVIEW SUMMARY</div>
-                  <h2>Application findings</h2>
+                  <div className="preview-overline">INVESTIGATION SUMMARY</div>
+                  <h2>Security findings</h2>
                   <p>
                     example-app <span>·</span> Fictional example
                   </p>
