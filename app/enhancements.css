@@ -1023,3 +1023,51 @@ html[data-theme="dark"] .legal-footer-bottom{border-top-color:#222d3b}
 @media(prefers-reduced-motion:reduce){
   .theme-icon-toggle{transition:none!important;transform:none!important}
 }
+
+/* Global application theme: shared with landing preference, scoped to rendered UI.
+   PDF exports keep their own printable palette. */
+html[data-theme="dark"]{color-scheme:dark;--ink:#e8edf5;--muted:#a3b2c5;--line:#2b394b;--paper:#111a26;--hair:#29384b}
+html[data-theme="dark"] body{background:#090d14;color:#e8edf5}
+html[data-theme="dark"] .landing-page .preview-top{background:linear-gradient(125deg,#131c2a,#111a26);border-bottom:1px solid #2b394b}
+html[data-theme="dark"] .landing-page .preview-top .preview-brand{color:#edf3fb}
+html[data-theme="dark"] .landing-page .preview-top .example-tag{color:#9eafc2}
+html[data-theme="dark"] .landing-page .hero .preview-heading h3{color:#f0f4fa}
+html[data-theme="dark"] .assess-page,
+html[data-theme="dark"] .scan-page,
+html[data-theme="dark"] .result-page{color-scheme:dark;background:#090e16;color:#e6edf7;--as-ink:#e6edf7;--as-muted:#9aabc0;--as-line:#2b394b;--scan-ink:#e6edf7;--scan-muted:#9aabc0;--scan-border:#2b394b;--ri:#e6edf7;--rm:#9aabc0;--rl:#2b394b}
+html[data-theme="dark"] :is(.assess-header,.scan-nav,.result-nav){background:#101823;border-color:#2b394b}
+html[data-theme="dark"] :is(.assess-connect-card,.scan-card,.result-repo-card,.result-severity,.delta-panel,.delta-metric,.delta-new-findings){background:#121c29;border-color:#2b394b;box-shadow:0 15px 40px #0004}
+html[data-theme="dark"] :is(.assess-page,.scan-page,.result-page) :is(h1,h2,h3,h4,h5,strong){color:#edf3fa}
+html[data-theme="dark"] :is(.assess-page,.scan-page,.result-page) :is(p,small,.assess-lead,.assess-card-description,.scan-repo-name,.result-date,.result-heading>p){color:#a4b3c5}
+html[data-theme="dark"] :is(.assess-page,.scan-page,.result-page) :is(input,select,textarea){background:#101925;color:#e8eff8;border-color:#35445a}
+html[data-theme="dark"] :is(.assess-page,.scan-page,.result-page) :is(input,textarea)::placeholder{color:#8b9cb0}
+html[data-theme="dark"] :is(.assess-page,.scan-page,.result-page) :is(button,a){color:inherit}
+html[data-theme="dark"] :is(.assess-primary,.result-button-primary,.result-toolbar .result-action-primary,.delta-rescan){background:#cfe0f6!important;color:#101926!important;border-color:#cfe0f6!important}
+html[data-theme="dark"] :is(.result-toolbar button,.result-button-outline){background:#172335;color:#b9d0ec;border-color:#34475f}
+html[data-theme="dark"] :is(.assess-pill,.assess-github-icon,.assess-progress-circle,.scan-state-tag,.scan-orbit-core,.result-app-icon,.result-demo-banner,.result-included,.delta-emblem){background:#1b2a3c;border-color:#34475f;color:#a9c9ef}
+html[data-theme="dark"] :is(.result-demo-banner p,.delta-muted,.delta-compare-bar,.delta-metric small,.delta-baseline p){color:#a5b6ca}
+html[data-theme="dark"] :is(.delta-heading,.delta-compare-bar,.scan-progress){border-color:#2b394b}
+html[data-theme="dark"] :is(.delta-heading h2,.delta-metric strong,.delta-metric span,.delta-new-findings>strong,.delta-new-findings li,.delta-baseline strong){color:#e4eef9}
+html[data-theme="dark"] .scan-orbit-scene::before{background:radial-gradient(circle,#213c5a,transparent 70%)}
+html[data-theme="dark"] .scan-progress-track{background:#25374b}
+html[data-theme="dark"] .scan-orbit-ring{border-color:#476587}
+html[data-theme="dark"] .scan-orbit-core{box-shadow:0 12px 30px #0005}
+html[data-theme="dark"] .legal-main,
+html[data-theme="dark"] .legal-footer{background:#090e16;color:#e6edf7}
+html[data-theme="dark"] :is(.legal-section,.legal-aside,.legal-summary,.legal-footer){border-color:#2b394b}
+html[data-theme="dark"] :is(.legal-section h2,.legal-heading h1,.legal-aside h2,.legal-footer nav strong){color:#edf3fa}
+html[data-theme="dark"] :is(.legal-section p,.legal-section li,.legal-heading p,.legal-aside a,.legal-footer nav a){color:#a7b6c9}
+html[data-theme="dark"] .legal-aside{background:#121c29}
+
+html[data-theme="dark"] .legal-site{background:#090e16;color:#e6edf7}
+html[data-theme="dark"] .legal-site :is(header,footer,aside){background:#111a26;border-color:#2b394b}
+html[data-theme="dark"] .legal-site :is(h1,h2,h3,strong){color:#eaf1fa}
+html[data-theme="dark"] .legal-site :is(p,li,small){color:#a5b5c8}
+html[data-theme="dark"] .legal-site :is(a,button){border-color:#33445a}
+html[data-theme="dark"] .theme-icon-toggle{background:#182335;color:#c6dcf6;border-color:#35465d}
+html[data-theme="dark"] .landing-page .preview-top *{visibility:visible}
+@media print{
+ html[data-theme="dark"] .result-page{background:#fff!important;color:#20324a!important;color-scheme:light}
+ html[data-theme="dark"] .result-page :is(h1,h2,h3,h4,h5,strong,p,small){color:#20324a!important}
+ html[data-theme="dark"] .result-page :is(.result-repo-card,.result-severity,.delta-panel,.delta-metric){background:#fff!important;border-color:#dbe4ee!important}
+}
