@@ -77,12 +77,12 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             secuvora<span>.</span>
           </a>
           <nav className="desktop-nav" aria-label="Main navigation">
-            <a href="#product">Agent report</a>
+            <a href="#product">Investigations</a>
             <a href="#how">How it works</a>
             <a href="#security">Security</a>
-            <a href="#pricing">Free agent report</a>
+            <a href="#pricing">Access</a>
             <a href="#faq">FAQ</a>
-            <Link href="/assess/history">Agent history</Link>
+            <Link href="/assess/history">History</Link>
           </nav>
           <a
             href="/assess"
@@ -90,7 +90,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark top-cta"
           >
-            Start free scan <span aria-hidden="true">↗</span>
+            Start investigation <span aria-hidden="true">↗</span>
           </a>
           <button
             id="menu-toggle"
