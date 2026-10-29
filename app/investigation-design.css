@@ -267,3 +267,10 @@
  .footer .footer-preview{min-width:0;max-width:100%;white-space:normal;flex-wrap:wrap;overflow-wrap:anywhere}
  .footer .copyright button{width:max-content;max-width:100%;min-height:40px}
 }
+
+
+/* A few motion-decorative elements (absolute card watermarks and older
+   section ornaments) still paint 9px beyond 320px after scroll reveal.
+   Clip horizontal paint only inside the marketing content, never the page's
+   vertical scrolling or the app's report/evidence scroll containers. */
+main#main{overflow-x:clip}
