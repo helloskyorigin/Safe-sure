@@ -4,16 +4,43 @@ import { isAssessmentReport, type AssessmentReport } from "@/lib/report-contract
 const REPORT_TTL = 7 * 24 * 60 * 60;
 const RATE_LIMIT_TTL = 60;
 
+function cleanEnv(value: string | undefined) {
+  const raw = (value || "").trim();
+  if (raw.length >= 2 && ((raw.startsWith('"') && raw.endsWith('"')) ||
+      (raw.startsWith("'") && raw.endsWith("'")))) return raw.slice(1, -1).trim();
+  return raw;
+}
+
+function redisUrl() {
+  return cleanEnv(process.env.UPSTASH_REDIS_REST_URL) ||
+    cleanEnv(process.env.KV_REST_API_URL);
+}
+
+function redisToken() {
+  return cleanEnv(process.env.UPSTASH_REDIS_REST_TOKEN) ||
+    cleanEnv(process.env.KV_REST_API_TOKEN);
+}
+
+export function durableStoreStatus() {
+  const url = redisUrl();
+  const token = redisToken();
+  const secret = cleanEnv(process.env.SHIPSAFE_SESSION_SECRET);
+  return {
+    configured: /^https:\/\/[A-Za-z0-9.-]+\/?$/.test(url) && token.length > 0 && secret.length >= 32,
+    hasUrl: /^https:\/\/[A-Za-z0-9.-]+\/?$/.test(url),
+    hasToken: token.length > 0,
+    hasSessionSecret: secret.length >= 32,
+  };
+}
+
 export function durableStoreConfigured() {
-  const url = process.env.UPSTASH_REDIS_REST_URL || "";
-  return /^https:\/\/[A-Za-z0-9.-]+\/?$/.test(url) && Boolean(process.env.UPSTASH_REDIS_REST_TOKEN) &&
-    (process.env.SHIPSAFE_SESSION_SECRET?.length || 0) >= 32;
+  return durableStoreStatus().configured;
 }
 
 export async function redis(...command: (string | number)[]): Promise<unknown> {
   if (!durableStoreConfigured()) throw new Error("Durable report storage is not configured.");
-  const response = await fetch(process.env.UPSTASH_REDIS_REST_URL!, {
-    method: "POST", headers: { Authorization: "Bearer " + process.env.UPSTASH_REDIS_REST_TOKEN!,
+  const response = await fetch(redisUrl(), {
+    method: "POST", headers: { Authorization: "Bearer " + redisToken(),
       "Content-Type": "application/json" },
     body: JSON.stringify(command), cache: "no-store", redirect: "error",
     signal: AbortSignal.timeout(9000),
