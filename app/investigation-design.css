@@ -205,3 +205,37 @@
 @media print{
  .header,.sec-console,.sec-console-footnote{box-shadow:none}
 }
+
+/* Evidence-driven scanning: compact instrument, not a decorative assistant mascot. */
+.scan-page .scan-orbit-scene{height:92px;margin:13px 0 17px}
+.scan-page .scan-orbit-scene::before{display:none}
+.scan-page .scan-orbit-ring{display:none}
+.scan-page .scan-orbit-core{width:62px;height:62px;border-radius:10px;background:#172a38!important;border:1px solid #2e5267;
+ color:#dcecf1;box-shadow:none}
+.scan-page .scan-visual-bottom h1{font-size:clamp(25px,3.3vw,33px);letter-spacing:-.04em}
+.scan-page .scan-state-tag{border-radius:5px;background:#f0f4f6;color:#4c6a7b;border-color:#dce6eb;padding:8px 11px}
+.scan-page .scan-progress-track{border-radius:3px}
+.scan-page .scan-check{border-bottom:1px solid #edf1f4}
+.scan-page .scan-check:last-child{border-bottom:0}
+.scan-page .scan-source-type{letter-spacing:.04em;text-transform:uppercase}
+.result-page .result-severity{border-radius:6px;background:#fff;border:1px solid #dfe6eb;min-height:104px}
+.result-page .result-severity.critical{border-top:2px solid #ad6268}
+.result-page .result-severity.high{border-top:2px solid #a98261}
+.result-page .result-severity.medium{border-top:2px solid #7794ab}
+.result-page .result-severity.low{border-top:2px solid #8ca69d}
+.result-page .result-app-icon{border-radius:6px;background:#eaf0f3;color:#456778}
+.result-page .result-repo-card{background:#fff}
+.result-page .result-heading h1{font-weight:760}
+.result-page .result-status{border-radius:5px}
+.result-page .result-overview-actions>a{color:#456f86}
+.result-page .result-finding-item{border-color:#e5eaf0}
+.result-page .result-finding-icon{border-radius:5px}
+.result-page .result-filter-pills button{border-radius:5px;min-height:34px}
+.result-page .result-detail-heading h2{letter-spacing:-.04em}
+.result-page .result-detail-level{border-radius:4px}
+.result-page .result-code-head{letter-spacing:.045em}
+@media(max-width:500px){
+ .scan-page .scan-orbit-scene{height:76px}
+ .scan-page .scan-orbit-core{height:56px;width:56px}
+ .result-page .result-severity{min-height:88px}
+}
