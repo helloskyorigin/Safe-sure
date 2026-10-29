@@ -80,7 +80,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             <a href="#product">Agent report</a>
             <a href="#how">How it works</a>
             <a href="#security">Security</a>
-            <a href="#pricing">Free agent report</a>
+            <a href="#pricing">Full report</a>
             <a href="#faq">FAQ</a>
             <Link href="/assess/history">Agent history</Link>
           </nav>
@@ -121,7 +121,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             Security
           </a>
           <a href="#pricing" onClick={closeMenu}>
-            Free report
+            Full report
           </a>
           <a href="#faq" onClick={closeMenu}>
             FAQ
