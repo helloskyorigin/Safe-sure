@@ -24,7 +24,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> APPLICATION SECURITY
+            <span className="eyebrow-dash"></span> APPLICATION SECURITY AGENT
           </p>
           <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
             See the risks inside
