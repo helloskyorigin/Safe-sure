@@ -49,7 +49,7 @@ export default function ScanningConsole() {
   const router = useRouter();
   const reducedMotion = useReducedMotion();
   const [load, setLoad] = useState<LoadState>({ type: "idle" });
-  const [source, setSource] = useState<{ name: string; private: boolean } | null>(null);
+  const [source, setSource] = useState<{ name: string; github: boolean } | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
   const [cancelBusy, setCancelBusy] = useState(false);
   const [actionError, setActionError] = useState("");
@@ -59,12 +59,13 @@ export default function ScanningConsole() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const privateRepo = params.get("private");
-    const publicRepo = params.get("repo");
-    const repo = privateRepo || publicRepo;
+    const githubRepo = params.get("github") || params.get("private"); // "private" kept for old saved links.
+    const publicRepo = params.get("repo"); // Legacy direct public-scan links remain readable.
+    const repo = githubRepo || publicRepo;
+    const usesGithubConnection = Boolean(githubRepo);
 
     if (repo) {
-      setSource({ name: repo, private: Boolean(privateRepo) });
+      setSource({ name: repo, github: usesGithubConnection });
       if (!repoPattern.test(repo)) { setLoad({ type: "invalid" }); return; }
 
       // The streaming request itself cannot survive a full browser refresh.
@@ -74,11 +75,11 @@ export default function ScanningConsole() {
       try {
         const saved = JSON.parse(sessionStorage.getItem(marker) || "null") as
           { repo?: string; isPrivate?: boolean; timestamp?: number } | null;
-        const resumed = !!saved && saved.repo === repo && saved.isPrivate === Boolean(privateRepo) &&
+        const resumed = !!saved && saved.repo === repo && saved.isPrivate === usesGithubConnection &&
           typeof saved.timestamp === "number" && Date.now() - saved.timestamp < 10 * 60_000;
         setRestartNote(resumed);
         sessionStorage.setItem(marker, JSON.stringify({
-          repo, isPrivate: Boolean(privateRepo), timestamp: Date.now(),
+          repo, isPrivate: usesGithubConnection, timestamp: Date.now(),
         }));
       } catch { /* Scanning works even if browser storage is disabled. */ }
       let stopped = false;
@@ -89,7 +90,7 @@ export default function ScanningConsole() {
 
       async function startScan() {
         try {
-          const response = await fetch(privateRepo ? "/api/scan/private" : "/api/scan/public", {
+          const response = await fetch(usesGithubConnection ? "/api/scan/private" : "/api/scan/public", {
             method: "POST", cache: "no-store", credentials: "same-origin",
             headers: { "Content-Type": "application/json", Accept: "application/x-ndjson" },
             body: JSON.stringify({ repo }),
@@ -122,13 +123,13 @@ export default function ScanningConsole() {
               setLoad({ type: "live", snapshot: value });
             } else if (message.type === "error") {
               throw new Error(typeof message.message === "string" ? message.message : "Scan failed.");
-            } else if (message.type === "stored" && privateRepo) {
+            } else if (message.type === "stored" && usesGithubConnection) {
               if (!latestId || message.runId !== latestId || !/^[0-9a-f-]{36}$/i.test(latestId))
                 throw new Error("Private report storage was not verified.");
               sawReport = true;
               completedId = latestId;
               setSavedId(latestId);
-            } else if (message.type === "report" && !privateRepo) {
+            } else if (message.type === "report" && !usesGithubConnection) {
               if (!latestId || !isAssessmentReport(message.report, latestId))
                 throw new Error("The scanner returned an invalid report.");
               try {
@@ -159,7 +160,7 @@ export default function ScanningConsole() {
 
           // Report is verified and saved before navigation; failed scans never redirect.
           if (!stopped && !controller.signal.aborted) {
-            router.replace("/assess/results?" + (privateRepo ? "run=" : "local=") + encodeURIComponent(completedId));
+            router.replace("/assess/results?" + (usesGithubConnection ? "run=" : "local=") + encodeURIComponent(completedId));
           }
         } catch (error) {
           if (stopped || controller.signal.aborted) return;
@@ -208,7 +209,7 @@ export default function ScanningConsole() {
           if (!isAssessmentSnapshot(snapshot, run!)) {
             setLoad({ type: "error", message: "Agent progress could not be verified." }); repeat = false;
           } else {
-            setSource({ name: snapshot.target.name, private: false });
+            setSource({ name: snapshot.target.name, github: true });
             setLoad({ type: "live", snapshot });
             repeat = !terminal.has(snapshot.status);
           }
@@ -307,7 +308,7 @@ export default function ScanningConsole() {
               isFinishing ? (savedId ? "Opening your report" : "Preparing your report") :
               hasSource ? "Reviewing security signals" : "Ready to investigate"}</h1>
             <p className="scan-repo-name"><Github size={14} aria-hidden="true"/> <span>{source?.name || "No source selected"}</span></p>
-            {hasSource && <p className="scan-source-type">{source?.private ? "Authorized private source" : "Public GitHub source"} · Read-only</p>}
+            {hasSource && <p className="scan-source-type">{source?.github ? "Authorized GitHub repository" : "Legacy public repository"} · Read-only</p>}
             {!isFailure && <p className="scan-current-action" aria-live="polite">
               {ongoing && <LoaderCircle size={15} className="scan-inline-spinner"/>}
               {hasSource ? liveDescription : "Select a repository to begin."}
@@ -353,7 +354,7 @@ export default function ScanningConsole() {
             {isFailure && source ? (
               <div className="scan-retry-actions">
                 <button className="scan-primary-link" type="button" onClick={() => {
-                  window.location.assign("/assess/scanning?" + (source.private ? "private=" : "repo=") + encodeURIComponent(source.name));
+                  window.location.assign("/assess/scanning?" + (source.github ? "github=" : "repo=") + encodeURIComponent(source.name));
                 }}><RefreshCw size={17}/> Retry analysis <ArrowRight size={17}/></button>
                 <Link href="/assess" className="scan-change-target">Change source</Link>
               </div>
