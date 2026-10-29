@@ -22,7 +22,7 @@ export function parsePublicRepo(raw: string) {
   const value = raw.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
   const m = /^(?:https:\/\/github\.com\/)?([A-Za-z0-9-]{1,39})\/([A-Za-z0-9_.-]{1,100})$/i.exec(value);
   if (!m || !/^[A-Za-z0-9]/.test(m[1]) || !/^[A-Za-z0-9]/.test(m[2]))
-    throw new ScanError("Enter a public GitHub repository like github.com/owner/repo.", 400);
+    throw new ScanError("Enter a GitHub repository like github.com/owner/repo.", 400);
   return { owner: m[1], repo: m[2] };
 }
 const IGNORED = /(^|\/)(node_modules|vendor|dist|build|coverage|\.next|\.venv|venv|__pycache__|target|generated|fixtures|\.git|\.cache)(\/|$)/i;
@@ -34,7 +34,7 @@ async function download(url: string, signal: AbortSignal, limit: number, opts: R
   if (signal.aborted) throw new ScanError("Scan cancelled.", 408);
   const res = await fetch(url, { ...opts, signal, cache: "no-store", redirect: "error" });
   if (!res.ok) {
-    if (res.status === 404) throw new ScanError("Repository not found, not public or source unavailable.", 404);
+    if (res.status === 404) throw new ScanError("Repository not found, access not granted, or source unavailable.", 404);
     if (res.status === 403 || res.status === 429) throw new ScanError("Source or advisory provider rate-limited the scan.", 429);
     throw new ScanError("Source provider failed (" + res.status + ").", 502);
   }
@@ -190,7 +190,7 @@ export async function osvScan(deps: Dependency[], signal: AbortSignal) {
 }
 
 export async function scanPublicRepository(input: string, signal: AbortSignal, emit: Progress,
-  privateToken?: string): Promise<AssessmentReport> {
+  githubAccessToken?: string): Promise<AssessmentReport> {
   const { owner, repo } = parsePublicRepo(input);
   const target = owner + "/" + repo;
   const runId = randomUUID();
@@ -205,13 +205,13 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
       progress: { done: checks.filter(c => ["complete","skipped","failed"].includes(c.status)).length, total: 5 } });
   };
   const ghHeaders = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "Secuvora-SecurityAgent/1.0",
-    ...(privateToken ? { Authorization: "Bearer " + privateToken } : process.env.GITHUB_TOKEN ? { Authorization: "Bearer " + process.env.GITHUB_TOKEN } : {}) };
-  send("access","running","Verifying public repository and pinning source revision");
+    ...(githubAccessToken ? { Authorization: "Bearer " + githubAccessToken } : process.env.GITHUB_TOKEN ? { Authorization: "Bearer " + process.env.GITHUB_TOKEN } : {}) };
+  send("access","running","Verifying GitHub repository access and pinning the source revision");
   const meta = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo, signal, 150_000, { headers: ghHeaders })) as { private?: boolean; default_branch?: string; size?: number };
-  if ((!privateToken && meta.private) || !meta.default_branch) throw new ScanError("Repository is private or unauthorized.", 403);
-  if (privateToken && !meta.private) throw new ScanError("Select a private repository for this flow. Public repositories use the public scanner.", 400);
+  if (!meta.default_branch || (!githubAccessToken && meta.private))
+    throw new ScanError("Repository could not be accessed with the available GitHub permissions.", 403);
   if (!/^[a-zA-Z0-9_./-]{1,140}$/.test(meta.default_branch) || meta.default_branch.includes("..")) throw new ScanError("Unsupported branch name.", 422);
-  if ((meta.size || 0) > 100_000) throw new ScanError("Repository is too large for the limited public scanner.", 413);
+  if ((meta.size || 0) > 100_000) throw new ScanError("Repository is too large for this bounded security scan.", 413);
   const commit = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo+"/commits/"+encodeURIComponent(meta.default_branch), signal, 150_000, { headers: ghHeaders })) as {
     sha?: string; commit?: { tree?: { sha?: string } };
   };
@@ -233,9 +233,9 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   for (let i=0; i<chosen.length; i+=5) {
     const group = await Promise.allSettled(chosen.slice(i,i+5).map(async x => {
       let content: string;
-      if (privateToken) {
-        // Private repository file contents must stay on the authenticated GitHub
-        // REST API, never unauthenticated raw.githubusercontent.com.
+      if (githubAccessToken) {
+        // Every connected repository (public or private) is read through the
+        // authenticated GitHub REST API. Never send user tokens to raw hosts.
         const blob = parseJson(await download("https://api.github.com/repos/"+owner+"/"+repo+
           "/git/blobs/"+encodeURIComponent(x.sha || ""), signal,
           Math.ceil((MANIFEST.test(x.path)?MANIFEST_LIMIT:SOURCE_LIMIT) * 1.6) + 1000, { headers: ghHeaders })) as {
@@ -279,7 +279,7 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   send("evidence","running","Compiling evidence and explicit scan limitations");
   incomplete ||= deps.truncated || osvPartial || analyzed.truncated;
   const coverage: CoverageItem[] = [
-    { id:"access", label:"Public source snapshot", status:"complete",
+    { id:"access", label:githubAccessToken ? "Authorized GitHub source snapshot" : "Public source snapshot", status:"complete",
       note:files.length+" of "+eligible.length+" eligible files loaded at "+sha+". "+(incomplete?"Some files or checks were omitted by safety limits.":"Other file formats were outside this scan's scope.") },
     { id:"secrets", label:"Credential-like source patterns", status:"complete", note:"High-signal provider token and credential-pattern review. Secret values are redacted; token validity is never tested." },
     { id:"dependencies", label:"Pinned npm/PyPI dependency advisories", status:!deps.deps.length?"skipped":osvFailed?"failed":"complete",
@@ -293,6 +293,6 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
     scanMetrics: { filesInspected: files.length, eligibleFiles: eligible.length,
       linesInspected: analyzed.inspectedLines, dependencyVersions: deps.deps.length,
       rulesExecuted: analyzed.rulesRun },
-    scopeNote:"Read-only "+(privateToken ? "authorized private" : "public")+" source scan pinned to "+sha.slice(0,12)+". Curated source/config rules and pinned-package OSV advisories only. No runtime testing, exploit verification or security guarantee."+
+    scopeNote:"Read-only "+(githubAccessToken ? "authorized GitHub repository" : "public repository")+" source scan pinned to "+sha.slice(0,12)+". Curated source/config rules and pinned-package OSV advisories only. No runtime testing, exploit verification or security guarantee."+
       (incomplete?" Some supported content was omitted by safety limits.":"") };
 }
