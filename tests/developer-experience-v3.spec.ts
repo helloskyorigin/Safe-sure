@@ -64,7 +64,7 @@ test("finding pager moves through filtered results and respects disabled bounds"
   await expect(pager).toContainText("Finding 2 of 2");
   await expect(pager.getByRole("button", {name:"Next finding"})).toBeDisabled();
   await expect(page.getByRole("link", {name:/Review findings/})).toHaveAttribute("href","#findings");
-  await expect(page.getByRole("link", {name:"Coverage"})).toHaveAttribute("href","#coverage");
+  await expect(page.getByRole("link", {name:"Coverage", exact:true})).toHaveAttribute("href","#coverage");
 });
 
 test("mobile report pagination remains tappable without overflowing", async ({ browser }) => {

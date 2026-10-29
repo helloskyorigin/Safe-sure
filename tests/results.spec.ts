@@ -1,13 +1,14 @@
 import { test, expect } from "@playwright/test";
+import { SAMPLE_REPORT } from "../lib/report-contract";
 
 test("full report preview shows all findings without a paywall", async ({ page }) => {
   await page.goto("/assess/results");
-  await expect(page.getByRole("heading", { level: 1, name: /Your agent report/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Explore a sample report/i })).toBeVisible();
   await expect(page.getByText("INTERACTIVE SAMPLE")).toBeVisible();
   await expect(page.getByText("6/6")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
-  await expect(page.getByRole("heading", { name: "Potential credential embedded in client code" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Recommended fix" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Detailed report" }).getByRole("heading", { name: "Potential credential embedded in client code" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recommended next steps" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "How to verify" })).toBeVisible();
   await expect(page.getByText(/No application was connected, scanned or found vulnerable/i)).toBeVisible();
   await expect(page.getByText(/\$19/)).toHaveCount(0);
@@ -29,9 +30,10 @@ test("severity chips and search filter accurate detail data", async ({ page }) =
 test("full remediation is interactive and export works without payment", async ({ page }) => {
   await page.goto("/assess/results");
   await page.locator(".result-checklist").getByRole("checkbox").first().check();
-  await expect(page.getByText(/1\/4 marked for review/)).toBeVisible();
+  await expect(page.getByText(/1\/4 marked reviewed/)).toBeVisible();
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: /Export example/i }).click();
+  await page.locator(".result-export-menu summary").click();
+  await page.getByRole("button", { name: /Export example JSON/i }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe("secuvora-sample-full-report.json");
   await expect(page.getByText(/All available findings and fix guidance included/)).toBeVisible();
@@ -72,7 +74,7 @@ test("all results widths avoid horizontal overflow", async ({ browser }) => {
     });
     const page = await context.newPage();
     await page.goto("/assess/results");
-    await expect(page.getByRole("heading", { level: 1, name: /Your agent report/i })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: /Explore a sample report/i })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, "results overflow at " + width + "px").toBeLessThanOrEqual(1);
     await context.close();
@@ -83,7 +85,8 @@ test("all results widths avoid horizontal overflow", async ({ browser }) => {
 test("free fix-plan export includes actual finding remediation and coverage", async ({ page }) => {
   await page.goto("/assess/results");
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Fix plan" }).click();
+  await page.locator(".result-export-menu summary").click();
+  await page.getByRole("button", { name: /Fix plan/i }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe("secuvora-sample-fix-plan.md");
   const content = await (await import("node:fs/promises")).readFile(await download.path(), "utf8");
@@ -98,6 +101,7 @@ test("result UI has no pricing, locked patches or false source links in sample",
   await page.goto("/assess/results");
   await expect(page.getByText(/\$19|\$9|checkout|upgrade to pro/i)).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Open source" })).toHaveCount(0);
+  await page.locator(".result-export-menu summary").click();
   await expect(page.getByRole("button", { name: /Save PDF/i })).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
 });
@@ -111,4 +115,53 @@ test("printable free report includes all findings and coverage, not only selecte
   await expect(page.locator(".result-print-all article")).toHaveCount(6);
   await expect(page.locator(".result-print-all").getByText("Coverage and scope")).toBeVisible();
   await expect(page.locator(".result-toolbar")).toBeHidden();
+});
+
+test("results v2 highlights real priority and exposes clickable severity filters", async ({ page }) => {
+  await page.goto("/assess/results");
+  await expect(page.getByRole("heading", { level: 1, name: /Explore a sample report/i })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Priority finding" })).toContainText("Potential credential embedded in client code");
+  await expect(page.getByRole("region", { name: "Actual assessment coverage" })).toContainText("Runtime behavior and exploitability");
+  const severity = page.getByRole("button", { name: "Show High findings" });
+  await severity.click();
+  await expect(severity).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".result-finding-item")).toHaveCount(2);
+  await severity.click();
+  await expect(page.locator(".result-finding-item")).toHaveCount(6);
+});
+
+test("verified partial report announces bounded coverage and persists review state on refresh", async ({ page }) => {
+  const runId = "12345678-1234-4321-9999-123456789013";
+  const report = {
+    ...SAMPLE_REPORT,
+    runId,
+    appName: "acme/public-app",
+    revision: "b".repeat(40),
+    findings: SAMPLE_REPORT.findings.slice(0, 2),
+    scanMetrics: { filesInspected: 12, eligibleFiles: 85, linesInspected: 2600, dependencyVersions: 4, rulesExecuted: 12 },
+    coverage: [...SAMPLE_REPORT.coverage, { id: "limits", label: "Exhaustive repository coverage", status: "skipped", note: "Safety caps prevented exhaustive inspection." }],
+  };
+  await page.route("**/api/assessments/*/report", route => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify(report),
+  }));
+  await page.goto("/assess/results?run=" + runId);
+  await expect(page.getByRole("heading", { level: 1, name: /Security assessment complete/i })).toBeVisible();
+  const scope = page.getByRole("region", { name: "Actual assessment coverage" });
+  await expect(scope).toContainText("Partial source coverage");
+  await expect(scope).toContainText("12 of 85 eligible files");
+  await expect(page.getByText("Runtime behavior and exploitability have not been tested.")).toHaveCount(0);
+  const checklist = page.locator(".result-checklist").getByRole("checkbox").first();
+  await checklist.check();
+  await expect(page.getByText(/1\/4 marked reviewed/)).toBeVisible();
+  await page.reload();
+  await expect(page.locator(".result-checklist").getByRole("checkbox").first()).toBeChecked();
+  await expect(page.getByRole("region", { name: "Priority finding" })).toContainText("Potential credential");
+});
+
+test("results v2 separates supporting detector evidence from confirmed exploitation", async ({ page }) => {
+  await page.goto("/assess/results");
+  await expect(page.getByRole("heading", { name: "Observed evidence" })).toBeVisible();
+  await expect(page.getByText(/not proof that the issue is exploitable/i)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Potential impact" })).toBeVisible();
+  await expect(page.locator(".result-finding-copy").first()).toContainText("medium confidence");
 });
