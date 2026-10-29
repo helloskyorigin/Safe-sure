@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getGithubSession } from "@/lib/github-auth";
 import { authorizeRepository } from "@/lib/github-installations";
-import { durableStoreStatus, enforceSharedQuota, saveUserReport, verifyDurableStore } from "@/lib/durable-reports";
+import { durableStoreStatus, enforceSharedQuota, fetchUserReport, saveUserReport, verifyDurableStore } from "@/lib/durable-reports";
+import { reportSavingSnapshot, storedReportSnapshot } from "@/lib/scan-completion";
 import { parsePublicRepo, scanPublicRepository, ScanError } from "@/lib/public-repo-scanner";
 import { isAllowedMutationOrigin, readBoundedJson, RequestBodyError } from "@/lib/api-request-guards";
 import type { AssessmentSnapshot } from "@/lib/assessment-contract";
@@ -66,13 +67,21 @@ export async function POST(req: Request) {
       let last: AssessmentSnapshot | null = null;
       try {
         const report = await scanPublicRepository(repo, controller.signal,
-          snapshot => { last = snapshot; emit({ type: "snapshot", snapshot }); }, session.token);
-        // The durable write MUST succeed before a completion event is delivered.
+          snapshot => {
+            last = snapshot;
+            emit({ type: "snapshot", snapshot: reportSavingSnapshot(snapshot) });
+          }, session.token);
+        // Never emit completion while persistence is pending. The final security
+        // stage includes saving and reading back the report on the owner's key.
+        const scanSnapshot = last as AssessmentSnapshot | null;
         await saveUserReport(session.userId, report);
-        const snapshot = last as AssessmentSnapshot | null;
-        if (snapshot) emit({ type: "snapshot", snapshot: {
-          ...snapshot, status: "completed", updatedAt: new Date().toISOString(),
-        } });
+        const persisted = await fetchUserReport(session.userId, report.runId);
+        if (!persisted || persisted.runId !== report.runId ||
+            persisted.appName.toLowerCase() !== repo.toLowerCase() ||
+            persisted.revision !== report.revision)
+          throw new Error("Saved report could not be verified.");
+        const completed = storedReportSnapshot(scanSnapshot, report, repo);
+        emit({ type: "snapshot", snapshot: completed });
         emit({ type: "stored", runId: report.runId });
       } catch (error) {
         emit({ type: "error", message: controller.signal.aborted ? "Scan interrupted or timed out." :
