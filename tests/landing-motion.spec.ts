@@ -83,6 +83,20 @@ test("mobile 320 to 430 widths allow deliberate scroll and no horizontal overflo
     await node.scrollIntoViewIfNeeded();
     await expect(node).toHaveClass(/ship-motion-revealed/);
     const x = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (x > 1) {
+      const offenders = await page.evaluate(() =>
+        [...document.querySelectorAll("body *")].filter(el => {
+          const box = el.getBoundingClientRect();
+          const style = getComputedStyle(el);
+          return style.display !== "none" && style.visibility !== "hidden" &&
+            box.width > 2 && box.right > document.documentElement.clientWidth + 1;
+        }).slice(0, 12).map(el => ({
+          tag:el.tagName, css:(el as HTMLElement).className?.toString().slice(0, 100),
+          right:Math.round(el.getBoundingClientRect().right)
+        }))
+      );
+      console.log("Viewport overflow culprits", width, JSON.stringify(offenders));
+    }
     expect(x, "overflow at " + width).toBeLessThanOrEqual(1);
     const y = await page.evaluate(() => window.scrollY);
     expect(y, "scroll blocked at " + width).toBeGreaterThan(200);
