@@ -9,14 +9,18 @@ type Props = {
 
 export function SecuvoraMark({ className = "" }: { className?: string }) {
   return (
-    <svg className={"secuvora-mark " + className} viewBox="0 0 100 100" role="img" aria-label="Secuvora">
-      <path className="secuvora-mark-shell" d="M18 31.5 47.7 14.2c1.6-.9 3.5-.9 5.1 0l21.4 12.4c1.7 1 2.8 2.8 2.8 4.8v14.8c0 2.4-2.6 3.9-4.7 2.7L52.7 37.6a5.2 5.2 0 0 0-5.2 0L21.8 52.4c-2.1 1.2-4.8-.3-4.8-2.7V36.3c0-2 1-3.8 2.8-4.8Z"/>
-      <path className="secuvora-mark-shell" d="m80.7 31.5 11.5 6.7c1.7 1 2.8 2.8 2.8 4.8v24.9c0 2.4-2.6 3.9-4.7 2.7l-10.1-5.8a5.4 5.4 0 0 1-2.7-4.7V34.3c0-2.4 1.1-4 3.2-2.8Z"/>
-      <path className="secuvora-mark-shell" d="m20.2 57.5 14-8.1c2.1-1.2 4.7.3 4.7 2.7v18.4c0 1.8 1 3.5 2.5 4.4l25 14.4c2.1 1.2 2.1 4.3 0 5.5l-11.2 6.5a5.2 5.2 0 0 1-5.2 0L19.8 83.8a5.5 5.5 0 0 1-2.8-4.8V62.3c0-2 1-3.8 3.2-4.8Z"/>
-      <path className="secuvora-mark-shell" d="m80.4 57.4 10.1 5.8c2.1 1.2 2.1 4.3 0 5.5L71.1 79.9c-2.1 1.2-4.7-.3-4.7-2.7v-8.1c0-1.9 1-3.6 2.6-4.5l6.2-3.6c1.6-.9 3.6-.8 5.2.4Z"/>
-      <path className="secuvora-mark-core-top" d="m50 43.6 12.7 7.3c1.8 1 1.8 3.6 0 4.7L50 63l-12.7-7.4c-1.8-1-1.8-3.6 0-4.7L50 43.6Z"/>
-      <path className="secuvora-mark-core" d="m36.3 59.5 10.6 6.1v15.5c0 2.1-2.3 3.4-4.1 2.4l-6.5-3.8a5.3 5.3 0 0 1-2.7-4.7V61.1c0-2.1.9-2.7 2.7-1.6Z"/>
-      <path className="secuvora-mark-core" d="m63.7 59.5-10.6 6.1v15.5c0 2.1 2.3 3.4 4.1 2.4l6.5-3.8a5.3 5.3 0 0 0 2.7-4.7V61.1c0-2.1-.9-2.7-2.7-1.6Z"/>
+    <svg className={"secuvora-mark " + className} viewBox="0 0 512 512" role="img" aria-label="Secuvora">
+      <g className="secuvora-mark-shell">
+        <path d="M55 265 L51 274 L51 359 L55 368 L65 378 L248 484 L257 485 L264 483 L319 451 L325 446 L326 444 L326 423 L322 418 L158 327 L149 319 L147 313 L147 219 L142 215 L136 216 L66 256 Z"/>
+        <path d="M341 74 L337 70 L260 27 L246 28 L66 130 L54 139 L51 146 L51 238 L59 236 L236 134 L251 128 L259 128 L266 130 L334 169 L339 168 L343 162 L343 79 Z"/>
+        <path d="M371 215 L365 216 L362 220 L362 313 L360 319 L351 327 L284 364 L281 368 L282 371 L340 404 L347 414 L348 434 L449 375 L455 369 L460 357 L460 276 L456 266 L447 258 Z"/>
+        <path d="M364 86 L364 178 L367 185 L376 193 L446 233 L460 239 L460 152 L456 142 L444 132 Z"/>
+      </g>
+      <g className="secuvora-mark-core">
+        <path d="M187 209 L187 212 L190 215 L252 250 L260 249 L322 213 L321 207 L257 171 L252 171 L193 204 Z"/>
+        <path d="M328 226 L268 260 L262 267 L262 337 L263 338 L266 338 L324 305 L329 299 L329 227 Z"/>
+        <path d="M180 227 L180 298 L182 302 L243 338 L246 338 L247 337 L247 267 L241 260 L187 229 Z"/>
+      </g>
     </svg>
   );
 }
