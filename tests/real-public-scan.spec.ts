@@ -42,10 +42,7 @@ test("public source scan streams worker snapshots into full report experience", 
     status: 200, headers: { "content-type": "application/x-ndjson" },
     body: JSON.stringify({ type: "snapshot", snapshot })+"\n"+JSON.stringify({ type: "report", report })+"\n",
   }));
-  await page.goto("/assess");
-  await page.getByRole("button", { name: /Public repository/i }).click();
-  await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("acme/testapp");
-  await page.getByRole("button", { name: "Begin analysis" }).click();
+  await page.goto("/assess/scanning?repo=acme%2Ftestapp");
   // No extra click: completed, validated stream must navigate automatically.
   await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 12000 });
   await expect(page.getByText("PUBLIC REPOSITORY")).toBeVisible();
@@ -62,10 +59,7 @@ test("real report id without tab-held report does not leak or invent findings", 
 test("live source scan integrates GitHub public tree and full report end-to-end", async ({ page }) => {
   test.skip(process.env.RUN_LIVE_SCAN !== "1", "External integration smoke test is opt-in");
   test.setTimeout(95_000);
-  await page.goto("/assess");
-  await page.getByRole("button", { name: /Public repository/i }).click();
-  await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("vercel/ms");
-  await page.getByRole("button", { name: "Begin analysis" }).click();
+  await page.goto("/assess/scanning?repo=vercel%2Fms");
   // Real GitHub source -> real streamed checks -> auto result without clicking.
   try {
     await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 72_000 });
