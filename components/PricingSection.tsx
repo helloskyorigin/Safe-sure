@@ -14,14 +14,14 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
     <section id="pricing" className="section bordered pricing-section">
       <div className="container pricing-grid">
         <div className="pricing-intro ">
-          <p className="eyebrow">FULL ACCESS, NO PAYWALL</p>
+          <p className="eyebrow">AVAILABLE NOW</p>
           <h2>
-            All the detail,
+            The full investigation,
             <br />
-            nothing hidden.
+            without a paywall.
           </h2>
           <p>
-            Get the whole picture: affected source files, supporting evidence, risk context and step-by-step remediation. Every supported finding stays accessible.
+            Every available candidate finding includes source evidence, context and practical steps for review.
           </p>
           <div className="no-renew">
             <span>✓</span> Full results included. No checkout.
@@ -31,8 +31,8 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
         <div className="price-card ">
           <div className="price-top">
             <div>
-              <small>COMPLETE AGENT REPORT</small>
-              <h3>All agent findings. Free.</h3>
+              <small>COMPLETE PUBLIC REVIEW</small>
+              <h3>Public-source investigations</h3>
             </div>
             <div className="price">
               FREE<span>full report</span>
@@ -59,10 +59,10 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             data-start
             className="button button-dark price-cta"
           >
-            Scan a public repository <span aria-hidden="true">→</span>
+            Start an investigation <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
-            Public repository agent analysis is available now. Private GitHub access requires configured authorization.
+            Start with a public GitHub source. Private repositories require configured, explicit authorization.
           </p>
         </div>
       </div>
