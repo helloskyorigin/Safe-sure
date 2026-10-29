@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Circle, CircleAlert,
-  FileCheck2, Github, LoaderCircle, RefreshCw, Bot,
+  FileCheck2, Github, LoaderCircle, RefreshCw, ScanSearch,
   ShieldCheck, Square,
 } from "lucide-react";
 import { isAssessmentReport } from "@/lib/report-contract";
@@ -302,7 +302,7 @@ export default function ScanningConsole() {
           <div className={"scan-orbit-scene" + (ongoing && !isFailure ? " is-active" : "")} aria-hidden="true">
             <div className="scan-orbit-ring scan-ring-outer"/>
             <div className="scan-orbit-ring scan-ring-inner"/>
-            <div className="scan-orbit-core"><Bot size={44} strokeWidth={1.4}/></div>
+            <div className="scan-orbit-core"><ScanSearch size={32} strokeWidth={1.5}/></div>
           </div>
 
           <div className="scan-visual-bottom">
