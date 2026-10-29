@@ -24,15 +24,15 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> AI SECURITY AGENT
+            <span className="eyebrow-dash"></span> APPLICATION SECURITY
           </p>
           <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
-            Meet Secuvora.
+            See the risks inside
             <br />
-            <em>Your AI security agent.</em>
+            <em>your application.</em>
           </motion.h1>
           <p className="hero-sub animate delay-2">
-            Find the risky lines. See the evidence. Know what to fix. Secuvora examines credentials, dependencies and security-sensitive configurations through bounded, read-only source checks.
+            Secuvora checks your application’s source and dependencies for supported security risks—then shows the evidence, affected files and what to fix.
           </p>
           <div className="hero-action animate delay-3">
             <div className="hero-cta-row">
@@ -42,16 +42,16 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
               data-start
               className="button button-dark button-primary"
             >
-              Run security agent — free{" "}
+              Check my application{" "}
               <span className="button-arrow" aria-hidden="true">
                 →
               </span>
             </a>
-            <a href="/assess/results" className="hero-preview-link">Explore example report <span aria-hidden="true">↗</span></a>
+            <a href="/assess/results" className="hero-preview-link">View sample report <span aria-hidden="true">↗</span></a>
             </div>
             <p className="under-cta">
-              <span className="tiny-check">✓</span> Read-only security review{" "}
-              <span className="dot-separator">·</span> Actual file locations <span className="dot-separator">·</span> No account for public scans
+              <span className="tiny-check">✓</span> Read-only checks{" "}
+              <span className="dot-separator">·</span> File-level evidence <span className="dot-separator">·</span> No account for public checks
             </p>
           </div>
         </div>
@@ -70,10 +70,10 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
             <div className="preview-body">
               <div className="preview-heading">
                 <div>
-                  <div className="preview-overline">AUTOMATED SECURITY AGENT</div>
-                  <h2>Agent security report</h2>
+                  <div className="preview-overline">REVIEW SUMMARY</div>
+                  <h2>Application findings</h2>
                   <p>
-                    example-app <span>·</span> Illustrative results
+                    example-app <span>·</span> Fictional example
                   </p>
                 </div>
                 <span className="complete-tag">
@@ -112,7 +112,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
               </div>
 
               <div className="findings-head">
-                <h3>Potential findings</h3>
+                <h3>What needs attention</h3>
                 <span>Severity</span>
               </div>
 
@@ -145,7 +145,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
 
               <div className="preview-bottom">
                 <span>
-                  <i></i> Evidence-backed agent analysis
+                  <i></i> Evidence-led review
                 </span>
                 <span>Fictional example</span>
               </div>
