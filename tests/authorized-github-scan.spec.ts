@@ -43,10 +43,10 @@ for (const visibility of ["public", "private"] as const) {
         update => snapshots.push(update), "github-user-token");
       expect(report.appName).toBe(REPO);
       expect(report.revision).toBe(COMMIT);
-      expect(report.scanMetrics.filesInspected).toBe(1);
+      expect(report.scanMetrics?.filesInspected).toBe(1);
       expect(report.scopeNote).toContain("authorized GitHub repository");
       expect(report.coverage.find(item => item.id === "access")?.label).toBe("Authorized GitHub source snapshot");
-      expect(snapshots.at(-1)?.progress.done).toBe(5);
+      expect(snapshots.at(-1)?.progress?.done).toBe(5);
       expect(mocked.calls).toHaveLength(4);
       expect(mocked.calls.every(call => call.auth === "Bearer github-user-token")).toBe(true);
       expect(mocked.calls.some(call => call.url.includes("/git/blobs/" + BLOB))).toBe(true);
