@@ -49,6 +49,7 @@ test("verified report has downloadable SARIF, fictional sample never does", asyn
     status:200,contentType:"application/json",body:JSON.stringify(verified),
   }));
   await page.goto("/assess/results?run=" + id);
+  await page.locator(".result-export-menu summary").click();
   const button = page.getByRole("button", { name: "Export SARIF" });
   await expect(button).toBeVisible();
   const pending = page.waitForEvent("download");
@@ -68,6 +69,7 @@ test("SARIF toolbar stays within 320px on mobile", async ({ browser }) => {
     status:200,contentType:"application/json",body:JSON.stringify(verified),
   }));
   await page.goto("/assess/results?run=" + id);
+  await page.locator(".result-export-menu summary").click();
   await expect(page.getByRole("button", {name:"Export SARIF"})).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(1);
