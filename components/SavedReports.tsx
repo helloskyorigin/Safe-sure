@@ -93,7 +93,7 @@ export default function SavedReports() {
       </div>
       <div className="history-row-actions">
         <Link href={url} className="history-open">Open report <ArrowRight size={15}/></Link>
-        <Link href={"/assess/scanning?" + (kind === "public" ? "repo=" : "private=") + encodeURIComponent(item.appName)}
+        <Link href={"/assess/scanning?" + (kind === "public" ? "repo=" : "github=") + encodeURIComponent(item.appName)}
           className="history-rescan"><RefreshCw size={14}/> Rescan</Link>
       </div>
       <button type="button" className="history-delete" aria-label={"Delete report for " + item.appName}
@@ -115,14 +115,14 @@ export default function SavedReports() {
       <div className="history-top">
         <div><p className="history-eyebrow"><ShieldCheck size={15}/> YOUR AGENT INVESTIGATIONS</p>
           <h1>Agent history<span>.</span></h1>
-          <p>Revisit previous agent investigations. No paywall, no unnecessary dashboard.</p>
+          <p>Revisit completed investigations without hunting through old scan links.</p>
         </div>
         <button type="button" onClick={() => void load()} className="history-refresh">
           <RefreshCw size={15}/> Refresh
         </button>
       </div>
 
-      <section className="history-group" aria-labelledby="public-history-heading">
+      {publicReports.length > 0 && <section className="history-group" aria-labelledby="public-history-heading">
         <div className="history-group-heading">
           <div className="history-group-label"><HardDrive size={19}/><h2 id="public-history-heading">Public investigations</h2></div>
           <span>{publicReports.length} saved</span>
@@ -131,25 +131,25 @@ export default function SavedReports() {
         {publicReports.length ? publicReports.map(item => <ReportRow key={item.runId} item={item} kind="public"/>) :
           <div className="history-empty"><CheckCircle2 size={21}/><span>No agent reports saved yet.</span>
             <Link href="/assess">Run security agent <ArrowRight size={15}/></Link></div>}
-      </section>
+      </section>}
 
       <section className="history-group" aria-labelledby="private-history-heading">
         <div className="history-group-heading">
-          <div className="history-group-label"><Github size={19}/><h2 id="private-history-heading">Private investigations</h2></div>
+          <div className="history-group-label"><Github size={19}/><h2 id="private-history-heading">GitHub investigations</h2></div>
           <span>{privateStatus === "ready" ? privateReports.length + " saved" : "GitHub account"}</span>
         </div>
-        <p className="history-hint">Only your authorized GitHub private reports are retrieved from encrypted server storage, when configured.</p>
-        {privateStatus === "loading" && <p className="history-status" role="status">Checking your private reports…</p>}
+        <p className="history-hint">Reports from repositories you authorized through GitHub are retrieved from account-protected encrypted storage.</p>
+        {privateStatus === "loading" && <p className="history-status" role="status">Checking your GitHub reports…</p>}
         {privateStatus === "signed-out" && <p className="history-status">
-          GitHub sign-in required to view private reports. <Link href="/assess">Connect GitHub <ArrowRight size={14}/></Link>
+          GitHub sign-in required to view your saved GitHub reports. <Link href="/assess">Connect GitHub <ArrowRight size={14}/></Link>
         </p>}
-        {privateStatus === "offline" && <p className="history-status">Private report storage is not configured or temporarily unavailable.</p>}
+        {privateStatus === "offline" && <p className="history-status">Report storage is temporarily unavailable.</p>}
         {privateStatus === "ready" && (privateReports.length
           ? privateReports.map(item => <ReportRow key={item.runId} item={item} kind="private"/>)
-          : <p className="history-status">No private agent reports saved yet.</p>)}
+          : <p className="history-status">No GitHub investigations saved yet.</p>)}
       </section>
       {error && <p role="alert" className="history-error">{error}</p>}
-      <p className="history-bottom"><ShieldCheck size={15}/> Your browser history is local; private GitHub report access remains account-protected.</p>
+      <p className="history-bottom"><ShieldCheck size={15}/> GitHub report access stays account-protected; older browser-only reports remain local to this device.</p>
     </main>
   </div>;
 }
