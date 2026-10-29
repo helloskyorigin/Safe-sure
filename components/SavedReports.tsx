@@ -7,6 +7,7 @@ import {
   HardDrive, LockKeyhole, RefreshCw, ShieldCheck, Trash2,
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import Brand from "@/components/Brand";
 import {
   deletePublicReport, listPublicReports, type LocalReportSummary,
 } from "@/lib/browser-report-history";
@@ -108,7 +109,7 @@ export default function SavedReports() {
 
   return <div className="assess-page history-page">
     <header className="assess-header"><div className="assess-container assess-header-inner">
-      <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
+      <Brand />
       <div className="history-header-actions"><ThemeToggle/><Link className="assess-back" href="/assess"><ArrowLeft size={15}/> New investigation</Link></div>
     </div></header>
 
