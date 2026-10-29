@@ -65,21 +65,26 @@ test("connected source screen exposes GitHub repository access management", asyn
 });
 
 test("mobile GitHub connection fits at 320, 375 and 430px", async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: { width: 320, height: 812 }, isMobile: true, hasTouch: true, reducedMotion: "reduce",
+  });
+  const page = await context.newPage();
+  await page.route("**/api/auth/github/status", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ configured: true, connected: false, login: null }),
+  }));
+
   for (const width of [320, 375, 430]) {
-    const context = await browser.newContext({ viewport: { width, height: 812 }, isMobile: true, hasTouch: true });
-    const page = await context.newPage();
-    await page.route("**/api/auth/github/status", route => route.fulfill({
-      status: 200, contentType: "application/json",
-      body: JSON.stringify({ configured: true, connected: false, login: null }),
-    }));
+    await page.setViewportSize({ width, height: 812 });
     await page.goto("/assess");
     await expect(page.getByRole("link", { name: /Connect GitHub/i })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(overflow, "GitHub connection overflow at " + width).toBeLessThanOrEqual(1);
-    await page.getByRole("link", { name: "Back" }).click();
-    await expect(page).toHaveURL(/\/$/);
-    await context.close();
   }
+
+  await page.getByRole("link", { name: "Back" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await context.close();
 });
 
 test("single repository panel keeps one dominant action at narrow and desktop widths", async ({ browser }) => {
