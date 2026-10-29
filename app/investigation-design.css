@@ -252,3 +252,18 @@
  .footer .footer-columns nav{width:auto;min-width:0}
  .footer .footer-columns nav a{display:inline-flex;align-items:center;min-width:0;max-width:100%;white-space:normal}
 }
+
+
+/* The footer's old flex/content widths expanded its box by 9px on a 320px
+   viewport after scroll reveal. Contain only the footer, and give every
+   column a true shrinkable track with a safe mobile inset. */
+.footer{max-width:100%;overflow-x:clip}
+@media(max-width:640px){
+ .footer .container{width:calc(100% - 40px);max-width:calc(100% - 40px);margin-inline:auto;min-width:0}
+ .footer .footer-main{width:calc(100% - 40px);max-width:calc(100% - 40px);grid-template-columns:minmax(0,1fr);min-width:0}
+ .footer .footer-identity{min-width:0;max-width:100%}
+ .footer .footer-identity :is(p,span){overflow-wrap:anywhere}
+ .footer .copyright{width:calc(100% - 40px);max-width:calc(100% - 40px);display:grid;grid-template-columns:minmax(0,1fr);gap:13px}
+ .footer .footer-preview{min-width:0;max-width:100%;white-space:normal;flex-wrap:wrap;overflow-wrap:anywhere}
+ .footer .copyright button{width:max-content;max-width:100%;min-height:40px}
+}
