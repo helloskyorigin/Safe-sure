@@ -45,7 +45,7 @@ test("public source scan streams worker snapshots into full report experience", 
   await page.goto("/assess");
   await page.getByRole("button", { name: /Public repository/i }).click();
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("acme/testapp");
-  await page.getByRole("button", { name: "Scan this repository" }).click();
+  await page.getByRole("button", { name: "Check my application" }).click();
   // No extra click: completed, validated stream must navigate automatically.
   await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 12000 });
   await expect(page.getByText("PUBLIC REPOSITORY")).toBeVisible();
@@ -65,7 +65,7 @@ test("live source scan integrates GitHub public tree and full report end-to-end"
   await page.goto("/assess");
   await page.getByRole("button", { name: /Public repository/i }).click();
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("vercel/ms");
-  await page.getByRole("button", { name: "Scan this repository" }).click();
+  await page.getByRole("button", { name: "Check my application" }).click();
   // Real GitHub source -> real streamed checks -> auto result without clicking.
   try {
     await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 72_000 });
