@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, BookOpen, CreditCard, Fingerprint, Headphones, ShieldCheck } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Legal Center | Secuvora",
@@ -19,7 +20,7 @@ export default function LegalCenter() {
   return (
     <div className="legal-site">
       <a href="#main" className="skip-link">Skip to content</a>
-      <header className="legal-nav"><div className="container legal-nav-inner"><Link className="brand" href="/">secuvora<span>.</span></Link><Link className="legal-back" href="/"><ArrowLeft size={16}/> Back to Secuvora</Link></div></header>
+      <header className="legal-nav"><div className="container legal-nav-inner"><Link className="brand" href="/">secuvora<span>.</span></Link><div className="legal-nav-actions"><ThemeToggle/><Link className="legal-back" href="/"><ArrowLeft size={16}/> Back to Secuvora</Link></div></div></header>
       <main id="main" className="container legal-center">
         <p className="eyebrow">SECUVORA / TRUST & TRANSPARENCY</p>
         <h1>Clarity is part<br/>of security.</h1>
