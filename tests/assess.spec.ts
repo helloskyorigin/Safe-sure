@@ -111,3 +111,22 @@ test("single repository panel keeps one dominant action at narrow and desktop wi
     await context.close();
   }
 });
+
+
+test("connected repository cannot start until secure report storage is ready", async ({ page }) => {
+  await page.route("**/api/auth/github/status", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({
+      configured: true, connected: true, login: "founder",
+      storageConfigured: false,
+      storage: { hasUrl: false, hasToken: true, hasSessionSecret: true },
+    }),
+  }));
+  await page.route("**/api/github/repositories", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ repositories: [{ fullName: "founder/private-one", private: true }] }),
+  }));
+  await page.goto("/assess");
+  await expect(page.locator(".connect-storage-warning")).toContainText("UPSTASH_REDIS_REST_URL");
+  await expect(page.getByRole("button", { name: "Begin analysis" })).toBeDisabled();
+});
