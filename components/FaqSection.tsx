@@ -6,28 +6,28 @@ import { Plus } from "lucide-react";
 
 const faqs = [
   {
-    question: "Do I need an account to run the agent?",
-    answer: "No account is needed for public repository checks. Private GitHub repositories require explicit authorization when that integration is configured.",
+    question: "What GitHub access does Secuvora request?",
+    answer: "Secuvora uses a GitHub App with read-only repository access. You choose which repositories the App can access, and the product does not request permission to push changes.",
+  },
+  {
+    question: "Why is one of my repositories missing?",
+    answer: "The selector can only show repositories granted to the Secuvora GitHub App. Open Manage repository access on the source screen, add the missing repository in GitHub, then return and refresh.",
   },
   {
     question: "Will the security agent change my code?",
-    answer: "No. The agent performs bounded read-only source analysis and advisory lookups. It does not modify code or apply patches; you review and make changes yourself.",
-  },
-  {
-    question: "What exactly is free?",
-    answer: "Public scans already provide full findings, evidence, impact, remediation and verification guidance without a paywall.",
+    answer: "No. The current agent performs bounded read-only source analysis and advisory lookups. It does not modify code, open pull requests or apply patches.",
   },
   {
     question: "Is the agent powered by AI models yet?",
-    answer: "Not yet. Secuvora currently uses real, deterministic security checks and OSV vulnerability intelligence to produce evidence-backed findings. Model-powered reasoning is planned; no report is presented as AI-verified.",
+    answer: "Not yet. Secuvora currently uses deterministic security checks and OSV vulnerability intelligence to produce evidence-backed findings. Model-powered reasoning is planned; no report is presented as AI-verified.",
   },
   {
     question: "Does the agent guarantee my code is secure?",
-    answer: "No. Secuvora currently uses automated static rules and OSV advisories; it does not perform full runtime, cross-file taint analysis or LLM reasoning. Findings can be incomplete and require human verification.",
+    answer: "No. Automated static rules and dependency advisories can miss issues or require human verification. A completed investigation is evidence for review, not a security certification.",
   },
   {
-    question: "Can I view the full report right now?",
-    answer: "Yes. Run a real public GitHub repository analysis now or explore the clearly labeled fictional sample report. Private access needs an authorized GitHub App configuration.",
+    question: "How are connected reports handled?",
+    answer: "GitHub-connected reports are stored in account-scoped encrypted storage with a limited retention period and can be deleted from Agent history. Source code is read for analysis and is not intentionally kept as a source archive.",
   },
 ];
 
@@ -38,8 +38,8 @@ export default function FaqSection() {
   return (
     <section id="faq" className="section bordered faq-section">
       <div className="container faq-grid">
-        <div className=""><p className="eyebrow">GOOD TO KNOW</p><h2>Straight answers.<br/>No fine print.</h2><p className="faq-intro">Details that help you decide, without a maze of fine print.</p></div>
-        <div className="faq-list ">
+        <div><p className="eyebrow">GOOD TO KNOW</p><h2>Straight answers.<br/>No fine print.</h2><p className="faq-intro">The important details before you connect a repository.</p></div>
+        <div className="faq-list">
           {faqs.map((faq, index) => (
             <div className={"faq-entry " + (open === index ? "expanded" : "")} key={faq.question}>
               <h3>
