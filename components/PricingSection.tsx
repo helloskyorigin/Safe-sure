@@ -31,8 +31,8 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
         <div className="price-card ">
           <div className="price-top">
             <div>
-              <small>COMPLETE AGENT REPORT</small>
-              <h3>All agent findings. Free.</h3>
+              <small>COMPLETE REVIEW</small>
+              <h3>The full report. Free.</h3>
             </div>
             <div className="price">
               FREE<span>full report</span>
@@ -59,10 +59,10 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             data-start
             className="button button-dark price-cta"
           >
-            Scan a public repository <span aria-hidden="true">→</span>
+            Check my application <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
-            Public repository agent analysis is available now. Private GitHub access requires configured authorization.
+            Public-source checks are available now. Private GitHub access requires configured authorization.
           </p>
         </div>
       </div>
