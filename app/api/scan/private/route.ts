@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getGithubSession } from "@/lib/github-auth";
-import { authorizePrivateRepo } from "@/lib/github-installations";
+import { authorizeRepository } from "@/lib/github-installations";
 import { durableStoreConfigured, enforceSharedQuota, saveUserReport } from "@/lib/durable-reports";
 import { parsePublicRepo, scanPublicRepository, ScanError } from "@/lib/public-repo-scanner";
 import { isAllowedMutationOrigin, readBoundedJson, RequestBodyError } from "@/lib/api-request-guards";
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Select one authorized repository." }, { status: 400, headers });
     const parsed = parsePublicRepo(value.repo);
     repo = parsed.owner + "/" + parsed.repo;
-    if (!(await authorizePrivateRepo(session, repo)))
-      return NextResponse.json({ error: "This private repository is not installed and authorized for your GitHub user." }, { status: 403, headers });
+    if (!(await authorizeRepository(session, repo)))
+      return NextResponse.json({ error: "This repository is not authorized for the connected GitHub account." }, { status: 403, headers });
     if (!(await enforceSharedQuota("user:" + session.userId, 6)) ||
         !(await enforceSharedQuota("global", 50)))
       return NextResponse.json({ error: "Shared scan quota reached; retry shortly." },
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       } catch (error) {
         emit({ type: "error", message: controller.signal.aborted ? "Scan interrupted or timed out." :
           error instanceof Error && /quota|large|limit|storage|repository|source/i.test(error.message)
-            ? error.message.slice(0, 250) : "Private scan could not be completed." });
+            ? error.message.slice(0, 250) : "GitHub repository scan could not be completed." });
       } finally {
         stopped = true;
         clearTimeout(timeout);
