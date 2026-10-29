@@ -2,9 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test("landing starts a real public scan without an extra selector click", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await page.locator(".hero-action").getByRole("link", { name: /Start an investigation/i }).click();
+  await page.locator(".hero-action").getByRole("link", { name: /Run security agent/i }).click();
   await expect(page).toHaveURL(/\/assess$/);
-  await expect(page.getByRole("heading", { level: 1, name: /Start with the evidence/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Find the risks in your repository/i })).toBeVisible();
   await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
   await expect(page.getByRole("button", { name: /Public repository/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /Private repository/i })).toBeVisible();
@@ -19,10 +19,10 @@ test("public choice reveals one URL field, validates, then opens scanning", asyn
   await expect(publicChoice).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://evil.example/my/repo");
-  await page.getByRole("button", { name: "Begin investigation" }).click();
+  await page.getByRole("button", { name: "Scan this repository" }).click();
   await expect(page.locator("#connect-url-error")).toContainText("Enter a valid GitHub URL");
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("github.com/vercel/ms");
-  await page.getByRole("button", { name: "Begin investigation" }).click();
+  await page.getByRole("button", { name: "Scan this repository" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 

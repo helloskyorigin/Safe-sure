@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("full report preview shows all findings without a paywall", async ({ page }) => {
   await page.goto("/assess/results");
-  await expect(page.getByRole("heading", { level: 1, name: /Investigation report/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Your agent report/i })).toBeVisible();
   await expect(page.getByText("INTERACTIVE SAMPLE")).toBeVisible();
   await expect(page.getByText("6/6")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
@@ -60,7 +60,7 @@ test("arbitrary run URLs never reveal sample report or pretend a scan completed"
 
 test("minimal scanning page has no sample-report distraction", async ({ page }) => {
   await page.goto("/assess/scanning");
-  await expect(page.getByRole("heading", { name: "Ready to investigate" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
   await expect(page.getByRole("link", { name: /View full sample/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Start a new investigation/i })).toBeVisible();
 });
@@ -72,7 +72,7 @@ test("all results widths avoid horizontal overflow", async ({ browser }) => {
     });
     const page = await context.newPage();
     await page.goto("/assess/results");
-    await expect(page.getByRole("heading", { level: 1, name: /Investigation report/i })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: /Your agent report/i })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, "results overflow at " + width + "px").toBeLessThanOrEqual(1);
     await context.close();

@@ -22,9 +22,9 @@ test("completed public report survives refresh, tab navigation and appears in ha
   await page.reload();
   await expect(page.getByRole("heading", { name: "acme/testapp" })).toBeVisible();
   await page.goto("/");
-  await page.getByRole("link", { name: "History" }).first().click();
+  await page.getByRole("link", { name: "Agent history" }).first().click();
   await expect(page).toHaveURL(/\/assess\/history/);
-  await expect(page.getByRole("heading", { level: 1, name: /Investigations/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Agent history/i })).toBeVisible();
   await expect(page.locator(".history-report-row")).toHaveCount(1);
   await expect(page.getByText("acme/testapp")).toBeVisible();
   await page.getByRole("link", { name: "Open report" }).click();
@@ -66,7 +66,7 @@ test("refresh during public scan restarts a real request instead of displaying s
   await page.goto("/assess/scanning?repo=acme%2Ftestapp");
   await expect(page.getByText("Network unavailable: retry safely.")).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Investigation interrupted" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Scan interrupted" })).toBeVisible();
   expect(requests).toBe(2);
   await expect(page).not.toHaveURL(/\/assess\/results/);
 });
@@ -77,9 +77,9 @@ test("mobile hamburger has Scan history without requiring GitHub login", async (
   await page.goto("/");
   await page.getByRole("button", { name: "Open navigation" }).click();
   const nav = page.getByRole("navigation", { name: "Mobile navigation" });
-  await nav.getByRole("link", { name: "History" }).click();
+  await nav.getByRole("link", { name: "Agent history" }).click();
   await expect(page).toHaveURL(/\/assess\/history/);
-  await expect(page.getByRole("heading", { level: 1, name: /Investigations/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Agent history/i })).toBeVisible();
   await expect(page.getByText("No agent reports saved yet.")).toBeVisible();
   await context.close();
 });

@@ -9,7 +9,7 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
       <div className="container footer-main">
         <div className="footer-identity">
           <a href="#top" className="brand" aria-label="Secuvora home">secuvora<span>.</span></a>
-          <p>Investigations grounded in evidence.</p>
+          <p>A security agent built to turn code risks into clarity.</p>
           <span className="footer-independence">Evidence-backed investigations across supported source rules, configuration checks and published dependency advisories.</span>
         </div>
         <div className="footer-columns">
@@ -19,8 +19,8 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
       </div>
       <div className="container copyright">
         <span>© {new Date().getFullYear()} Secuvora. All rights reserved.</span>
-        <span className="footer-preview"><span className="status-light" /> Public-source reviews available · private access requires setup</span>
-        <button type="button" onClick={onOpenAssessment}>Start investigation <ArrowUpRight size={14}/></button>
+        <span className="footer-preview"><span className="status-light" /> Public source scanning available · private access requires configuration</span>
+        <button type="button" onClick={onOpenAssessment}>Run security agent <ArrowUpRight size={14}/></button>
       </div>
     </footer>
   );

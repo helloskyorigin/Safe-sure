@@ -2,11 +2,11 @@ import { test, expect } from "@playwright/test";
 
 test("landing gives both real-scan and explicitly illustrative-report routes", async ({ page }) => {
   await page.goto("/");
-  const primary = page.locator(".hero-action").getByRole("link", { name: /Start an investigation/i });
-  const example = page.locator(".hero-action").getByRole("link", { name: /Explore a sample report/i });
+  const primary = page.locator(".hero-action").getByRole("link", { name: /Run security agent/i });
+  const example = page.locator(".hero-action").getByRole("link", { name: /Explore example report/i });
   await expect(primary).toHaveAttribute("href", "/assess");
   await expect(example).toHaveAttribute("href", "/assess/results");
-  await expect(page.locator(".hero-sub")).toContainText("read-only source and dependency analysis");
+  await expect(page.locator(".hero-sub")).toContainText("bounded, read-only source checks");
   await example.click();
   await expect(page).toHaveURL(/\/assess\/results$/);
   await expect(page.getByText("INTERACTIVE SAMPLE")).toBeVisible();
@@ -19,7 +19,7 @@ test("public scan is the ready-to-use default; private connector remains a choic
   const input = page.getByRole("textbox", { name: "GitHub repository URL" });
   await expect(input).toBeVisible();
   await expect(page.getByText(/No account required/)).toBeVisible();
-  await expect(page.getByRole("button", {name:"Begin investigation"})).toBeVisible();
+  await expect(page.getByRole("button", {name:"Scan this repository"})).toBeVisible();
   await expect(page.getByText(/Read pinned source/)).toBeVisible();
   await expect(page.getByRole("link", {name:/Explore an illustrative report/i})).toHaveAttribute("href", "/assess/results");
 
@@ -28,7 +28,7 @@ test("public scan is the ready-to-use default; private connector remains a choic
   await page.getByRole("button", {name:/Public repository/i}).click();
   await expect(input).toBeVisible();
   await input.fill("https://github.com/vercel/ms.git");
-  await page.getByRole("button", {name:"Begin investigation"}).click();
+  await page.getByRole("button", {name:"Scan this repository"}).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 
