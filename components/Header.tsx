@@ -75,9 +75,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
         id="top"
       >
         <div className="container header-inner">
-          <a href="#top" className="brand" aria-label="Secuvora home">
-            secuvora<span>.</span>
-          </a>
+          <Brand href="#top" />
           <nav className="desktop-nav" aria-label="Main navigation">
             <a href="#product">Agent report</a>
             <a href="#how">How it works</a>
