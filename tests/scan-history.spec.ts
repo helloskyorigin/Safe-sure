@@ -66,7 +66,7 @@ test("refresh during public scan restarts a real request instead of displaying s
   await page.goto("/assess/scanning?repo=acme%2Ftestapp");
   await expect(page.getByText("Network unavailable: retry safely.")).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Scan interrupted" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Analysis interrupted" })).toBeVisible();
   expect(requests).toBe(2);
   await expect(page).not.toHaveURL(/\/assess\/results/);
 });
