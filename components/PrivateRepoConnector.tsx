@@ -121,9 +121,10 @@ export default function PrivateRepoConnector() {
     </div>
 
     {repos.length === 0 && !loadingRepos && (
-      <p className="connect-field-hint">
-        Add repositories in GitHub's Installed GitHub Apps settings, then return here and refresh.
-      </p>
+      <div className="connect-empty-repos" role="status">
+        <strong>No authorized repositories.</strong>
+        <p>Add repositories in GitHub's Installed GitHub Apps settings, then return here and refresh.</p>
+      </div>
     )}
 
     <button
