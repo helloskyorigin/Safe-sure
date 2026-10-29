@@ -22,7 +22,7 @@ export default function HowItWorks() {
             </div>
             <h3>Connect a repository</h3>
             <p>
-              Select a public GitHub repository—or an authorized private repository when connected. The agent operates read-only.
+              Connect GitHub and choose a repository you have explicitly authorized. The agent operates read-only.
             </p>
           </article>
           <article className="step ">
