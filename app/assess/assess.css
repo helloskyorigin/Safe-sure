@@ -299,6 +299,11 @@
 .connect-empty-repos{border:1px solid #e2e9f2;border-radius:10px;background:#fbfcfe;padding:12px 13px;color:#5b6f84;font-size:11px;line-height:1.55}
 .connect-empty-repos strong{display:block;color:#354b63;font-size:12px;margin-bottom:2px}
 .connect-empty-repos p{margin:0}
+.connect-storage-warning{border:1px solid #e7c8a8;border-radius:10px;background:#fff9f2;padding:12px 13px;color:#8a5a2d;font-size:11px;line-height:1.55}
+.connect-storage-warning strong{display:block;color:#70451f;font-size:12px;margin-bottom:3px}
+.connect-storage-warning p{margin:0}
+html[data-theme="dark"] .connect-storage-warning{background:#231a13;border-color:#5b3d24;color:#d7ad82}
+html[data-theme="dark"] .connect-storage-warning strong{color:#f0c69d}
 @media (max-width:520px){.connect-repo-meta{align-items:flex-start;flex-direction:column}.connect-repo-meta .connect-install-link{margin-left:0}}
 .connect-reassurance{display:flex;align-items:center;justify-content:center;gap:11px;color:#91a1b5;font-size:10px;margin:28px 0 0;font-weight:650}
 .connect-reassurance svg{color:#729ac6}
