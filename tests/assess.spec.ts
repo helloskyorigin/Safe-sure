@@ -4,7 +4,7 @@ test("landing starts a real public scan without an extra selector click", async 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator(".hero-action").getByRole("link", { name: /Start investigation/i }).click();
   await expect(page).toHaveURL(/\/assess$/);
-  await expect(page.getByRole("heading", { level: 1, name: /Start your investigation/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /What should Secuvora investigate/i })).toBeVisible();
   await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
   await expect(page.getByRole("button", { name: /Public repository/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /Private repository/i })).toBeVisible();
@@ -19,10 +19,10 @@ test("public choice reveals one URL field, validates, then opens scanning", asyn
   await expect(publicChoice).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://evil.example/my/repo");
-  await page.getByRole("button", { name: "Start investigation" }).click();
+  await page.getByRole("button", { name: "Begin analysis" }).click();
   await expect(page.locator("#connect-url-error")).toContainText("Enter a valid GitHub URL");
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("github.com/vercel/ms");
-  await page.getByRole("button", { name: "Start investigation" }).click();
+  await page.getByRole("button", { name: "Begin analysis" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 
@@ -59,7 +59,7 @@ test("private connected account selects a real authorized repo and continues to 
   const select = page.getByRole("combobox", { name: "Choose repository" });
   await expect(select.locator("option")).toHaveCount(2);
   await select.selectOption("founder/beta");
-  await page.getByRole("button", { name: "Run security agent" }).click();
+  await page.getByRole("button", { name: "Begin analysis" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?private=founder%2Fbeta/);
 });
 
@@ -88,6 +88,35 @@ test("mobile connection fits at 320, 375 and 430px with both flows", async ({ br
     expect(overflow, "private mode overflow at " + width).toBeLessThanOrEqual(1);
     await page.getByRole("link", { name: "Back" }).click();
     await expect(page).toHaveURL(/\/$/);
+    await context.close();
+  }
+});
+
+test("minimal source selector has reachable 44px tabs and a single dominant CTA at narrow widths", async ({ browser }) => {
+  for (const width of [320, 375, 430, 768, 1024]) {
+    const context = await browser.newContext({ viewport: { width, height: 820 }, reducedMotion: "reduce" });
+    const page = await context.newPage();
+    await page.goto("/assess");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("What should Secuvora investigate?");
+    const choices = page.locator(".connect-choices");
+    const publicTab = page.getByRole("button", { name: "Public repository" });
+    const privateTab = page.getByRole("button", { name: "Private repository" });
+    await expect(publicTab).toHaveAttribute("aria-pressed", "true");
+    await expect(privateTab).toHaveAttribute("aria-pressed", "false");
+    for (const tab of [publicTab, privateTab]) {
+      const box = await tab.boundingBox();
+      expect(box?.height, "touch height at " + width).toBeGreaterThanOrEqual(44);
+    }
+    const grid = await choices.evaluate(element => getComputedStyle(element).gridTemplateColumns.split(" ").length);
+    expect(grid).toBe(2);
+    await expect(page.locator(".connect-workflow-note")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Begin analysis" })).toBeVisible();
+    await privateTab.click();
+    await expect(privateTab).toHaveAttribute("aria-pressed", "true");
+    await publicTab.click();
+    await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow, "horizontal overflow at " + width).toBeLessThanOrEqual(2);
     await context.close();
   }
 });
