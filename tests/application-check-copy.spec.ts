@@ -24,13 +24,13 @@ test("application-first hero is concise and does not repeat agent language", asy
 
 test("application check CTA keeps the working GitHub-source flow", async ({ page }) => {
   await page.goto("/");
-  await page.locator(".hero").getByRole("link",{name:"Start investigation"}).click();
+  await page.locator(".hero").getByRole("link",{name:"Begin analysis"}).click();
   await expect(page).toHaveURL(/\/assess$/);
-  await expect(page.getByRole("heading",{level:1})).toContainText("Start your");
+  await expect(page.getByRole("heading",{level:1})).toContainText("What should Secuvora");
   await expect(page.getByRole("button",{name:/Public repository/})).toHaveAttribute("aria-pressed","true");
   await expect(page.getByRole("textbox",{name:"GitHub repository URL"})).toBeVisible();
-  await expect(page.getByRole("button",{name:"Start investigation"})).toBeVisible();
-  await expect(page.locator(".connect-subtitle")).toContainText("GitHub source behind your application");
+  await expect(page.getByRole("button",{name:"Begin analysis"})).toBeVisible();
+  await expect(page.locator(".connect-subtitle")).toContainText("Connect a source to begin");
 });
 
 test("same unchanged layout fits phone, tablet and desktop with new copy",async({browser})=>{
