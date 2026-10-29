@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
+import Brand from "@/components/Brand";
 
 interface HeaderProps {
   onOpenAssessment: () => void;
