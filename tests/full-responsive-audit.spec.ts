@@ -125,7 +125,7 @@ test("policy pages have real links, a unique primary heading and no fictional co
     expect((await page.locator("main").innerText()).toLowerCase()).not.toContain("placeholder@example.com");
   }
   await page.goto("/privacy");
-  await expect(page.getByText(/encrypted with AES-GCM/)).toBeVisible();
+  await expect(page.getByText(/encrypted using AES-GCM/)).toBeVisible();
   await expect(page.getByText(/delete connected reports from Agent history/)).toBeVisible();
   await page.goto("/legal");
   await expect(page.getByText(/read-only GitHub-connected repository investigations/i)).toBeVisible();
