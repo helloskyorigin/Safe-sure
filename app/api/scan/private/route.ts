@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getGithubSession } from "@/lib/github-auth";
 import { authorizeRepository } from "@/lib/github-installations";
-import { durableStoreConfigured, enforceSharedQuota, saveUserReport } from "@/lib/durable-reports";
+import { durableStoreStatus, enforceSharedQuota, saveUserReport, verifyDurableStore } from "@/lib/durable-reports";
 import { parsePublicRepo, scanPublicRepository, ScanError } from "@/lib/public-repo-scanner";
 import { isAllowedMutationOrigin, readBoundedJson, RequestBodyError } from "@/lib/api-request-guards";
 import type { AssessmentSnapshot } from "@/lib/assessment-contract";
@@ -18,8 +18,16 @@ export async function POST(req: Request) {
   if (!session) return NextResponse.json({ error: "GitHub sign-in required." }, { status: 401, headers });
   if (!isAllowedMutationOrigin(req))
     return NextResponse.json({ error: "Cross-origin requests are denied." }, { status: 403, headers });
-  if (!durableStoreConfigured())
-    return NextResponse.json({ error: "Secure report storage must be configured before private scanning." }, { status: 503, headers });
+  const storage = durableStoreStatus();
+  if (!storage.hasUrl)
+    return NextResponse.json({ error: "Secure report storage URL is missing. Add UPSTASH_REDIS_REST_URL and redeploy." }, { status: 503, headers });
+  if (!storage.hasToken)
+    return NextResponse.json({ error: "Secure report storage token is missing. Add UPSTASH_REDIS_REST_TOKEN and redeploy." }, { status: 503, headers });
+  if (!storage.hasSessionSecret)
+    return NextResponse.json({ error: "Secure session secret is missing or too short." }, { status: 503, headers });
+  const storageCheck = await verifyDurableStore();
+  if (!storageCheck.ok)
+    return NextResponse.json({ error: "Secure report storage could not be reached. Check the Upstash REST URL/token and redeploy." }, { status: 503, headers });
   let repo = "";
   try {
     const value = await readBoundedJson(req, 1000);
@@ -38,7 +46,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: error.status, headers });
     if (error instanceof ScanError)
       return NextResponse.json({ error: error.message }, { status: error.status, headers });
-    return NextResponse.json({ error: "Could not verify repository access or scan capacity." },
+    return NextResponse.json({ error: "Could not verify repository access or scan capacity. Check GitHub access and report storage." },
       { status: 503, headers });
   }
 
