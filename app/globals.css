@@ -1969,3 +1969,35 @@ svg {
  .under-cta{justify-content:center;line-height:1.65}
 }
 @media(prefers-reduced-motion:reduce){.hero-preview-link{transition:none}}
+
+
+/* Hero refinement: retain the existing visual system, eliminate redundant
+   outlined CTA, and show the product preview earlier on small screens. */
+.hero .hero-text h1{letter-spacing:-.062em;text-wrap:balance}
+.hero .hero-sub{max-width:480px;line-height:1.58}
+.hero .hero-action{margin-top:22px}
+.hero .hero-cta-row{gap:8px 18px}
+.hero .hero-preview-link{border:0;background:transparent;color:#536b89;
+  min-height:44px;padding:7px 4px;font-weight:650}
+.hero .hero-preview-link:hover{color:#243d5f;text-decoration:underline;text-underline-offset:5px}
+.hero .under-cta{margin-top:10px}
+@media(max-width:850px){
+  .hero .hero-text h1{font-size:clamp(43px,6.4vw,57px);line-height:1.09}
+  .hero .hero-sub{max-width:440px}
+}
+@media(max-width:640px){
+  .hero{padding-top:25px;padding-bottom:33px}
+  .hero .hero-grid{gap:12px}
+  .hero .hero-text h1{font-size:clamp(35px,9.35vw,47px);line-height:1.09;margin:13px 0 13px}
+  .hero .hero-sub{font-size:13px;line-height:1.58;max-width:33ch}
+  .hero .hero-action{margin-top:17px}
+  .hero .hero-cta-row{display:flex;flex-direction:column;align-items:stretch;gap:3px}
+  .hero .hero-cta-row>.button{min-height:48px;border-radius:9px;font-size:13px}
+  .hero .hero-preview-link{width:100%;border:none;background:transparent;
+    min-height:43px;padding:7px 8px;font-size:12px}
+  .hero .under-cta{margin-top:6px;font-size:10px;gap:6px;line-height:1.5}
+  .hero .preview-wrap{padding-top:0}
+}
+@media(max-width:370px){
+  .hero .hero-text h1{font-size:34px;letter-spacing:-.055em}
+}

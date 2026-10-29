@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("homepage begins at the hero and ignores late non-user scroll restoration", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: /See the risks inside/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Security risks./i })).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeLessThan(15);
 
   // Simulate an embedded preview restoring a stale scroll position after hydration.
@@ -22,7 +22,7 @@ test("mobile first paint shows hero and supports real touch scrolling", async ({
   const context = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
   const page = await context.newPage();
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: /See the risks inside/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Security risks./i })).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeLessThan(15);
   // Verify the client-side restoration guard is ready before dispatching a real user-intent event.
   await page.waitForFunction(() => document.documentElement.dataset.shipsafeScrollGuard === "active");
@@ -37,9 +37,9 @@ test("mobile first paint shows hero and supports real touch scrolling", async ({
 
 test("Secuvora shows confident AI-agent positioning without beta or launch-only language", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1, name: /your application/i })).toBeVisible();
-  await expect(page.locator(".hero .eyebrow")).toContainText("APPLICATION SECURITY AGENT");
-  await expect(page.locator(".hero-sub")).toContainText("Secuvora checks your application");
+  await expect(page.getByRole("heading", { level: 1, name: /Under investigation/i })).toBeVisible();
+  await expect(page.locator(".hero .eyebrow")).toContainText("SECUVORA / SECURITY AGENT");
+  await expect(page.locator(".hero-sub")).toContainText("Secuvora examines security signals");
   await expect(page).toHaveTitle("Secuvora — AI Security Agent for Developers");
   await expect(page.locator("body")).not.toContainText(/\bbeta\b|not just before launch|before you ship/i);
   await expect(page.locator(".final-eyebrow")).toHaveText(/APPLICATION SECURITY/);

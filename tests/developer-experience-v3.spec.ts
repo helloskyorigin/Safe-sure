@@ -2,11 +2,11 @@ import { test, expect } from "@playwright/test";
 
 test("landing gives both real-scan and explicitly illustrative-report routes", async ({ page }) => {
   await page.goto("/");
-  const primary = page.locator(".hero-action").getByRole("link", { name: /Check my application/i });
-  const example = page.locator(".hero-action").getByRole("link", { name: /View sample report/i });
+  const primary = page.locator(".hero-action").getByRole("link", { name: /Start investigation/i });
+  const example = page.locator(".hero-action").getByRole("link", { name: /Explore sample report/i });
   await expect(primary).toHaveAttribute("href", "/assess");
   await expect(example).toHaveAttribute("href", "/assess/results");
-  await expect(page.locator(".hero-sub")).toContainText("source and dependencies");
+  await expect(page.locator(".hero-sub")).toContainText("surfaces evidence");
   await example.click();
   await expect(page).toHaveURL(/\/assess\/results$/);
   await expect(page.getByText("INTERACTIVE SAMPLE")).toBeVisible();
@@ -19,7 +19,7 @@ test("public scan is the ready-to-use default; private connector remains a choic
   const input = page.getByRole("textbox", { name: "GitHub repository URL" });
   await expect(input).toBeVisible();
   await expect(page.getByText(/No account required/)).toBeVisible();
-  await expect(page.getByRole("button", {name:"Check my application"})).toBeVisible();
+  await expect(page.getByRole("button", {name:"Start investigation"})).toBeVisible();
   await expect(page.getByText(/Read pinned source/)).toBeVisible();
   await expect(page.getByRole("link", {name:/Explore an illustrative report/i})).toHaveAttribute("href", "/assess/results");
 
@@ -28,7 +28,7 @@ test("public scan is the ready-to-use default; private connector remains a choic
   await page.getByRole("button", {name:/Public repository/i}).click();
   await expect(input).toBeVisible();
   await input.fill("https://github.com/vercel/ms.git");
-  await page.getByRole("button", {name:"Check my application"}).click();
+  await page.getByRole("button", {name:"Start investigation"}).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 

@@ -20,7 +20,7 @@ export default function Footer({ onOpenAssessment }: { onOpenAssessment: () => v
       <div className="container copyright">
         <span>© {new Date().getFullYear()} Secuvora. All rights reserved.</span>
         <span className="footer-preview"><span className="status-light" /> Public source scanning available · private access requires configuration</span>
-        <button type="button" onClick={onOpenAssessment}>Check my application <ArrowUpRight size={14}/></button>
+        <button type="button" onClick={onOpenAssessment}>Start investigation <ArrowUpRight size={14}/></button>
       </div>
     </footer>
   );

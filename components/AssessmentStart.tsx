@@ -57,7 +57,7 @@ export default function AssessmentStart() {
       <main id="connect-main" className="connect-main">
         <div className="connect-content">
           <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
-          <h1>Check your <em>application.</em></h1>
+          <h1>Start your <em>investigation.</em></h1>
           <p className="connect-subtitle">Connect the GitHub source behind your application. Secuvora checks supported security risks and returns file-level evidence and recommended fixes—without changing your code.</p>
 
           <div className="connect-choices" role="group" aria-label="Repository visibility">
@@ -95,7 +95,7 @@ export default function AssessmentStart() {
                   </div>
                   {error && <p className="connect-error" role="alert" id="connect-url-error">{error}</p>}
                   <button type="submit" className="connect-submit">
-                    Check my application <ArrowRight size={18}/>
+                    Start investigation <ArrowRight size={18}/>
                   </button>
                 <div className="connect-workflow-note" aria-label="What happens next">
                     <span>01 · Read pinned source</span><span>02 · Check supported risks</span><span>03 · Review the full report</span>

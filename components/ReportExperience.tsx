@@ -114,7 +114,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
               )}
             </AnimatePresence>
           </div>
-          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Check my application <ArrowRight size={16}/></button></div>
+          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Start investigation <ArrowRight size={16}/></button></div>
         </motion.div>
       </div>
     </section>
