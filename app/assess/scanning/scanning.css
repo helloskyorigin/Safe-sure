@@ -114,3 +114,65 @@
  .scan-source-type{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.scan-inline-spinner,.scan-orbit-ring{animation:none!important}}
+
+
+/* Analysis experience: compact, trustworthy and entirely driven by real snapshots.
+   Keep existing white/blue identity; no simulated orbit/bot animation. */
+.scan-page{background:linear-gradient(180deg,#f7faff 0%,#fff 85%)}
+.scan-main{align-items:flex-start;padding:clamp(36px,5vw,58px) 0 55px}
+.scan-card{width:min(550px,100%);padding:30px 32px 27px;border-radius:14px;box-shadow:0 12px 48px #22364c0b}
+.scan-step-label{font-size:9px;font-weight:800;letter-spacing:.16em;color:#8ca1bb;text-align:center;margin:0 0 15px}
+.scan-state-tag{border-radius:6px;padding:8px 11px;letter-spacing:.055em;font-size:9px}
+.scan-state-dot{box-shadow:none}
+.scan-analysis-icon{width:62px;height:62px;border-radius:15px;border:1px solid #dce6f1;
+  display:grid;place-items:center;background:#f4f8fc;color:#527da8;margin:21px auto 17px}
+.scan-visual-bottom h1{font-size:clamp(26px,3.3vw,33px);line-height:1.16;margin-bottom:10px;letter-spacing:-.045em}
+.scan-repo-name{display:flex;align-items:center;justify-content:center;gap:7px;color:#4e6680;
+ font-size:12px;font-weight:750;overflow-wrap:anywhere}
+.scan-repo-name svg{flex:none;color:#718ca9}
+.scan-repo-name span{min-width:0;overflow-wrap:anywhere}
+.scan-source-type{font-size:9px;letter-spacing:.045em;color:#8b9bae;text-transform:uppercase;margin:7px 0 0}
+.scan-current-action{color:#647e99;font-size:11px;line-height:1.55;margin-top:12px}
+.scan-progress{margin-top:23px;padding-top:19px}
+.scan-progress-row{font-size:11px;margin-bottom:11px}
+.scan-progress-row>span{color:#4a627e}
+.scan-progress-track{height:5px;border-radius:4px}
+.scan-progress-fill{border-radius:4px;background:#5f8ab9}
+.scan-progress-caption{font-size:10px;margin-top:8px}
+.scan-check-list{padding:17px 0 14px;gap:0}
+.scan-check-list-header{display:flex;align-items:center;justify-content:space-between;padding:0 5px 9px;
+ font-size:9px;font-weight:800;letter-spacing:.1em;color:#91a3b5}
+.scan-check{border-top:1px solid #edf1f5;min-height:57px;padding:11px 5px;gap:10px}
+.scan-check-info .scan-check-name{color:#334d67;font-weight:740}
+.scan-check-info small{color:#8496a8;font-size:10px;line-height:1.5}
+.scan-check-status{font-size:10px;min-width:54px}
+.scan-actions{padding-top:17px;gap:11px}
+.scan-honesty{font-size:10px;line-height:1.65;color:#8393a6}
+.scan-cancel{min-height:44px}
+.scan-primary-link{border-radius:8px}
+.scan-primary-link:hover{transform:none}
+.scan-page :is(a,button):focus-visible{outline:3px solid #8caed3;outline-offset:3px}
+@media(max-width:700px){
+ .scan-main{padding:28px 0 45px}
+ .scan-card{padding:26px 23px 24px}
+}
+@media(max-width:450px){
+ .scan-main{padding:20px 0 35px}
+ .scan-card{border-radius:12px;padding:23px 19px 20px}
+ .scan-step-label{margin-bottom:12px}
+ .scan-analysis-icon{width:54px;height:54px;border-radius:12px;margin:17px auto 13px}
+ .scan-analysis-icon svg{width:25px;height:25px}
+ .scan-visual-bottom h1{font-size:27px}
+ .scan-progress{margin-top:20px}
+ .scan-check-list{padding:13px 0 10px}
+ .scan-check{min-height:56px}
+}
+@media(max-width:350px){
+ .scan-card{padding:19px 14px}
+ .scan-visual-bottom h1{font-size:24px}
+ .scan-check-info small{font-size:9px}
+ .scan-check-status{min-width:47px}
+}
+@media(prefers-reduced-motion:reduce){
+ .scan-progress-fill{transition:none}
+}

@@ -86,7 +86,7 @@ test("failed stream remains on inspection screen and offers an immediate retry",
   }));
   await page.goto("/assess/scanning?repo=acme%2Ftestapp");
   await expect(page.getByText("GitHub returned a rate limit. Try later.")).toBeVisible();
-  await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Retry analysis/i })).toBeVisible();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
   await expect(page.getByText("PUBLIC REPOSITORY")).toHaveCount(0);
 });
@@ -102,7 +102,7 @@ test("invalid or incomplete report never triggers automatic navigation", async (
   await page.goto("/assess/scanning?repo=acme%2Ftestapp");
   await expect(page.getByText(/invalid report/i)).toBeVisible();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
-  await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Retry analysis/i })).toBeVisible();
 });
 
 test("zero real findings is not mislabeled a clean security certificate", async ({ page }) => {

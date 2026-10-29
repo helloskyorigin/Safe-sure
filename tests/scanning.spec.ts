@@ -2,9 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test("idle scanning page stays minimal and never invents progress", async ({ page }) => {
   await page.goto("/assess/scanning");
-  await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
-  await expect(page.getByText("Awaiting repository")).toBeVisible();
-  await expect(page.getByText("No repository selected")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ready to investigate" })).toBeVisible();
+  await expect(page.getByText("Awaiting source")).toBeVisible();
+  await expect(page.getByText("No source selected")).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
   await expect(page.locator(".scan-check")).toHaveCount(5);
   await expect(page.getByRole("link", { name: /Start a new investigation/i })).toBeVisible();
@@ -44,7 +44,7 @@ test("legacy status API remains fail closed for unknown runs", async ({ request 
 
 test("unknown run never shows an invented completed scan", async ({ page }) => {
   await page.goto("/assess/scanning?run=safeTestRun123456");
-  await expect(page.locator(".scan-state-tag")).toContainText("Scan interrupted");
+  await expect(page.locator(".scan-state-tag")).toContainText("Analysis interrupted");
   await expect(page.getByText(/not configured/i)).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
 });
@@ -56,7 +56,7 @@ test("mobile and desktop scanning UI has no horizontal overflow", async ({ brows
     });
     const page = await context.newPage();
     await page.goto("/assess/scanning");
-    await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Ready to investigate" })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(overflow, "horizontal overflow at " + width + "px").toBeLessThanOrEqual(1);
     await context.close();
@@ -92,11 +92,23 @@ test("live progress and stage statuses follow the real stream, never a fake time
     };
   }, { id: runId, keys: stageNames });
   await page.goto("/assess/scanning?repo=acme%2Ftestapp");
-  await expect(page.getByRole("heading", { name: "Agent investigating" })).toBeVisible();
-  await expect(page.getByRole("progressbar", { name: "Assessment progress" })).toHaveAttribute("aria-valuenow", "20");
-  await expect(page.locator(".scan-check-status")).toHaveText(["Done", "Scanning", "Waiting", "Waiting", "Waiting"]);
-  await expect(page.getByText("1 of 5 checks")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Reviewing security signals" })).toBeVisible();
+  await expect(page.getByRole("progressbar", { name: "Analysis progress" })).toHaveAttribute("aria-valuenow", "20");
+  await expect(page.locator(".scan-check-status")).toHaveText(["Done", "Checking", "Waiting", "Waiting", "Waiting"]);
+  await expect(page.getByText("1 / 5")).toBeVisible();
   await expect(page.getByText("Upstream disconnected.")).toBeVisible({ timeout: 8000 });
-  await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Retry analysis/i })).toBeVisible();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
+});
+
+
+test("analysis screen shows source context, concise status and no decorative bot", async ({ page }) => {
+  await page.goto("/assess/scanning");
+  await expect(page.locator(".scan-step-label")).toHaveText("02 / ANALYSIS");
+  await expect(page.getByRole("heading", { name: "Ready to investigate" })).toBeVisible();
+  await expect(page.locator(".scan-check-list-header")).toContainText("STATUS");
+  await expect(page.locator(".scan-orbit-scene")).toHaveCount(0);
+  await expect(page.locator(".scan-analysis-icon")).toBeVisible();
+  await expect(page.getByRole("progressbar")).toHaveCount(0);
+  await expect(page.locator(".scan-honesty")).toContainText("Findings require review");
 });

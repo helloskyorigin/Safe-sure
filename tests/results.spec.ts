@@ -60,7 +60,7 @@ test("arbitrary run URLs never reveal sample report or pretend a scan completed"
 
 test("minimal scanning page has no sample-report distraction", async ({ page }) => {
   await page.goto("/assess/scanning");
-  await expect(page.getByRole("heading", { name: "Ready to scan" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ready to investigate" })).toBeVisible();
   await expect(page.getByRole("link", { name: /View full sample/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Start a new investigation/i })).toBeVisible();
 });
