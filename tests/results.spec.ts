@@ -7,7 +7,7 @@ test("full report preview shows all findings without a paywall", async ({ page }
   await expect(page.getByText("INTERACTIVE SAMPLE")).toBeVisible();
   await expect(page.getByText("6/6")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
-  await expect(page.getByRole("heading", { name: "Potential credential embedded in client code" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Detailed report" }).getByRole("heading", { name: "Potential credential embedded in client code" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Recommended next steps" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "How to verify" })).toBeVisible();
   await expect(page.getByText(/No application was connected, scanned or found vulnerable/i)).toBeVisible();
