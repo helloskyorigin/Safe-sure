@@ -194,7 +194,7 @@ export default function ResultsExperience() {
     <header className="result-nav">
       <div className="result-container result-nav-inner">
         <Link className="brand" href="/" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
-        <span className="result-nav-label"><span/> SECUVORA AGENT REPORT</span>
+        <span className="result-nav-label"><span/> SECUVORA / INVESTIGATION</span>
         <div className="result-nav-actions">
           <Link href="/assess/history" className="result-nav-back"><HistoryIcon/> <span>History</span></Link>
           <Link href="/assess" aria-label="New investigation" className="result-nav-back"><ArrowLeft size={16}/> <span>New investigation</span></Link>
@@ -222,12 +222,12 @@ export default function ResultsExperience() {
             <div className="result-heading-kicker">
               <span className={"result-status " + (isSample ? "sample" : "verified")}>
                 {isSample ? <Info size={14}/> : <CheckCircle2 size={15}/>}
-                {isSample ? "INTERACTIVE SAMPLE" : "AGENT REVIEW COMPLETE"}
+                {isSample ? "INTERACTIVE SAMPLE" : "SOURCE REVIEW COMPLETE"}
               </span>
               <span className="result-date">{isSample ? "Fictional data" : readableDate(report.finishedAt)}</span>
             </div>
-            <h1>Your agent report<span>.</span></h1>
-            <p>{isSample ? "Explore a fictional example of the developer workflow. No repository was scanned." : "A bounded source review. Inspect candidate findings, exact file locations, coverage and suggested fixes."}</p>
+            <h1>Investigation report<span>.</span></h1>
+            <p>{isSample ? "Fictional walkthrough of the evidence and review workflow. No system was assessed." : "Read-only source investigation. Review candidate findings, supporting evidence, scope and recommended actions."}</p>
           </div>
           <div className="result-toolbar">
             <button type="button" onClick={() => saveExport("plan")} className="result-action-secondary">
@@ -268,7 +268,7 @@ export default function ResultsExperience() {
 
         <section className="result-overview" aria-labelledby="result-overview-title">
           <div className="result-section-head">
-            <h2 id="result-overview-title">Findings overview</h2>
+            <h2 id="result-overview-title">Investigation summary</h2>
             <span>{report.findings.length} candidate {report.findings.length === 1 ? "finding" : "findings"}</span>
           </div>
           <div className="result-severities" aria-label="Severity summary">

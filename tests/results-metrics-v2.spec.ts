@@ -15,7 +15,7 @@ test("verified report shows actual scan scope, stable detector ID and no invente
     status:200, contentType:"application/json", body:JSON.stringify(verified),
   }));
   await page.goto("/assess/results?run=" + runId);
-  await expect(page.getByText("AGENT REVIEW COMPLETE")).toBeVisible();
+  await expect(page.getByText("SOURCE REVIEW COMPLETE")).toBeVisible();
   const metrics = page.locator(".result-scanned-metrics");
   await expect(metrics).toContainText("12 files inspected");
   await expect(metrics).toContainText("4,321 lines reviewed");

@@ -27,7 +27,7 @@ test("private assessment only advertises real GitHub installation when configure
 
 test("saved reports screen never fabricates history without login", async ({ page }) => {
   await page.goto("/assess/history");
-  await expect(page.getByRole("heading", { name: /Agent history/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^Investigations\.?$/i })).toBeVisible();
   await expect(page.getByText(/GitHub sign-in required/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /Connect GitHub/i })).toBeVisible();
 });

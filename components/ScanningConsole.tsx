@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Circle, CircleAlert,
-  FileCheck2, Github, LoaderCircle, RefreshCw, Bot,
+  FileCheck2, Github, LoaderCircle, RefreshCw, ScanSearch,
   ShieldCheck, Square,
 } from "lucide-react";
 import { isAssessmentReport } from "@/lib/report-contract";
@@ -248,9 +248,9 @@ export default function ScanningConsole() {
     : load.type === "loading" ? (restartNote ? "Reconnecting after refresh · starting a new scan…" : "Connecting to the scanner…")
     : snapshot?.status === "queued" ? "Waiting for the scanner…"
     : "Analyzing your repository…";
-  const stateLabel = isFailure ? "Scan interrupted" :
-    isFinishing ? (savedId ? "Opening results" : "Finalizing report") : ongoing ? "Live scanning" :
-    snapshot?.status === "completed" ? "Finalizing report" : "Awaiting repository";
+  const stateLabel = isFailure ? "Investigation interrupted" :
+    isFinishing ? (savedId ? "Opening results" : "Finalizing report") : ongoing ? "Investigating" :
+    snapshot?.status === "completed" ? "Finalizing report" : "Awaiting source";
   const message = load.type === "error" ? load.message :
     load.type === "invalid" ? "Repository or run reference is invalid." :
     load.type === "unavailable" ? "This scan service is not configured." :
@@ -288,7 +288,7 @@ export default function ScanningConsole() {
       <header className="scan-nav">
         <div className="scan-container scan-nav-inner">
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
-          <span className="scan-nav-center"><span/> {ongoing ? "LIVE SOURCE REVIEW" : "READ-ONLY SOURCE REVIEW"}</span>
+          <span className="scan-nav-center"><span/> {ongoing ? "INVESTIGATION IN PROGRESS" : "SOURCE INVESTIGATION"}</span>
           <Link href="/assess" className="scan-nav-return"><ArrowLeft size={16}/> Back</Link>
         </div>
       </header>
@@ -302,13 +302,13 @@ export default function ScanningConsole() {
           <div className={"scan-orbit-scene" + (ongoing && !isFailure ? " is-active" : "")} aria-hidden="true">
             <div className="scan-orbit-ring scan-ring-outer"/>
             <div className="scan-orbit-ring scan-ring-inner"/>
-            <div className="scan-orbit-core"><Bot size={44} strokeWidth={1.4}/></div>
+            <div className="scan-orbit-core"><ScanSearch size={32} strokeWidth={1.5}/></div>
           </div>
 
           <div className="scan-visual-bottom">
-            <h1 id="scan-heading">{isFailure ? "Scan interrupted" :
+            <h1 id="scan-heading">{isFailure ? "Investigation interrupted" :
               isFinishing ? (savedId ? "Opening your results" : "Finalizing your report") :
-              hasSource ? "Agent investigating" : "Ready to scan"}</h1>
+              hasSource ? "Investigation in progress" : "Ready to investigate"}</h1>
             <p className="scan-repo-name">{source?.name || "No repository selected"}</p>
             {hasSource && <p className="scan-source-type">{source?.private ? "Authorized private repository" : "Public GitHub repository"} · Read-only</p>}
             {!isFailure && <p className="scan-current-action" aria-live="polite">
@@ -320,7 +320,7 @@ export default function ScanningConsole() {
 
           <div className="scan-progress">
             <div className="scan-progress-row">
-              <span>Verified check progress</span>
+              <span>Analysis progress</span>
               <strong>{snapshot?.progress ? snapshot.progress.done + " of " + snapshot.progress.total + " checks" : "—"}</strong>
             </div>
             <div className="scan-progress-track"

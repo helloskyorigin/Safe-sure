@@ -46,9 +46,9 @@ export default function AssessmentStart() {
       <header className="assess-header connect-header">
         <div className="assess-container assess-header-inner">
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
-          <span className="connect-header-mark"><span/> SECUVORA · SECURITY AGENT</span>
+          <span className="connect-header-mark"><span/> SECUVORA / INVESTIGATIONS</span>
           <div className="connect-header-actions">
-            <Link href="/assess/history" className="assess-back"><Github size={16}/> <span>Agent history</span></Link>
+            <Link href="/assess/history" className="assess-back"><Github size={16}/> <span>History</span></Link>
             <Link href="/" aria-label="Back to homepage" className="assess-back"><ArrowLeft size={16}/> <span>Back</span></Link>
           </div>
         </div>
@@ -57,8 +57,8 @@ export default function AssessmentStart() {
       <main id="connect-main" className="connect-main">
         <div className="connect-content">
           <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
-          <h1>Find the risks in <em>your repository.</em></h1>
-          <p className="connect-subtitle">Paste a public GitHub repository to start a read-only investigation. Get source locations, supported security findings, dependency advisories, and fix guidance in one report.</p>
+          <h1>Start with the <em>evidence.</em></h1>
+          <p className="connect-subtitle">Begin a focused investigation with an authorized source. Public GitHub repositories can be reviewed now; private connections require configuration.</p>
 
           <div className="connect-choices" role="group" aria-label="Repository visibility">
             <button type="button" className={"connect-choice" + (mode === "public" ? " selected" : "")}
@@ -95,7 +95,7 @@ export default function AssessmentStart() {
                   </div>
                   {error && <p className="connect-error" role="alert" id="connect-url-error">{error}</p>}
                   <button type="submit" className="connect-submit">
-                    Scan this repository <ArrowRight size={18}/>
+                    Begin investigation <ArrowRight size={18}/>
                   </button>
                 <div className="connect-workflow-note" aria-label="What happens next">
                     <span>01 · Read pinned source</span><span>02 · Check supported risks</span><span>03 · Review the full report</span>
@@ -105,7 +105,7 @@ export default function AssessmentStart() {
             </motion.div>}
           </AnimatePresence>
 
-          <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only source review <span/> Complete report, free</p>
+          <p className="connect-reassurance"><ShieldCheck size={16}/> Read-only scope <span/> Full findings and limitations included</p>
           <Link className="connect-example-link" href="/assess/results">Explore an illustrative report <ArrowRight size={14} aria-hidden="true"/></Link>
         </div>
       </main>

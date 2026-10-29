@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./enhancements.css";
+import "./investigation-design.css";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Secuvora — AI Security Agent for Developers",
+  title: "Secuvora — Security Investigations",
   description:
-    "Discover security risks in your GitHub code with Secuvora. Investigate potential exposed credentials, vulnerable dependencies and unsafe configurations with source-level evidence and actionable fixes. Current analysis uses security rules and OSV advisories; model-based reasoning is not yet enabled.",
+    "Investigate potential security exposure with source-level evidence, dependency advisories, scope and remediation guidance. Public-source reviews available now; autonomous model reasoning is not yet enabled.",
   openGraph: {
-    title: "Secuvora — AI Security Agent for Developers",
-    description: "Investigate code security with source-level evidence, verified vulnerability advisories and actionable remediation. One agent workflow. Full report free.",
+    title: "Secuvora — Security Investigations",
+    description: "Security investigations grounded in source evidence and actionable next steps. Read-only public reviews available now.",
     type: "website",
   },
   icons: {
