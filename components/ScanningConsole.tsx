@@ -123,7 +123,6 @@ export default function ScanningConsole() {
               if (latestId && value.runId !== latestId)
                 throw new Error("Scanner switched run IDs unexpectedly.");
               latestId = value.runId;
-              lastReceivedSnapshot = value;
               if (value.status === "completed") {
                 if (value.checks.length !== CHECKS.length ||
                     !CHECKS.every(({ key }) => value.checks.some(check =>
@@ -133,6 +132,7 @@ export default function ScanningConsole() {
                 }
                 finalized = true;
               }
+              lastReceivedSnapshot = value;
               setRestartNote(false);
               setLoad({ type: "live", snapshot: value });
             } else if (message.type === "error") {
