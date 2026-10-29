@@ -239,3 +239,16 @@
  .scan-page .scan-orbit-core{height:56px;width:56px}
  .result-page .result-severity{min-height:88px}
 }
+
+
+/* Actual 320px overflow findings: footer grid min-content and decorative
+   value-card watermark. Constrain those components, not the whole page. */
+.value-section .value-card{overflow:hidden;min-width:0}
+.footer .footer-main,.footer .footer-columns,.footer .footer-columns nav{min-width:0;max-width:100%}
+.footer .footer-columns nav :is(a,strong){min-width:0;max-width:100%;overflow-wrap:anywhere}
+@media(max-width:640px){
+ .footer .footer-main{display:grid;grid-template-columns:minmax(0,1fr);gap:23px}
+ .footer .footer-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .footer .footer-columns nav{width:auto;min-width:0}
+ .footer .footer-columns nav a{display:inline-flex;align-items:center;min-width:0;max-width:100%;white-space:normal}
+}
