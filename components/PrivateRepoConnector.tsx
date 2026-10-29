@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CheckCircle2, Github, LockKeyhole, Settings2 } from "lucide-react";
 
-type Status = { configured: boolean; connected: boolean; login: string | null };
+type Status = { configured: boolean; connected: boolean; login: string | null; storageConfigured?: boolean; storage?: { hasUrl: boolean; hasToken: boolean; hasSessionSecret: boolean } };
 type Repo = { fullName: string; private: boolean };
 
 export default function PrivateRepoConnector() {
@@ -127,10 +127,22 @@ export default function PrivateRepoConnector() {
       </div>
     )}
 
+    {status.storageConfigured === false && (
+      <div className="connect-storage-warning" role="alert">
+        <strong>Secure report storage is not ready on this deployment.</strong>
+        <p>
+          {!status.storage?.hasUrl ? "UPSTASH_REDIS_REST_URL is missing or invalid. " : ""}
+          {!status.storage?.hasToken ? "UPSTASH_REDIS_REST_TOKEN is missing. " : ""}
+          {!status.storage?.hasSessionSecret ? "SHIPSAFE_SESSION_SECRET must be at least 32 characters. " : ""}
+          Save the server variables and redeploy before starting an analysis.
+        </p>
+      </div>
+    )}
+
     <button
       type="button"
       className="connect-submit"
-      disabled={!selected || loadingRepos}
+      disabled={!selected || loadingRepos || status.storageConfigured === false}
       onClick={() => router.push("/assess/scanning?github=" + encodeURIComponent(selected))}
     >
       Begin analysis <ArrowRight size={18}/>
