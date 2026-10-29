@@ -95,7 +95,7 @@ test("live progress and stage statuses follow the real stream, never a fake time
   await expect(page.getByRole("heading", { name: "Reviewing security signals" })).toBeVisible();
   await expect(page.getByRole("progressbar", { name: "Analysis progress" })).toHaveAttribute("aria-valuenow", "20");
   await expect(page.locator(".scan-check-status")).toHaveText(["Done", "Checking", "Waiting", "Waiting", "Waiting"]);
-  await expect(page.getByText("1 of 5 checks")).toBeVisible();
+  await expect(page.getByText("1 / 5")).toBeVisible();
   await expect(page.getByText("Upstream disconnected.")).toBeVisible({ timeout: 8000 });
   await expect(page.getByRole("button", { name: /Retry analysis/i })).toBeVisible();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
