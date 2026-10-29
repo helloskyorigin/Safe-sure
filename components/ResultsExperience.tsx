@@ -72,6 +72,7 @@ export default function ResultsExperience() {
   const [reviewed, setReviewed] = useState<Record<string, boolean>>({});
   const [coverageOpen, setCoverageOpen] = useState(false);
   const [exportFeedback, setExportFeedback] = useState("");
+  const [reviewedReportId, setReviewedReportId] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -118,6 +119,39 @@ export default function ResultsExperience() {
   const report = isSample ? SAMPLE_REPORT : state.kind === "live" ? state.report : null;
   const ordered = useMemo(() => report ? priorityFindings(report.findings) : [], [report]);
   const counts = useMemo(() => report ? severityCounts(report.findings) : null, [report]);
+  const priority = ordered[0] || null;
+  const partialCoverage = !!report && (
+    !!(report.scanMetrics && report.scanMetrics.filesInspected < report.scanMetrics.eligibleFiles) ||
+    report.coverage.some(item => item.id === "limits" || (item.id === "dependencies" && item.status === "failed"))
+  );
+
+  // Checkmarks track developer review, never verified remediation. Keep them per report.
+  useEffect(() => {
+    if (state.kind !== "live") return;
+    const storage = state.source === "public" ? localStorage : sessionStorage;
+    const key = "secuvora:reviewed:v1:" + state.report.runId;
+    try {
+      const saved: unknown = JSON.parse(storage.getItem(key) || "{}");
+      const allowed = new Set(state.report.findings.flatMap(finding =>
+        finding.steps.map((_, index) => finding.id + ":" + index)));
+      const checked: Record<string, boolean> = {};
+      if (saved && typeof saved === "object" && !Array.isArray(saved)) {
+        for (const [id, value] of Object.entries(saved)) {
+          if (allowed.has(id) && value === true) checked[id] = true;
+        }
+      }
+      setReviewed(checked);
+    } catch { setReviewed({}); }
+    setReviewedReportId(state.report.runId);
+  }, [state]);
+
+  useEffect(() => {
+    if (state.kind !== "live" || reviewedReportId !== state.report.runId) return;
+    try {
+      const storage = state.source === "public" ? localStorage : sessionStorage;
+      storage.setItem("secuvora:reviewed:v1:" + state.report.runId, JSON.stringify(reviewed));
+    } catch { /* Browser storage may be unavailable; review still works in memory. */ }
+  }, [reviewed, reviewedReportId, state]);
   const found = useMemo(() => {
     const query = search.trim().toLowerCase();
     return ordered.filter(f => (filter === "all" || f.severity === filter) &&
@@ -226,22 +260,19 @@ export default function ResultsExperience() {
               </span>
               <span className="result-date">{isSample ? "Fictional data" : readableDate(report.finishedAt)}</span>
             </div>
-            <h1>Your agent report<span>.</span></h1>
-            <p>{isSample ? "Explore a fictional example of the developer workflow. No repository was scanned." : "A bounded source review. Inspect candidate findings, exact file locations, coverage and suggested fixes."}</p>
+            <h1>{isSample ? "Explore a sample report" : "Security assessment complete"}<span>.</span></h1>
+            <p>{isSample ? "Explore a fictional example of the developer workflow. No repository was scanned." : "Review detected security signals, source evidence and the next actions that matter."}</p>
           </div>
           <div className="result-toolbar">
-            <button type="button" onClick={() => saveExport("plan")} className="result-action-secondary">
-              <Download size={16}/> Fix plan
-            </button>
-            <button type="button" onClick={() => window.print()} className="result-action-secondary">
-              <Printer size={16}/> Save PDF
-            </button>
-            {!isSample && <button type="button" onClick={() => saveExport("sarif")} className="result-action-secondary">
-              <Code2 size={16}/> Export SARIF
-            </button>}
-            <button type="button" onClick={() => saveExport("json")} className="result-action-primary">
-              <Download size={16}/> {isSample ? "Export example" : "Export JSON"}
-            </button>
+            <details className="result-export-menu">
+              <summary><Download size={16}/> Export report <ChevronDown size={15}/></summary>
+              <div className="result-export-options">
+                <button type="button" onClick={() => saveExport("plan")}><ClipboardCheck size={15}/> Fix plan (.md)</button>
+                <button type="button" onClick={() => window.print()}><Printer size={15}/> Save PDF</button>
+                <button type="button" onClick={() => saveExport("json")}><Download size={15}/> {isSample ? "Export example JSON" : "Export JSON"}</button>
+                {!isSample && <button type="button" onClick={() => saveExport("sarif")}><Code2 size={15}/> Export SARIF</button>}
+              </div>
+            </details>
           </div>
         </section>
 
@@ -266,6 +297,39 @@ export default function ResultsExperience() {
           <span className="result-included"><CheckCircle2 size={15}/> Full available report · no paywall</span>
         </section>
 
+        <section className={"result-scope-summary" + (partialCoverage ? " partial" : "")} aria-label="Actual assessment coverage">
+          <div className="result-scope-intro">
+            {partialCoverage ? <AlertCircle size={19}/> : <FileSearch size={19}/>}
+            <div>
+              <strong>{partialCoverage ? "Partial source coverage" : "Assessment scope"}</strong>
+              <p>{report.scanMetrics
+                ? report.scanMetrics.filesInspected + " of " + report.scanMetrics.eligibleFiles + " eligible files inspected · " +
+                  report.scanMetrics.rulesExecuted + " source rules executed"
+                : "Review the coverage details below for the checks performed."}</p>
+            </div>
+          </div>
+          <p>{partialCoverage
+            ? "Some eligible files, advisory checks or findings were omitted. Treat this report as incomplete."
+            : "Read-only source checks only. Runtime behavior and exploitability have not been tested."}</p>
+          <a href="#coverage">Full coverage <ArrowRight size={14}/></a>
+        </section>
+
+        {priority && <section className="result-priority" aria-label="Priority finding">
+          <div className="result-priority-icon"><ShieldAlert size={21}/></div>
+          <div className="result-priority-body">
+            <span>RECOMMENDED FIRST REVIEW · {labels[priority.severity].toUpperCase()} · {priority.confidence.toUpperCase()} CONFIDENCE</span>
+            <h2>{priority.title}</h2>
+            <p>{priority.overview}</p>
+            <small>{priority.location.path}{priority.location.line ? ":" + priority.location.line : ""} · Candidate finding, not a confirmed exploit</small>
+          </div>
+          <button type="button" onClick={() => {
+            selectFinding(priority);
+            window.requestAnimationFrame(() => document.getElementById("finding-detail")?.scrollIntoView({
+              behavior: reduceMotion ? "instant" : "smooth", block: "start",
+            }));
+          }}>Review finding <ArrowRight size={15}/></button>
+        </section>}
+
         <section className="result-overview" aria-labelledby="result-overview-title">
           <div className="result-section-head">
             <h2 id="result-overview-title">Findings overview</h2>
@@ -274,10 +338,17 @@ export default function ResultsExperience() {
           <div className="result-severities" aria-label="Severity summary">
             {(["critical", "high", "medium", "low"] as Severity[]).map(level => {
               const Icon = severityIcons[level];
-              return <div key={level} className={"result-severity " + level}>
+              return <button type="button" key={level} className={"result-severity " + level + (filter === level ? " selected" : "")}
+                aria-pressed={filter === level} aria-label={"Show " + labels[level] + " findings"}
+                disabled={counts![level] === 0} onClick={() => {
+                  setFilter(current => current === level ? "all" : level);
+                  setSearch("");
+                  document.getElementById("findings")?.scrollIntoView({behavior: reduceMotion ? "instant" : "smooth"});
+                }}>
                 <span className="result-severity-name"><Icon size={17}/>{labels[level]}</span>
                 <strong>{String(counts![level]).padStart(2, "0")}</strong>
-              </div>;
+                <span className="result-severity-action">Filter findings <ArrowRight size={12}/></span>
+              </button>;
             })}
           </div>
           <div className={"result-risk-note" + (report.findings.length === 0 ? " zero" : "")}>
@@ -325,7 +396,7 @@ export default function ResultsExperience() {
                   aria-pressed={active?.id === finding.id} onClick={() => selectFinding(finding)} key={finding.id}>
                   <span className={"result-finding-icon " + finding.severity}><Icon size={18}/></span>
                   <span className="result-finding-copy">
-                    <small>{finding.category} · {finding.id}</small>
+                    <small>{finding.category} · {finding.confidence} confidence</small>
                     <strong>{finding.title}</strong>
                     <span><FileCode2 size={12}/>{finding.location.path}{finding.location.line ? ":" + finding.location.line : ""}</span>
                   </span>
@@ -380,7 +451,8 @@ export default function ResultsExperience() {
                 </div>
                 <div className="result-detail-meta"><span><Code2 size={14}/>{active.category}</span>
                   <span><ShieldCheck size={14}/>{active.confidence} confidence</span>
-                  {active.ruleId && <span><FileSearch size={14}/> Rule {active.ruleId}</span>}</div>
+                  {active.ruleId && <span><FileSearch size={14}/> Rule {active.ruleId}</span>}
+                  {active.ruleEngine && <span><Info size={14}/>{active.ruleEngine}</span>}</div>
               </div>
 
               <div className="result-file-location">
@@ -394,23 +466,27 @@ export default function ResultsExperience() {
               </div>
 
               <section className="result-detail-section">
-                <h3>Evidence</h3>
+                <h3>Observed evidence</h3>
+                <p className="result-evidence-lead">Detector output from the scanned source or published advisory. It is not proof that the issue is exploitable.</p>
                 <div className="result-code">
                   <div className="result-code-head"><span>SCANNER EVIDENCE</span><span>{active.redacted ? "SENSITIVE VALUES MASKED" : "SOURCE / ADVISORY EVIDENCE"}</span></div>
                   <pre><code>{active.evidence}</code></pre>
                 </div>
                 {active.redacted && <p className="result-evidence-note"><LockKeyhole size={14}/> Sensitive values are masked in this report.</p>}
+                <p className="result-evidence-context"><FileSearch size={14}/> {active.ruleId
+                  ? "Matched detector: " + active.ruleId + ". Verify the finding in the actual repository context."
+                  : "Verify the affected file and advisory details before taking action."}</p>
               </section>
 
               <section className="result-detail-section">
-                <h3>Why it matters</h3><p>{active.whyItMatters}</p>
+                <h3>Potential impact</h3><p>{active.whyItMatters}</p>
               </section>
 
               <section className="result-detail-section result-fixes">
-                <div className="result-section-title"><h3>Recommended fix</h3><CopyButton
+                <div className="result-section-title"><h3>Recommended next steps</h3><CopyButton
                   value={active.steps.map((step, index) => (index + 1) + ". " + step).join("\n")}
                   label="Copy remediation checklist"/></div>
-                <p className="result-checklist-intro">These steps are guidance, not applied code changes.</p>
+                <p className="result-checklist-intro">Review these steps before rescan. Checkmarks track your review only — no code is changed or verified.</p>
                 <div className="result-checklist">
                   {active.steps.map((step, index) => {
                     const key = active.id + ":" + index;
@@ -421,7 +497,7 @@ export default function ResultsExperience() {
                     </label>;
                   })}
                 </div>
-                <p className="result-reviewed-count">{reviewedCount}/{active.steps.length} marked for review · not automatically verified</p>
+                <p className="result-reviewed-count">{reviewedCount}/{active.steps.length} marked reviewed · not automatically fixed or verified</p>
               </section>
 
               <section className="result-detail-section result-verification">
