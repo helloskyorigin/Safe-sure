@@ -294,6 +294,9 @@
 .connect-unavailable p{margin:0}
 .connect-loading{font-size:12px;color:#748aa7;margin:0}
 .connect-install-link{display:inline-flex;gap:7px;align-items:center;font-size:11px;color:#557aa6;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.connect-repo-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#6a7d91;font-size:11px;line-height:1.5}
+.connect-repo-meta .connect-install-link{margin-left:auto}
+@media (max-width:520px){.connect-repo-meta{align-items:flex-start;flex-direction:column}.connect-repo-meta .connect-install-link{margin-left:0}}
 .connect-reassurance{display:flex;align-items:center;justify-content:center;gap:11px;color:#91a1b5;font-size:10px;margin:28px 0 0;font-weight:650}
 .connect-reassurance svg{color:#729ac6}
 .connect-reassurance>span{height:3px;width:3px;border-radius:50%;background:#b1bfd0}
