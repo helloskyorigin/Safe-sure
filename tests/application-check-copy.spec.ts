@@ -5,7 +5,7 @@ test("application-first hero is concise and does not repeat agent language", asy
   const hero=page.locator(".hero");
   await expect(hero.getByRole("heading",{level:1})).toContainText("Security risks.");
   await expect(hero.getByRole("heading",{level:1})).toContainText("Under investigation.");
-  await expect(hero.locator(".eyebrow")).toHaveText(/SECUVORA / SECURITY AGENT/);
+  await expect(hero.locator(".eyebrow")).toHaveText("SECUVORA / SECURITY AGENT");
   await expect(hero.locator(".hero-sub")).toContainText("examines security signals");
   await expect(hero.locator(".hero-sub")).toContainText("shows what needs attention");
   await expect(hero.getByRole("link",{name:/Start investigation/i})).toHaveAttribute("href","/assess");
