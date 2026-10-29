@@ -5,15 +5,15 @@ import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Contact & Support | Secuvora",
-  description: "Contact Secuvora about non-sensitive feedback and learn how private support will be provided before the commercial service launches.",
+  description: "Current Secuvora feedback and support channels, including clear boundaries for sensitive security or privacy information.",
 };
 
 const sections: LegalSection[] = [
   { id: "feedback", title: "Product feedback" },
   { id: "security-reports", title: "Sensitive security issues" },
   { id: "privacy", title: "Privacy requests" },
-  { id: "billing", title: "Report access and support" },
-  { id: "updates", title: "Future contact options" },
+  { id: "reports", title: "Repository and report support" },
+  { id: "updates", title: "Private support channel" },
 ];
 
 export default function ContactPage() {
@@ -21,43 +21,47 @@ export default function ContactPage() {
     <LegalPage
       eyebrow="COMPANY / CONTACT"
       title="Contact Secuvora."
-      lead="Questions, product feedback or a website bug? Here is the appropriate channel to use today—and what not to share in public."
+      lead="Use the public project channel for ordinary product feedback. Keep credentials, private source and undisclosed vulnerabilities out of public issues."
       sections={sections}
       summary={[
-        "Public GitHub issues are open for non-sensitive website bugs, suggestions and general product questions.",
+        "GitHub issues are available for non-sensitive website bugs, suggestions and general product questions.",
         "Do not post private source code, credentials, security weaknesses or personal records in public issues.",
-        "Dedicated private support, privacy and security-reporting channels must be published before sensitive customer data is accepted.",
+        "A dedicated confidential support and vulnerability-reporting channel is not currently published.",
       ]}
     >
       <section id="feedback" className="legal-section">
         <h2>Product feedback</h2>
-        <p>Secuvora is a developer-focused project and its public code repository has an enabled Issues section. The current way to share ordinary, non-sensitive bug reports and feature feedback is to create a GitHub issue.</p>
+        <p>The current channel for ordinary, non-sensitive bug reports and feature feedback is the project's GitHub Issues page.</p>
         <div className="legal-contact-card">
           <span className="legal-contact-icon"><MessageSquareText size={20}/></span>
-          <div><strong>GitHub issues</strong><p>Best for layout bugs, accessibility feedback, typos and product suggestions. Issues are public and may be indexed by search engines.</p>
+          <div><strong>GitHub issues</strong><p>Use for layout bugs, accessibility feedback, typos and non-sensitive product suggestions. Issues are public and may be indexed by search engines.</p>
           <a href="https://github.com/helloskyorigin/Safe-sure/issues/new" target="_blank" rel="noopener noreferrer">Open a public issue <ArrowUpRight size={15} aria-hidden="true"/></a></div>
         </div>
-        <p>Useful feedback includes the relevant page URL, browser/device details, reproducible steps and the expected behavior. Remove private information from screenshots before posting.</p>
+        <p>Useful feedback includes the page URL, browser/device details, reproducible steps and expected behavior. Remove private information from screenshots before posting.</p>
       </section>
+
       <section id="security-reports" className="legal-section">
         <h2>Sensitive security issues</h2>
-        <div className="legal-caution"><CircleAlert size={18} aria-hidden="true"/><p><strong>Do not disclose vulnerabilities publicly.</strong> Never post tokens, private source code, customer data, working exploits or unpatched vulnerabilities in GitHub issues.</p></div>
-        <p>A verified confidential reporting route has not yet been published. Before handling private source or sensitive disclosures, a confidential contact route and disclosure process must be configured. This page will be updated once the channel is active.</p>
+        <div className="legal-caution"><CircleAlert size={18} aria-hidden="true"/><p><strong>Do not disclose vulnerabilities publicly.</strong> Never post tokens, private source, customer data, working exploits or unpatched vulnerabilities in GitHub issues.</p></div>
+        <p>A verified confidential reporting route has not yet been published. Until one exists, the public feedback channel should not be used for a sensitive disclosure.</p>
       </section>
+
       <section id="privacy" className="legal-section">
         <h2>Privacy requests</h2>
-        <p>The current website does not offer Secuvora user accounts, upload personal scan data or collect purchases. The <Link href="/privacy">privacy policy</Link> describes ordinary infrastructure-level information.</p>
-        <p>For sensitive personal-data access, correction or deletion requests, please do not use public issues. A suitable private request method must be provided before the service starts accepting identifiable customer information.</p>
+        <p>Connected scans use GitHub identity for authorization and can retain encrypted reports for a limited period. Individual reports can be deleted from Agent history. See the <Link href="/privacy">Privacy Policy</Link> for current processing and retention details.</p>
+        <p>Do not submit sensitive personal-data requests through a public issue. A private request route should be published before the service makes formal response-time commitments.</p>
       </section>
-      <section id="billing" className="legal-section">
-        <h2>Billing and report support</h2>
-        <p>There is currently no live checkout or customer billing record. Public scan reports are saved locally in the same browser for up to 30 days; private report recovery requires configured GitHub authorization and server storage. A private channel is still needed for sensitive report and access issues. For the current status read <Link href="/refunds">Payments & refunds</Link>.</p>
+
+      <section id="reports" className="legal-section">
+        <h2>Repository and report support</h2>
+        <p>If a repository does not appear in the selector, use <strong>Manage repository access</strong> on the assessment screen and confirm the repository is granted to the Secuvora GitHub App. If a report is no longer needed, delete it from Agent history.</p>
+        <p>General non-sensitive access bugs can be reported through GitHub Issues. Never paste a private repository's source, credentials or full report evidence into a public ticket.</p>
       </section>
+
       <section id="updates" className="legal-section">
-        <h2>Future contact options</h2>
-        <p>Secuvora intends to provide private customer-support and vulnerability-reporting channels as part of its launch readiness. We will list their verified details here after they are created and tested, rather than publish an address that does not exist.</p>
-        <p>For now, explore the <Link href="/">homepage</Link>, our <Link href="/security">security practices</Link> and the public GitHub repository for non-sensitive updates.</p>
-        <p className="legal-note"><strong>Contact transparency:</strong> The project does not claim a staffed help desk, service-level response time or registered corporate office that has not been established.</p>
+        <h2>Private support channel</h2>
+        <p>Secuvora does not currently claim a staffed private help desk, service-level response time, confidential vulnerability inbox or registered corporate office that has not been established. Verified private support details should be added here once created and tested.</p>
+        <p>For now, review the <Link href="/security">Security practices</Link> and use the public project channel only for information safe to disclose publicly.</p>
       </section>
     </LegalPage>
   );
