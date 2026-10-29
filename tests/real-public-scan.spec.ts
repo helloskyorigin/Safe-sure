@@ -88,7 +88,7 @@ test("failed stream remains on inspection screen and offers an immediate retry",
 test("invalid or incomplete report never triggers automatic navigation", async ({ page }) => {
   const id = "12345678-1234-4321-9999-123456789012";
   const snapshot = { runId: id, target: { name: "acme/testapp" }, status: "completed",
-    updatedAt: "2026-10-28T00:00:00Z", checks: [], events: [], progress: { done: 5, total: 5 } };
+    updatedAt: "2026-10-28T00:00:00Z", checks: ["access", "secrets", "dependencies", "patterns", "evidence"].map(key => ({ key, status: "complete" })), events: [], progress: { done: 5, total: 5 } };
   await page.route("**/api/scan/public", route => route.fulfill({
     status: 200, headers: { "content-type": "application/x-ndjson" },
     body: JSON.stringify({ type: "snapshot", snapshot })+"\n"+JSON.stringify({ type: "report", report: { bogus: true } })+"\n",
@@ -102,7 +102,7 @@ test("invalid or incomplete report never triggers automatic navigation", async (
 test("zero real findings is not mislabeled a clean security certificate", async ({ page }) => {
   const runId = "12345678-1234-4321-9999-123456789012";
   const snapshot = { runId, target: { name: "example/no-findings" }, status: "completed",
-    updatedAt: "2026-10-28T00:00:00Z", checks: [], events: [], progress: { done: 5, total: 5 } };
+    updatedAt: "2026-10-28T00:00:00Z", checks: ["access", "secrets", "dependencies", "patterns", "evidence"].map(key => ({ key, status: "complete" })), events: [], progress: { done: 5, total: 5 } };
   const report = { ...SAMPLE_REPORT, runId, appName: "example/no-findings", findings: [],
     scopeNote: "Static public-source scan, limited supported checks." };
   await page.route("**/api/scan/public", route => route.fulfill({
