@@ -4,14 +4,14 @@ import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Secuvora",
-  description: "Read how Secuvora's website handles technical data, what is not collected, your choices and what changes when assessments launch.",
+  description: "How Secuvora handles GitHub authorization, repository source, reports, functional cookies and service-provider data.",
 };
 
 const sections: LegalSection[] = [
   { id: "scope", title: "Scope and service status" },
   { id: "data", title: "Information processed" },
   { id: "uses", title: "How information is used" },
-  { id: "providers", title: "Hosting and other providers" },
+  { id: "providers", title: "Service providers" },
   { id: "cookies", title: "Cookies and tracking" },
   { id: "storage", title: "Storage, security and retention" },
   { id: "rights", title: "Your choices and rights" },
@@ -24,58 +24,72 @@ export default function PrivacyPage() {
     <LegalPage
       eyebrow="POLICY / PRIVACY"
       title="Privacy policy."
-      lead="A transparent account of what happens when you visit Secuvora, which data we do not yet collect, and how this notice will evolve."
+      lead="What Secuvora processes when you connect GitHub, run an investigation and reopen a saved report."
       sections={sections}
       summary={[
-        "Public repository scanning works without sign-in. Private-source scanning requires the operator to configure GitHub App authorization and encrypted report storage. No payments are collected.",
-        "Public scan source is processed transiently and its report is saved in this browser's local storage for up to 30 days. When the private connector is configured, private reports are encrypted at rest for up to seven days, with owner-only retrieval and deletion.",
-        "Your hosting provider may process routine technical request data needed to deliver the website.",
+        "Secuvora uses GitHub authorization to show only repositories available to the connected account and granted to the Secuvora GitHub App.",
+        "Repository source is read for analysis and is not intentionally kept as a source archive. Connected reports are encrypted at rest and expire after a limited retention period.",
+        "The application does not install advertising or analytics trackers and does not collect payment-card details.",
       ]}
     >
       <section id="scope" className="legal-section">
         <h2>Scope and service status</h2>
-        <p>This privacy notice covers the Secuvora public website and its current interactive product demonstrations. Secuvora is a software project, not a representation that a separate company has been incorporated. Public repository scanning processes accessible source and pinned dependencies; private GitHub authorization and encrypted server-stored report delivery require deployment-specific credentials and infrastructure to become operational.</p>
-        <p>The assessment page offers public-source scanning when you enter a GitHub repository address and start a scan. The separate sample results screen remains fictional and clearly labeled. No payment is required. Private GitHub authorization is initiated only if the operator has configured a GitHub App and the user chooses to sign in.</p>
+        <p>This notice covers the Secuvora website and its read-only GitHub repository investigation flow. Secuvora is presented as a software project; this wording does not assert that a separate incorporated company exists.</p>
+        <p>The product connects to GitHub only after the user starts authorization. It then lists repositories made available through the GitHub App installation. If the required deployment configuration is unavailable, the connected flow fails closed instead of pretending access exists. The sample report remains fictional and clearly labeled.</p>
       </section>
+
       <section id="data" className="legal-section">
         <h2>Information processed</h2>
-        <p><strong>When you browse:</strong> your browser connects to the website and its infrastructure. The hosting or network providers may receive IP addresses, user-agent information, requested URLs, timestamps and security logs as part of serving the page and maintaining reliability.</p>
-        <p><strong>What the current app does not request:</strong> a Secuvora account, your GitHub credentials, payment-card details, contact-form submissions or private repository credentials. When you request a public scan, the server fetches publicly accessible source files and lockfiles. The frontend does not install an analytics or advertising tracker. Scan requests contain the public owner/repository identifier. Report details are returned to the initiating browser and saved locally; clearing browser site data deletes them.</p>
-        <p><strong>If you submit public feedback:</strong> information in a GitHub issue is processed by GitHub and visible publicly. Only share non-sensitive product feedback. Do not post passwords, personally identifying information or exploit details.</p>
+        <p><strong>Website requests:</strong> hosting and network providers may receive IP address, user-agent, requested URL, timestamp and security-log information needed to deliver and protect the service.</p>
+        <p><strong>GitHub connection:</strong> after authorization, Secuvora receives the GitHub user identity needed for the session and a GitHub user access token. The token is placed inside an encrypted HttpOnly session cookie and is not intentionally stored in the report database. Secuvora never asks for your GitHub password.</p>
+        <p><strong>Repository investigations:</strong> the service reads repository metadata and supported source/configuration files from repositories that the GitHub App is allowed to access. It processes file paths, selected source excerpts, package names and pinned dependency versions needed to generate findings. Suspected secrets are masked in report evidence.</p>
+        <p><strong>Reports:</strong> a completed connected report can contain repository name, file paths, finding evidence, severity, remediation guidance, scan coverage and timestamps. Connected reports are associated with the authenticated GitHub user for later retrieval and deletion.</p>
+        <p><strong>Public feedback:</strong> information submitted to a GitHub issue is handled by GitHub and may be publicly visible. Do not post credentials, private source, personal records or undisclosed vulnerabilities in public issues.</p>
       </section>
+
       <section id="uses" className="legal-section">
         <h2>How information is used</h2>
-        <p>Technical request information is used by the relevant infrastructure to deliver pages, troubleshoot reliability, maintain site security and respond to abuse. We do not currently use the Secuvora front end to create personal advertising profiles, sell browsing data or run a marketing mailing list.</p>
-        <p>For public scanning, the server inspects source patterns and sends pinned package names/versions to the OSV vulnerability database. Source is not intentionally submitted to OSV. Unsupported files are excluded and source code is not executed. We will update this notice for additional features.</p>
+        <p>Secuvora uses the information above to authenticate repository access, perform the requested investigation, generate and retrieve reports, enforce abuse limits, troubleshoot reliability and protect the service.</p>
+        <p>Supported dependency identifiers may be sent to the OSV vulnerability database to check published advisories. Repository source is not intentionally submitted to OSV. Source code is not executed by the current scanner.</p>
+        <p>The application does not use its front end to create advertising profiles, sell browsing data or operate a marketing mailing list.</p>
       </section>
+
       <section id="providers" className="legal-section">
-        <h2>Hosting and other providers</h2>
-        <p>The deployment host and any internet delivery providers may have their own operational logs, security tools and retention settings. The exact production hosting account and its logging configuration are not specified by this repository; those details must be documented after deployment is configured.</p>
-        <p>The application uses Next.js for rendering and a local system-font stack. It does not require a Google Fonts request to render typography. Following external links, including GitHub, means those services apply their own privacy terms. Public scans use GitHub API/raw content endpoints and OSV.dev for package advisory checks. Their request/logging policies apply. When configured, private sign-in uses GitHub OAuth and encrypted report recovery uses the operator's Upstash Redis deployment. The operator must verify and publish processor, retention and regional details before activation.</p>
+        <h2>Service providers</h2>
+        <p>Secuvora depends on its deployment host and network infrastructure to serve requests. Those providers may keep operational and security logs under their own settings.</p>
+        <p>GitHub provides identity, repository authorization and source access. OSV.dev provides published package-advisory data. When connected-report storage is enabled, Upstash Redis is used for encrypted report records, report indexes and shared scan-quota state. Each provider applies its own terms and data practices.</p>
+        <p>The exact production hosting region, Upstash region and infrastructure log-retention settings are deployment facts and should be reviewed by the operator whenever those services change.</p>
       </section>
+
       <section id="cookies" className="legal-section">
         <h2>Cookies and tracking</h2>
-        <p>Secuvora does not set analytics or advertising cookies. When private GitHub sign-in is configured, it sets strictly functional, encrypted, HttpOnly session and OAuth-state cookies. No tracking consent banner is used for nonexistent advertising trackers. A hosting platform may use strictly operational measures that are outside this site's application code. We will reassess disclosure and consent requirements if tracking or other storage technologies are added.</p>
+        <p>Secuvora does not set advertising or analytics cookies in the application code. GitHub sign-in uses strictly functional OAuth-state and encrypted HttpOnly session cookies. These cookies are used for authorization and security rather than cross-site advertising.</p>
+        <p>A hosting platform may apply operational security measures outside this application's code. This notice should be updated if analytics, advertising or additional storage technologies are introduced.</p>
       </section>
+
       <section id="storage" className="legal-section">
         <h2>Storage, security and retention</h2>
-        <p>Public scan source is processed in memory during a request; there is no application-level durable scan-job database or source archive in this implementation. Completed public reports are temporarily stored in sessionStorage for result navigation and saved in this browser's localStorage for history, with application-managed expiry of up to 30 days. Closing a tab clears sessionStorage but does not necessarily clear saved history; you can delete individual reports from Agent history or clear website data. Temporary operational logs may be retained by the deployment provider under its settings and applicable requirements. We cannot accurately promise a fixed log-deletion schedule without verifying that hosting configuration.</p>
-        <p>Potential secret values are masked rather than returned in report excerpts. Infrastructure-level request logs may still exist under your hosting provider's settings. When private scanning is configured, GitHub App authorization gates repository access and encrypted reports expire after seven days or can be deleted earlier from the signed-in user's report history. The operator must verify hosting logs and retention settings before activating private source access.</p>
+        <p>Repository source is processed during the investigation and is not intentionally persisted as a source-code archive. Connected reports are encrypted using AES-GCM before being placed in server-side Redis storage, are scoped to the authenticated GitHub user and use an application retention period of up to seven days. Individual connected reports can be deleted from Agent history before expiry.</p>
+        <p>GitHub session data is protected inside an encrypted HttpOnly cookie and expires after a limited session period. Revoked or expired GitHub authorization requires the user to connect again.</p>
+        <p>Older browser-only report records created by legacy public-scan flows may remain in localStorage on the device until their application expiry or manual deletion. Hosting-level logs can exist separately under provider settings.</p>
       </section>
+
       <section id="rights" className="legal-section">
         <h2>Your choices and rights</h2>
-        <p>You can browse without submitting information to a Secuvora user account. Where applicable law gives you rights to access, correction, erasure, grievance redressal or other controls over personal information, the applicable operator must provide a suitable private request channel and verify requests where necessary.</p>
-        <p>At present, there is no private data-rights inbox advertised on the site. Please do not submit sensitive requests through public issues. A private privacy and support contact method must be configured and published before private source access, payment details or customer accounts are enabled. The current <Link href="/contact">contact page</Link> explains available non-sensitive feedback channels.</p>
+        <p>You control which repositories are granted to the Secuvora GitHub App through GitHub's Installed GitHub Apps settings. Removing repository access prevents future reads through that installation. You can also delete connected reports from Agent history.</p>
+        <p>Where applicable law provides access, correction, deletion, grievance or other rights over personal information, an appropriate private request channel may be required. A dedicated private data-rights inbox is not currently published, so do not submit sensitive privacy requests through public GitHub issues. The <Link href="/contact">Contact</Link> page describes the channels currently available.</p>
       </section>
+
       <section id="international" className="legal-section">
         <h2>International visitors</h2>
-        <p>Secuvora may be viewed from different locations. Technical requests can be processed where the website host and network providers operate. We will disclose actual hosting regions, relevant processors and any cross-border processing mechanisms before the launch of data-intensive services. Applicable local laws continue to govern where relevant.</p>
+        <p>Secuvora may be accessed from multiple countries, and service providers may process technical data in the regions where their infrastructure operates. The operator should keep provider-region and cross-border disclosures aligned with the actual production deployment.</p>
       </section>
+
       <section id="changes" className="legal-section">
         <h2>Changes and contact</h2>
-        <p>This notice is reviewed when the website's behavior changes. Material changes to collected data, processing purposes, service providers or user controls should be published before the affected functionality becomes available, with an updated revision date.</p>
-        <p>For general non-sensitive questions visit <Link href="/contact">Contact</Link>. Security-specific information is available in our <Link href="/security">security practices</Link>. Do not share secret credentials or private code through public channels.</p>
-        <p className="legal-note"><strong>Current status:</strong> Secuvora is an operational website preview, a limited real public-source scanner, not a penetration test or comprehensive security audit. This policy describes the implementation at the date shown above.</p>
+        <p>This notice should be updated before material changes to collected information, repository permissions, retention, service providers, analytics, payments or user controls become active.</p>
+        <p>For non-sensitive questions visit <Link href="/contact">Contact</Link>. Security-specific information is available under <Link href="/security">Security practices</Link>. Never share credentials or private source through a public support channel.</p>
+        <p className="legal-note"><strong>Scope reminder:</strong> Secuvora performs bounded automated source/configuration checks and dependency-advisory matching. It is not a penetration test, certification or guarantee that a repository is secure.</p>
       </section>
     </LegalPage>
   );
