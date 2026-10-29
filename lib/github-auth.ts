@@ -67,7 +67,7 @@ export async function githubUserApi(path: string, token: string): Promise<Respon
   if (!path.startsWith("/") || path.includes("://") || path.includes("..")) throw new Error("Invalid GitHub API path");
   return fetch("https://api.github.com" + path, {
     headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json",
-      "User-Agent": "ShipSafe-RepositoryAssessment/1.0", "X-GitHub-Api-Version": "2022-11-28" },
+      "User-Agent": "Secuvora-RepositoryAssessment/1.0", "X-GitHub-Api-Version": "2022-11-28" },
     cache: "no-store", redirect: "error", signal: AbortSignal.timeout(12000),
   });
 }
