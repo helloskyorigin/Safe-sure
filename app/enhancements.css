@@ -1030,7 +1030,7 @@ html[data-theme="dark"] .legal-footer-bottom{border-top-color:#222d3b}
   --secuvora-shell:#0b2345;
   --secuvora-core:#1677ff;
   --secuvora-word:#111827;
-  --premium-ui-font:"Avenir Next","SF Pro Display","Segoe UI Variable Display",var(--font-inter),system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --premium-ui-font:var(--font-inter),system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 .secuvora-brand{
   display:inline-flex;
@@ -1082,4 +1082,64 @@ html[data-theme="dark"] .app-symbol{background:#142033;border-color:#31445e}
 }
 @media(prefers-reduced-motion:reduce){
   .secuvora-brand,.secuvora-mark{transition:none!important}
+}
+
+
+/* Stable FAQ accordion: no animated auto-height collapse bugs across themes. */
+.faq-answer-wrap{
+  display:grid;
+  grid-template-rows:0fr;
+  opacity:0;
+  transition:grid-template-rows .32s cubic-bezier(.22,1,.36,1),opacity .2s ease;
+}
+.faq-answer-wrap[data-open="true"]{
+  grid-template-rows:1fr;
+  opacity:1;
+}
+.faq-answer-inner{
+  min-height:0;
+  overflow:hidden;
+}
+.faq-plus{
+  transition:transform .24s cubic-bezier(.22,1,.36,1),background .24s,color .24s;
+}
+.faq-entry.expanded .faq-plus{
+  transform:rotate(45deg);
+}
+html[data-theme="dark"] .landing-page .faq-answer-wrap[data-open="true"] .faq-answer{
+  color:#aebdd0;
+}
+html[data-theme="light"] .landing-page .faq-answer-wrap[data-open="true"] .faq-answer{
+  color:#6f7f93;
+}
+
+/* Premium CTA typography that stays deterministic on Android/iOS/desktop. */
+.top-cta,
+.mobile-nav .button{
+  font-family:var(--premium-ui-font);
+  font-size:12.5px;
+  font-weight:720;
+  letter-spacing:-.028em;
+  line-height:1;
+  font-variation-settings:"wght" 720;
+}
+.top-cta{
+  min-height:43px;
+  padding-inline:18px;
+  gap:10px;
+  border-radius:10px;
+}
+.top-cta svg,
+.mobile-nav .button svg{
+  width:15px;
+  height:15px;
+  stroke-width:2;
+  transition:transform .24s cubic-bezier(.22,1,.36,1);
+}
+.top-cta:hover svg,
+.mobile-nav .button:hover svg{
+  transform:translate(2px,-2px);
+}
+@media(prefers-reduced-motion:reduce){
+  .faq-answer-wrap,.faq-plus,.top-cta svg,.mobile-nav .button svg{transition:none!important}
 }
