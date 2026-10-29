@@ -48,7 +48,8 @@ test("saved public history survives new tab and can be deleted", async ({ browse
   await expect(next.getByRole("link", { name: "Open report" })).toBeVisible();
   next.once("dialog", dialog => dialog.accept());
   await next.getByRole("button", { name: "Delete report for acme/testapp" }).click();
-  await expect(next.getByText("No agent reports saved yet.")).toBeVisible();
+  await expect(next.locator(".history-report-row")).toHaveCount(0);
+  await expect(next.getByText(/GitHub sign-in required/i)).toBeVisible();
   await next.goto("/assess/results?local=" + runId);
   await expect(next.getByRole("heading", { name: /A verified report isn't available/i })).toBeVisible();
   await ctx.close();
@@ -80,6 +81,7 @@ test("mobile hamburger has Scan history without requiring GitHub login", async (
   await nav.getByRole("link", { name: "Agent history" }).click();
   await expect(page).toHaveURL(/\/assess\/history/);
   await expect(page.getByRole("heading", { name: /Agent history/i })).toBeVisible();
-  await expect(page.getByText("No agent reports saved yet.")).toBeVisible();
+  await expect(page.locator(".history-report-row")).toHaveCount(0);
+  await expect(page.getByText(/GitHub sign-in required/i)).toBeVisible();
   await context.close();
 });
