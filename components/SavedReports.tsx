@@ -113,8 +113,8 @@ export default function SavedReports() {
 
     <main className="assess-container history-main">
       <div className="history-top">
-        <div><p className="history-eyebrow"><ShieldCheck size={15}/> YOUR AGENT INVESTIGATIONS</p>
-          <h1>Agent history<span>.</span></h1>
+        <div><p className="history-eyebrow"><ShieldCheck size={15}/> SAVED INVESTIGATIONS</p>
+          <h1>Investigations<span>.</span></h1>
           <p>Revisit previous agent investigations. No paywall, no unnecessary dashboard.</p>
         </div>
         <button type="button" onClick={() => void load()} className="history-refresh">
@@ -130,7 +130,7 @@ export default function SavedReports() {
         <p className="history-hint">Saved only in this browser, for up to 30 days. Clearing site data deletes them.</p>
         {publicReports.length ? publicReports.map(item => <ReportRow key={item.runId} item={item} kind="public"/>) :
           <div className="history-empty"><CheckCircle2 size={21}/><span>No agent reports saved yet.</span>
-            <Link href="/assess">Run security agent <ArrowRight size={15}/></Link></div>}
+            <Link href="/assess">Start an investigation <ArrowRight size={15}/></Link></div>}
       </section>
 
       <section className="history-group" aria-labelledby="private-history-heading">
