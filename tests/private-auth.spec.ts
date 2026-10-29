@@ -35,6 +35,6 @@ test("saved reports screen never fabricates history without login", async ({ pag
 test("unauthenticated direct private scan URL cannot reveal findings", async ({ page }) => {
   await page.goto("/assess/scanning?private=someowner%2Fsomeprivate");
   await expect(page.getByText(/GitHub sign-in required/i)).toBeVisible();
-  await expect(page.getByRole("button", { name: /Retry this scan/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Retry analysis/i })).toBeVisible();
   await expect(page).not.toHaveURL(/\/assess\/results/);
 });
