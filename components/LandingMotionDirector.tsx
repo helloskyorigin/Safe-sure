@@ -34,7 +34,7 @@ const groups: MotionGroup[] = [
   { selector: "#pricing .price-card", kind: "scale", delay: 120 },
   { selector: "#pricing .features li", kind: "slide-right", stagger: 65, delay: 60 },
   { selector: "#faq .faq-grid > div:first-child", kind: "slide-left" },
-  { selector: "#faq .faq-entry", kind: "rise", stagger: 70 },
+  { selector: "#faq .faq-list", kind: "rise", delay: 70 },
   { selector: ".final-cta-inner .final-eyebrow", kind: "pop" },
   { selector: ".final-cta-inner h2", kind: "rise", delay: 75 },
   { selector: ".final-cta-inner > p", kind: "blur", delay: 130 },

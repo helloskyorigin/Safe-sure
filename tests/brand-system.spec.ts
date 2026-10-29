@@ -20,14 +20,22 @@ test("brand mark remains visible in light and dark mode", async ({ browser }) =>
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     const mark = page.locator(".secuvora-brand .secuvora-mark").first();
     await expect(mark).toBeVisible();
-    const colors = await mark.evaluate(svg => {
+    const state = await mark.evaluate(svg => {
       const shell = svg.querySelector(".secuvora-mark-shell") as SVGElement;
       const core = svg.querySelector(".secuvora-mark-core") as SVGElement;
-      return { shell: getComputedStyle(shell).fill, core: getComputedStyle(core).fill };
+      return {
+        viewBox: svg.getAttribute("viewBox"),
+        pathCount: svg.querySelectorAll("path").length,
+        shell: getComputedStyle(shell).fill,
+        core: getComputedStyle(core).fill,
+        stroke: getComputedStyle(svg).stroke,
+      };
     });
-    expect(colors.shell).not.toBe(colors.core);
-    expect(colors.shell).not.toBe("rgba(0, 0, 0, 0)");
-    expect(colors.core).not.toBe("rgba(0, 0, 0, 0)");
+    expect(state.viewBox).toBe("0 0 512 512");
+    expect(state.pathCount).toBe(7);
+    expect(state.shell).not.toBe(state.core);
+    expect(state.shell).not.toBe("rgba(0, 0, 0, 0)");
+    expect(state.core).not.toBe("rgba(0, 0, 0, 0)");
     await context.close();
   }
 });
