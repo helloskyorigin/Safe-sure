@@ -50,7 +50,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
             <a href="/assess/results" className="hero-preview-link">Explore sample report <span aria-hidden="true">↗</span></a>
             </div>
             <p className="under-cta">
-              <span className="tiny-check">✓</span> Read-only <span className="dot-separator">·</span> Free public-source review
+              <span className="tiny-check">✓</span> Read-only <span className="dot-separator">·</span> No source changes
             </p>
           </div>
         </div>
