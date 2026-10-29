@@ -18,7 +18,7 @@ test("brand mark remains visible in light and dark mode", async ({ browser }) =>
     const page = await context.newPage();
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
-    const mark = page.locator(".header .secuvora-mark").first();
+    const mark = page.locator(".secuvora-brand .secuvora-mark").first();
     await expect(mark).toBeVisible();
     const colors = await mark.evaluate(svg => {
       const shell = svg.querySelector(".secuvora-mark-shell") as SVGElement;
