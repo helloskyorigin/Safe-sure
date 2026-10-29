@@ -23,7 +23,7 @@ type LoadState =
   | { type: "loading" }
   | { type: "invalid" }
   | { type: "unavailable" }
-  | { type: "error"; message: string }
+  | { type: "error"; message: string; snapshot?: AssessmentSnapshot }
   | { type: "live"; snapshot: AssessmentSnapshot };
 
 const displayNames: Record<CheckKey, string> = {
@@ -91,6 +91,7 @@ export default function ScanningConsole() {
       setSavedId(null);
 
       async function startScan() {
+        let lastReceivedSnapshot: AssessmentSnapshot | null = null;
         try {
           const response = await fetch(usesGithubConnection ? "/api/scan/private" : "/api/scan/public", {
             method: "POST", cache: "no-store", credentials: "same-origin",
@@ -108,6 +109,7 @@ export default function ScanningConsole() {
           const decoder = new TextDecoder();
           let pending = "", latestId = "", completedId: string | null = null;
           let sawReport = false;
+          let finalized = false;
           function receive(line: string) {
             if (!line.trim() || stopped || controller.signal.aborted) return;
             const raw: unknown = JSON.parse(line);
@@ -121,18 +123,27 @@ export default function ScanningConsole() {
               if (latestId && value.runId !== latestId)
                 throw new Error("Scanner switched run IDs unexpectedly.");
               latestId = value.runId;
+              if (value.status === "completed") {
+                if (value.checks.length !== CHECKS.length ||
+                    !CHECKS.every(({ key }) => value.checks.some(check =>
+                      check.key === key && ["complete", "skipped", "failed"].includes(check.status))) ||
+                    value.progress?.done !== CHECKS.length || value.progress.total !== CHECKS.length) {
+                  throw new Error("Scanner reported completion before every stage was resolved.");
+                }
+                finalized = true;
+              }
+              lastReceivedSnapshot = value;
               setRestartNote(false);
               setLoad({ type: "live", snapshot: value });
             } else if (message.type === "error") {
               throw new Error(typeof message.message === "string" ? message.message : "Scan failed.");
             } else if (message.type === "stored" && usesGithubConnection) {
-              if (!latestId || message.runId !== latestId || !/^[0-9a-f-]{36}$/i.test(latestId))
+              if (!finalized || !latestId || message.runId !== latestId || !/^[0-9a-f-]{36}$/i.test(latestId))
                 throw new Error("Connected GitHub report storage was not verified.");
               sawReport = true;
               completedId = latestId;
-              setSavedId(latestId);
             } else if (message.type === "report" && !usesGithubConnection) {
-              if (!latestId || !isAssessmentReport(message.report, latestId))
+              if (!finalized || !latestId || !isAssessmentReport(message.report, latestId))
                 throw new Error("The scanner returned an invalid report.");
               try {
                 sessionStorage.setItem("shipsafe:report:" + latestId, JSON.stringify(message.report));
@@ -157,17 +168,35 @@ export default function ScanningConsole() {
           }
           pending += decoder.decode();
           if (pending.trim()) receive(pending);
-          if (!sawReport || !completedId) throw new Error("Scan ended without a complete verified report.");
+          if (!finalized || !sawReport || !completedId)
+            throw new Error("Scan ended before all stages and report persistence were verified.");
+
+          if (usesGithubConnection) {
+            // The same authenticated results endpoint must be able to read this
+            // report before we navigate. This also catches deployment-key drift.
+            const check = await fetch("/api/assessments/" + encodeURIComponent(completedId) + "/report", {
+              credentials: "same-origin", cache: "no-store", signal: controller.signal,
+            });
+            if (!check.ok) throw new Error("Scan finished, but the saved report could not be opened. Retry from Agent history.");
+            const persisted: unknown = await check.json();
+            if (!isAssessmentReport(persisted, completedId) ||
+                persisted.appName.toLowerCase() !== repo!.toLowerCase())
+              throw new Error("Saved report did not match the selected repository.");
+          }
+          if (stopped || controller.signal.aborted) return;
+          setSavedId(completedId);
           try { sessionStorage.removeItem(marker); } catch { /* read-only storage */ }
 
-          // Report is verified and saved before navigation; failed scans never redirect.
+          // Navigate only after all stages resolved and the owner's saved
+          // report has been fetched and validated. No time-based auto redirect.
           if (!stopped && !controller.signal.aborted) {
             router.replace("/assess/results?" + (usesGithubConnection ? "run=" : "local=") + encodeURIComponent(completedId));
           }
         } catch (error) {
           if (stopped || controller.signal.aborted) return;
           try { sessionStorage.removeItem(marker); } catch { /* read-only storage */ }
-          setLoad({ type: "error", message: error instanceof Error ? error.message : "Scan failed." });
+          setLoad({ type: "error", message: error instanceof Error ? error.message : "Scan failed.",
+            snapshot: lastReceivedSnapshot || undefined });
         } finally {
           if (abortRef.current === controller) abortRef.current = null;
         }
@@ -231,7 +260,7 @@ export default function ScanningConsole() {
     };
   }, [router]);
 
-  const snapshot = load.type === "live" ? load.snapshot : null;
+  const snapshot = load.type === "live" ? load.snapshot : load.type === "error" ? load.snapshot || null : null;
   const checks = useMemo(() => CHECKS.map(check => ({
     ...check, status: snapshot?.checks.find(item => item.key === check.key)?.status ?? "queued",
   })), [snapshot]);
@@ -247,12 +276,12 @@ export default function ScanningConsole() {
   const latestRunning = checks.find(check => check.status === "running");
   const liveDescription = latestRunning
     ? displayNames[latestRunning.key]
-     : snapshot?.status === "completed" ? (savedId ? "Opening your full report…" : "Preparing your full report…")
+     : snapshot?.status === "completed" ? (savedId ? "Opening your full report…" : "Verifying saved report…")
     : load.type === "loading" ? (restartNote ? "Reconnecting after refresh · starting a new scan…" : "Connecting to the scanner…")
     : snapshot?.status === "queued" ? "Waiting for the scanner…"
     : "Waiting for source analysis…";
   const stateLabel = isFailure ? "Analysis interrupted" :
-    isFinishing ? (savedId ? "Opening results" : "Preparing report") : ongoing ? "Analysis in progress" :
+    isFinishing ? (savedId ? "Opening results" : "Verifying report") : ongoing ? "Analysis in progress" :
     snapshot?.status === "completed" ? "Preparing report" : "Awaiting source";
   const message = load.type === "error" ? load.message :
     load.type === "invalid" ? "Repository or run reference is invalid." :
@@ -320,7 +349,7 @@ export default function ScanningConsole() {
 
           <div className="scan-progress">
             <div className="scan-progress-row">
-              <span>Checks completed</span>
+              <span>Stages resolved</span>
               <strong>{snapshot?.progress ? snapshot.progress.done + " / " + snapshot.progress.total : "—"}</strong>
             </div>
             <div className="scan-progress-track"
