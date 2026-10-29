@@ -100,3 +100,15 @@ test("live progress and stage statuses follow the real stream, never a fake time
   await expect(page.getByRole("button", { name: /Retry analysis/i })).toBeVisible();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=/);
 });
+
+
+test("analysis screen shows source context, concise status and no decorative bot", async ({ page }) => {
+  await page.goto("/assess/scanning");
+  await expect(page.locator(".scan-step-label")).toHaveText("02 / ANALYSIS");
+  await expect(page.getByRole("heading", { name: "Ready to investigate" })).toBeVisible();
+  await expect(page.locator(".scan-check-list-header")).toContainText("STATUS");
+  await expect(page.locator(".scan-orbit-scene")).toHaveCount(0);
+  await expect(page.locator(".scan-analysis-icon")).toBeVisible();
+  await expect(page.getByRole("progressbar")).toHaveCount(0);
+  await expect(page.locator(".scan-honesty")).toContainText("Findings require review");
+});
