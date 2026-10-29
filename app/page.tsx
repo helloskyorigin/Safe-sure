@@ -22,7 +22,7 @@ export default function Home() {
 
 
   return (
-    <>
+    <div className="landing-page">
       <LandingScrollReset />
       <LandingMotionDirector />
       <ScrollProgress />
@@ -41,6 +41,6 @@ export default function Home() {
         <FinalCTA onOpenAssessment={openAssessment} />
       </main>
       <Footer onOpenAssessment={openAssessment} />
-    </>
+    </div>
   );
 }
