@@ -1,160 +1,89 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Check, ChevronRight, FileCode2, Fingerprint, GitBranch, ShieldCheck } from "lucide-react";
 
 interface HeroProps {
   onOpenAssessment: () => void;
 }
 
-export default function Hero({ onOpenAssessment }: HeroProps) {
-  const heroRef = useRef<HTMLElement>(null);
-  const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const previewRise = useTransform(scrollYProgress, [0, 1], [0, -45]);
-  const handleAssessmentClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    onOpenAssessment();
-  };
+const specimenFindings = [
+  { severity: "HIGH", code: "SRC-104", title: "Potential credential in client source", location: "src/config/client.ts:18", tone: "high" },
+  { severity: "HIGH", code: "DEP-208", title: "Published dependency advisory", location: "package-lock.json", tone: "high" },
+  { severity: "MEDIUM", code: "CFG-031", title: "TLS validation override", location: "lib/transport.ts:42", tone: "medium" },
+] as const;
 
+export default function Hero({ onOpenAssessment }: HeroProps) {
   return (
-    <section className="hero" ref={heroRef}>
-      <div className="glow glow-left" aria-hidden="true"></div>
-      <div className="glow glow-right" aria-hidden="true"></div>
-      <div className="container hero-grid">
-        <div className="hero-text">
-          <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> AI SECURITY AGENT
+    <section className="hero sec-hero" aria-labelledby="sec-hero-heading">
+      <div className="sec-hero-grid" aria-hidden="true"/>
+      <div className="container sec-hero-inner">
+        <div className="hero-text sec-hero-copy">
+          <p className="eyebrow sec-eyebrow"><span className="sec-eyebrow-mark"/> SECUVORA / SECURITY INVESTIGATIONS</p>
+          <h1 id="sec-hero-heading">Security risks don&apos;t exist <em>in isolation.</em></h1>
+          <p className="hero-sub sec-hero-sub">
+            Investigate potential exposure, inspect the evidence and prioritize what matters.
+            Start with read-only source and dependency analysis.
           </p>
-          <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
-            Meet Secuvora.
-            <br />
-            <em>Your AI security agent.</em>
-          </motion.h1>
-          <p className="hero-sub animate delay-2">
-            Find the risky lines. See the evidence. Know what to fix. Secuvora examines credentials, dependencies and security-sensitive configurations through bounded, read-only source checks.
-          </p>
-          <div className="hero-action animate delay-3">
+          <div className="hero-action sec-hero-actions">
             <div className="hero-cta-row">
-            <a
-              href="/assess"
-              onClick={handleAssessmentClick}
-              data-start
-              className="button button-dark button-primary"
-            >
-              Run security agent — free{" "}
-              <span className="button-arrow" aria-hidden="true">
-                →
-              </span>
-            </a>
-            <a href="/assess/results" className="hero-preview-link">Explore example report <span aria-hidden="true">↗</span></a>
+              <Link href="/assess" onClick={(e) => { e.preventDefault(); onOpenAssessment(); }}
+                className="sec-primary-cta" data-start>
+                Start an investigation <ArrowUpRight size={17} aria-hidden="true"/>
+              </Link>
+              <Link href="/assess/results" className="sec-secondary-cta">
+                Explore a sample report <ArrowRight size={16} aria-hidden="true"/>
+              </Link>
             </div>
-            <p className="under-cta">
-              <span className="tiny-check">✓</span> Read-only security review{" "}
-              <span className="dot-separator">·</span> Actual file locations <span className="dot-separator">·</span> No account for public scans
+            <p className="under-cta sec-hero-proof">
+              <ShieldCheck size={15} aria-hidden="true"/> Read-only today
+              <span aria-hidden="true">·</span> Evidence, not a security score
+              <span aria-hidden="true">·</span> Free public-source review
             </p>
           </div>
         </div>
 
-        <motion.div className="preview-wrap" style={reduceMotion ? undefined : { y: previewRise }}>
-          <div className="preview-halo" aria-hidden="true"></div>
-          <div className="preview">
-            <div className="preview-top">
-              <strong className="preview-brand">
-                secuvora<span>.</span>
-              </strong>
-              <span className="example-tag">
-                <span className="example-dot"></span> ILLUSTRATIVE REPORT
-              </span>
+        <div className="sec-console-wrap" aria-label="Illustrative security investigation report preview">
+          <div className="sec-console">
+            <div className="sec-console-bar">
+              <div className="sec-console-identity"><span className="sec-console-symbol"><Fingerprint size={17}/></span>
+                <span>SECUVORA <span className="sec-console-slash">/</span> INVESTIGATIONS</span></div>
+              <span className="sec-specimen-tag">ILLUSTRATIVE SAMPLE</span>
             </div>
-            <div className="preview-body">
-              <div className="preview-heading">
-                <div>
-                  <div className="preview-overline">AUTOMATED SECURITY AGENT</div>
-                  <h2>Agent security report</h2>
-                  <p>
-                    example-app <span>·</span> Illustrative results
-                  </p>
+            <div className="sec-console-heading">
+              <div className="sec-console-kicker">CASE / SAMPLE-001 <span aria-hidden="true">·</span> STATIC REVIEW</div>
+              <h2>Investigation overview</h2>
+              <div className="sec-console-subline"><GitBranch size={14} aria-hidden="true"/> demo/source-example <span aria-hidden="true">·</span> Fictional repository</div>
+            </div>
+            <div className="sec-case-summary">
+              <div><small>REVIEW STATE</small><strong><Check size={14}/> Example complete</strong></div>
+              <div><small>CANDIDATE SIGNALS</small><strong>03 <span>illustrative</span></strong></div>
+              <div><small>METHOD</small><strong>Read-only source</strong></div>
+            </div>
+            <div className="sec-console-sectionline">
+              <span>FINDINGS / EXAMPLE</span><span>SEVERITY</span>
+            </div>
+            <div className="sec-console-list">
+              {specimenFindings.map((f) => (
+                <div className="sec-console-finding" key={f.code}>
+                  <div className="sec-finding-symbol"><FileCode2 size={16}/></div>
+                  <div className="sec-finding-text"><span>{f.code} <span aria-hidden="true">/</span> {f.location}</span><strong>{f.title}</strong></div>
+                  <span className={"sec-finding-level " + f.tone}>{f.severity}</span>
                 </div>
-                <span className="complete-tag">
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="m5 12 4 4L19 6" />
-                  </svg>{" "}
-                  Complete
-                </span>
-              </div>
-
-              <div className="severity-grid" aria-label="Sample severity counts">
-                <div className="severity severity-critical">
-                  <div className="severity-name">
-                    <i></i>Critical
-                  </div>
-                  <strong>02</strong>
-                </div>
-                <div className="severity severity-high">
-                  <div className="severity-name">
-                    <i></i>High
-                  </div>
-                  <strong>04</strong>
-                </div>
-                <div className="severity severity-medium">
-                  <div className="severity-name">
-                    <i></i>Medium
-                  </div>
-                  <strong>06</strong>
-                </div>
-                <div className="severity severity-low">
-                  <div className="severity-name">
-                    <i></i>Low
-                  </div>
-                  <strong>01</strong>
-                </div>
-              </div>
-
-              <div className="findings-head">
-                <h3>Potential findings</h3>
-                <span>Severity</span>
-              </div>
-
-              <div className="findings">
-                <div className="finding">
-                  <div className="finding-symbol symbol-red">!</div>
-                  <div className="finding-copy">
-                    <strong>Exposed credential</strong>
-                    <small>Potential API key in application code</small>
-                  </div>
-                  <span className="pill pill-critical">Critical</span>
-                </div>
-                <div className="finding">
-                  <div className="finding-symbol symbol-orange">◇</div>
-                  <div className="finding-copy">
-                    <strong>Vulnerable dependency</strong>
-                    <small>Known package security advisory</small>
-                  </div>
-                  <span className="pill pill-high">High</span>
-                </div>
-                <div className="finding">
-                  <div className="finding-symbol symbol-yellow">!</div>
-                  <div className="finding-copy">
-                    <strong>TLS verification override</strong>
-                    <small>Insecure certificate validation</small>
-                  </div>
-                  <span className="pill pill-medium">Medium</span>
-                </div>
-              </div>
-
-              <div className="preview-bottom">
-                <span>
-                  <i></i> Evidence-backed agent analysis
-                </span>
-                <span>Fictional example</span>
-              </div>
+              ))}
+            </div>
+            <div className="sec-console-detail">
+              <div className="sec-console-sectionline"><span>EVIDENCE / EXAMPLE</span><span>REDACTED</span></div>
+              <code><span className="sec-code-no">18</span><span className="sec-code-kw">const</span> serviceToken = <span className="sec-code-value">&quot;[REDACTED]&quot;</span>;</code>
+              <p>Investigate origin and exposure. Validate before acting.</p>
+            </div>
+            <div className="sec-console-bottom">
+              <span><span className="sec-console-green"/> Fictional walkthrough — not a completed scan</span>
+              <Link href="/assess/results">View sample <ChevronRight size={14}/></Link>
             </div>
           </div>
-          <div className="floating-label" aria-hidden="true">
-            <span>✓</span> Clear findings. Actionable fixes.
-          </div>
-        </motion.div>
+          <div className="sec-console-footnote">An example of the investigation interface. No real application was assessed.</div>
+        </div>
       </div>
     </section>
   );
