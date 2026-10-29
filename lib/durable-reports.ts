@@ -37,6 +37,17 @@ export function durableStoreConfigured() {
   return durableStoreStatus().configured;
 }
 
+export async function verifyDurableStore() {
+  const status = durableStoreStatus();
+  if (!status.configured) return { ok: false as const, status };
+  try {
+    const result = await redis("PING");
+    return { ok: result === "PONG", status };
+  } catch {
+    return { ok: false as const, status };
+  }
+}
+
 export async function redis(...command: (string | number)[]): Promise<unknown> {
   if (!durableStoreConfigured()) throw new Error("Durable report storage is not configured.");
   const response = await fetch(redisUrl(), {
