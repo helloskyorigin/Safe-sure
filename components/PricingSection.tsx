@@ -14,14 +14,14 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
     <section id="pricing" className="section bordered pricing-section">
       <div className="container pricing-grid">
         <div className="pricing-intro ">
-          <p className="eyebrow">AVAILABLE NOW</p>
+          <p className="eyebrow">FULL ACCESS, NO PAYWALL</p>
           <h2>
-            The full investigation,
+            All the detail,
             <br />
-            without a paywall.
+            nothing hidden.
           </h2>
           <p>
-            Every available candidate finding includes source evidence, context and practical steps for review.
+            Get the whole picture: affected source files, supporting evidence, risk context and step-by-step remediation. Every supported finding stays accessible.
           </p>
           <div className="no-renew">
             <span>✓</span> Full results included. No checkout.
@@ -31,8 +31,8 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
         <div className="price-card ">
           <div className="price-top">
             <div>
-              <small>COMPLETE PUBLIC REVIEW</small>
-              <h3>Public-source investigations</h3>
+              <small>COMPLETE AGENT REPORT</small>
+              <h3>All agent findings. Free.</h3>
             </div>
             <div className="price">
               FREE<span>full report</span>
@@ -59,10 +59,10 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             data-start
             className="button button-dark price-cta"
           >
-            Start an investigation <span aria-hidden="true">→</span>
+            Scan a public repository <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
-            Start with a public GitHub source. Private repositories require configured, explicit authorization.
+            Public repository agent analysis is available now. Private GitHub access requires configured authorization.
           </p>
         </div>
       </div>

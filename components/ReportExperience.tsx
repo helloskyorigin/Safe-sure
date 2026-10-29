@@ -58,15 +58,15 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
       <div className="container">
         <div className="experience-intro">
           <motion.div initial={{ y: 22 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: reduceMotion ? 0 : .72, ease }}>
-            <p className="eyebrow">INSIDE AN INVESTIGATION</p>
-            <h2 id="experience-title">Evidence before conclusions.<br/><span>Context before action.</span></h2>
+            <p className="eyebrow">THE AGENT REPORT</p>
+            <h2 id="experience-title">Less guesswork.<br/><span>More clarity.</span></h2>
           </motion.div>
-          <p>Inspect the evidence behind a candidate finding, then review its scope, limitations and next steps.</p>
+          <p>See more than severity labels. Explore the affected code, the supporting evidence and the exact questions to resolve before treating a finding as fixed.</p>
         </div>
         <motion.div className="experience-shell" initial={{ y: 26 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.13 }} transition={{ duration: reduceMotion ? 0 : .8, ease }}>
           <div className="experience-toolbar">
-            <div className="experience-app"><span className="app-symbol"><SearchCheck size={17}/></span><div><strong>Investigation workspace</strong><small>fictional example · not a scanned repository</small></div></div>
-            <span className="experience-example">FICTIONAL INTERACTIVE EXAMPLE</span>
+            <div className="experience-app"><span className="app-symbol"><SearchCheck size={17}/></span><div><strong>Secuvora agent report</strong><small>example-application / illustrative demo</small></div></div>
+            <span className="experience-example">INTERACTIVE EXAMPLE · NOT A REAL SCAN</span>
           </div>
           <div className="experience-tabs" role="tablist" aria-label="Explore report views">
             <button type="button" role="tab" aria-selected={view === "free"} aria-controls="demo-panel" className={view === "free" ? "is-active" : ""} onClick={() => setView("free")}>Overview</button>
@@ -76,7 +76,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
             <AnimatePresence mode="wait" initial={false}>
               {view === "free" ? (
                 <motion.div key="free" initial={reduceMotion ? false : { opacity: .5, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: .4, y: -8 }} transition={{ duration: reduceMotion ? 0 : .28 }}>
-                  <div className="demo-head"><div><p className="demo-kicker">INVESTIGATION OVERVIEW</p><h3>Review the signals.</h3><p>Findings grouped by severity. The figures below are examples.</p></div><span className="demo-status"><Check size={13}/> Sample complete</span></div>
+                  <div className="demo-head"><div><p className="demo-kicker">ASSESSMENT OVERVIEW</p><h3>Understand your risk surface.</h3><p>Findings grouped by severity. The figures below are examples.</p></div><span className="demo-status"><Check size={13}/> Sample complete</span></div>
                   <div className="demo-severity">
                     {[["02", "Critical", "red"], ["04", "High", "orange"], ["06", "Medium", "amber"], ["01", "Low", "gray"]].map(([count, label, tone]) => (
                       <div className="demo-severity-item" key={label}><span className={"demo-dot "+tone}></span><strong>{count}</strong><span>{label}</span></div>
@@ -86,7 +86,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
                 </motion.div>
               ) : (
                 <motion.div key="full" initial={reduceMotion ? false : { opacity: .5, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: .4, y: -8 }} transition={{ duration: reduceMotion ? 0 : .28 }}>
-                  <div className="demo-head"><div><p className="demo-kicker">EXAMPLE / EVIDENCE REVIEW</p><h3>Follow the evidence.</h3><p>Select an example finding to see how an actionable report is structured.</p></div><span className="demo-status"><Code2 size={13}/> Developer context</span></div>
+                  <div className="demo-head"><div><p className="demo-kicker">EXAMPLE DETAILED REPORT</p><h3>Know what to fix—and why.</h3><p>Select an example finding to see how an actionable report is structured.</p></div><span className="demo-status"><Code2 size={13}/> Developer context</span></div>
                   <div className="detail-grid">
                     <div className="detail-list" aria-label="Illustrative findings">
                       {(Object.keys(examples) as FindingKey[]).map(key => (
@@ -114,7 +114,7 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
               )}
             </AnimatePresence>
           </div>
-          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Start an investigation <ArrowRight size={16}/></button></div>
+          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Start free scan <ArrowRight size={16}/></button></div>
         </motion.div>
       </div>
     </section>

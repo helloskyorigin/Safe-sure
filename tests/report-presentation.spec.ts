@@ -40,7 +40,7 @@ test("server-verified private report renders real details and guarded source lin
   }));
   await page.goto("/assess/results?run=" + runId);
   await expect(page.getByText("AUTHORIZED PRIVATE REPOSITORY")).toBeVisible();
-  await expect(page.getByText("SOURCE REVIEW COMPLETE")).toBeVisible();
+  await expect(page.getByText("AGENT REVIEW COMPLETE")).toBeVisible();
   await expect(page.locator(".result-finding-item")).toHaveCount(6);
   await expect(page.getByRole("link", { name: "Open source" })).toHaveAttribute("href",
     "https://github.com/acme/private-project/blob/"+revision+"/src/lib/client.ts#L18");

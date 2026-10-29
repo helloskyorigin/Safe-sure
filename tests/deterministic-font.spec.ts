@@ -13,7 +13,7 @@ test("fallback UI font renders on mobile without loading external stylesheets", 
   await page.route("https://fonts.googleapis.com/**", route => route.abort());
   await page.route("https://fonts.gstatic.com/**", route => route.abort());
   await page.goto("/assess");
-  await expect(page.getByRole("heading", { name: /Start with the evidence/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Find the risks in your repository/i })).toBeVisible();
   const font = await page.locator("body").evaluate(element => getComputedStyle(element).fontFamily);
   expect(font).toMatch(/system-ui|ui-sans-serif|Segoe UI|Roboto/);
 });

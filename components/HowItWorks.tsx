@@ -3,9 +3,9 @@ export default function HowItWorks() {
     <section id="how" className="section">
       <div className="container">
         <div className="section-heading ">
-          <p className="eyebrow">THE INVESTIGATION WORKFLOW</p>
-          <h2>From signal to evidence to action.</h2>
-          <p>A structured workflow for investigating the security signals Secuvora can verify today.</p>
+          <p className="eyebrow">THE AGENT WORKFLOW</p>
+          <h2>How your security agent investigates</h2>
+          <p>From repository access to actionable evidence. Secuvora reviews supported security signals, checks published advisories and turns findings into a clear plan of action.</p>
         </div>
         <div className="steps">
           <article className="step ">
@@ -20,9 +20,9 @@ export default function HowItWorks() {
               </div>
               <span>01</span>
             </div>
-            <h3>Choose an authorized source</h3>
+            <h3>Connect a repository</h3>
             <p>
-              Select a public GitHub repository. Private access requires a configured, read-only GitHub connection.
+              Select a public GitHub repository—or an authorized private repository when connected. The agent operates read-only.
             </p>
           </article>
           <article className="step ">
@@ -35,9 +35,9 @@ export default function HowItWorks() {
               </div>
               <span>02</span>
             </div>
-            <h3>Run bounded checks</h3>
+            <h3>Agent investigates</h3>
             <p>
-              Inspect supported secret and configuration patterns, then match pinned dependencies to published OSV advisories.
+              Secuvora follows a real workflow: inspect source, check credentials and configurations, query OSV advisories, then organize the evidence.
             </p>
           </article>
           <article className="step ">
@@ -50,9 +50,9 @@ export default function HowItWorks() {
               </div>
               <span>03</span>
             </div>
-            <h3>Review evidence and respond</h3>
+            <h3>Review evidence & fix</h3>
             <p>
-              Review affected files, supporting evidence, risk context and actionable
+              Access affected files, supporting evidence, impact and actionable
               fix guidance in the same full report.
             </p>
           </article>

@@ -99,7 +99,7 @@ test("responsive landing nav has accessible 44px toggle, escape and breakpoint b
     expect(box?.height).toBeGreaterThanOrEqual(43);
     await toggle.click();
     await expect(page.getByRole("button", { name:"Close navigation" })).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByRole("navigation", { name:"Mobile navigation" }).getByRole("link", { name:"History" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name:"Mobile navigation" }).getByRole("link", { name:"Agent history" })).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.getByRole("button", { name:"Open navigation" })).toHaveAttribute("aria-expanded", "false");
     await ctx.close();
