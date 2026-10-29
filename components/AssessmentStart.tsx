@@ -57,8 +57,8 @@ export default function AssessmentStart() {
       <main id="connect-main" className="connect-main">
         <div className="connect-content">
           <div className="connect-step"><span className="connect-step-line"/> 01 / CONNECT</div>
-          <h1>Find the risks in <em>your repository.</em></h1>
-          <p className="connect-subtitle">Paste a public GitHub repository to start a read-only investigation. Get source locations, supported security findings, dependency advisories, and fix guidance in one report.</p>
+          <h1>Check your <em>application.</em></h1>
+          <p className="connect-subtitle">Connect the GitHub source behind your application. Secuvora checks supported security risks and returns file-level evidence and recommended fixes—without changing your code.</p>
 
           <div className="connect-choices" role="group" aria-label="Repository visibility">
             <button type="button" className={"connect-choice" + (mode === "public" ? " selected" : "")}
@@ -95,7 +95,7 @@ export default function AssessmentStart() {
                   </div>
                   {error && <p className="connect-error" role="alert" id="connect-url-error">{error}</p>}
                   <button type="submit" className="connect-submit">
-                    Scan this repository <ArrowRight size={18}/>
+                    Check my application <ArrowRight size={18}/>
                   </button>
                 <div className="connect-workflow-note" aria-label="What happens next">
                     <span>01 · Read pinned source</span><span>02 · Check supported risks</span><span>03 · Review the full report</span>
