@@ -127,7 +127,7 @@ export default function ScanningConsole() {
               throw new Error(typeof message.message === "string" ? message.message : "Scan failed.");
             } else if (message.type === "stored" && usesGithubConnection) {
               if (!latestId || message.runId !== latestId || !/^[0-9a-f-]{36}$/i.test(latestId))
-                throw new Error("Private report storage was not verified.");
+                throw new Error("Connected GitHub report storage was not verified.");
               sawReport = true;
               completedId = latestId;
               setSavedId(latestId);
