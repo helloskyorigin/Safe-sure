@@ -18,7 +18,7 @@ test("scroll effects are attached to many landing sections, not only one reveal"
     { timeout: 2500 }).toBeLessThan(0.1);
 });
 
-test("scroll into view reveals all process steps in a stagger and never replays", async ({ page }) => {
+test("scroll into view reveals all process steps once per homepage visit", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
   // Inform the existing restoration guard that scrolling is intentional.
@@ -28,10 +28,8 @@ test("scroll into view reveals all process steps in a stagger and never replays"
   await expect(first).toHaveClass(/ship-motion-revealed/);
   const heading = page.locator("#how .section-heading");
   await expect(heading).toHaveClass(/ship-motion-revealed/);
-  const session = await first.getAttribute("data-ship-motion-key");
-  expect(session).toBeTruthy();
-  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("shipsafe:landing-reveals:v2") || "[]") as string[]);
-  expect(saved).toContain(session);
+  const motionKey = await first.getAttribute("data-ship-motion-key");
+  expect(motionKey).toBeTruthy();
 
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await expect(first).toHaveClass(/ship-motion-revealed/);
@@ -39,11 +37,15 @@ test("scroll into view reveals all process steps in a stagger and never replays"
   await expect(first).toHaveClass(/ship-motion-revealed/);
   await expect(first).toHaveCSS("opacity", "1");
 
-  // A browser revisit does not replay completed animations.
+  // A fresh homepage visit gets a fresh reveal sequence.
   await page.goto("/assess");
   await page.goto("/");
   await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
-  await expect(page.locator("#how .step").first()).toHaveClass(/ship-motion-revealed/);
+  const revisited = page.locator("#how .step").first();
+  await expect(revisited).not.toHaveClass(/ship-motion-revealed/);
+  await page.evaluate(() => window.dispatchEvent(new Event("wheel")));
+  await revisited.scrollIntoViewIfNeeded();
+  await expect(revisited).toHaveClass(/ship-motion-revealed/);
 });
 
 test("deeper sections reveal distinct motion targets without repeat", async ({ page }) => {

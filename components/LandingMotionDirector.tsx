@@ -45,12 +45,11 @@ const groups: MotionGroup[] = [
   { selector: ".copyright", kind: "rise" },
 ];
 
-const STORE_KEY = "shipsafe:landing-reveals:v2";
-
 /**
  * Motion design is progressively enhanced: before hydration or without IO,
  * everything is readable. Reduced-motion users see all content immediately.
- * Visible-once nodes stay visible on reverse scroll and across browser revisit.
+ * Visible-once nodes stay visible on reverse scroll, but a fresh homepage visit
+ * gets a fresh scroll-reveal sequence.
  */
 export default function LandingMotionDirector() {
   useEffect(() => {
@@ -70,39 +69,15 @@ export default function LandingMotionDirector() {
       });
     }
 
-    let previouslyRevealed = new Set<string>();
-    try {
-      const value = window.localStorage.getItem(STORE_KEY);
-      if (value) {
-        const parsed: unknown = JSON.parse(value);
-        if (Array.isArray(parsed)) previouslyRevealed = new Set(parsed.filter((v): v is string => typeof v === "string"));
-      }
-    } catch { /* Storage may be disabled; animations still work in memory. */ }
-
-    const pending: HTMLElement[] = [];
-    for (const { element, key } of elements) {
-      if (previouslyRevealed.has(key)) element.classList.add("ship-motion-revealed");
-      else pending.push(element);
-    }
-    if (pending.length === 0) return;
+    const pending = elements.map(({ element }) => element);
     // Apply the hiding styles only AFTER targets + the observer are set up.
     // There is no content invisibility if JS, IO or hydration fails.
     const observer = new IntersectionObserver(entries => {
-      let changed = false;
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         const element = entry.target as HTMLElement;
         element.classList.add("ship-motion-revealed");
-        const key = element.dataset.shipMotionKey;
-        if (key && !previouslyRevealed.has(key)) {
-          previouslyRevealed.add(key);
-          changed = true;
-        }
-        observer.unobserve(element); // Never animate this element twice.
-      }
-      if (changed) {
-        try { window.localStorage.setItem(STORE_KEY, JSON.stringify([...previouslyRevealed])); }
-        catch { /* harmless if blocked */ }
+        observer.unobserve(element); // Never animate this element twice during this visit.
       }
     }, { threshold: 0.09, rootMargin: "0px 0px -28px 0px" });
 
