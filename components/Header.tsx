@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import Brand from "@/components/Brand";
+import { ArrowUpRight } from "lucide-react";
 
 interface HeaderProps {
   onOpenAssessment: () => void;
@@ -90,7 +91,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark top-cta"
           >
-            Start investigation <span aria-hidden="true">↗</span>
+            Start investigation <ArrowUpRight size={15} aria-hidden="true" />
           </a>
           <button
             id="menu-toggle"
@@ -134,7 +135,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark"
           >
-            Start investigation <span aria-hidden="true">↗</span>
+            Start investigation <ArrowUpRight size={15} aria-hidden="true" />
           </a>
         </nav>
       </header>
