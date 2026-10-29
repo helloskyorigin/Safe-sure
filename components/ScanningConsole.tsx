@@ -23,7 +23,7 @@ type LoadState =
   | { type: "loading" }
   | { type: "invalid" }
   | { type: "unavailable" }
-  | { type: "error"; message: string }
+  | { type: "error"; message: string; snapshot?: AssessmentSnapshot }
   | { type: "live"; snapshot: AssessmentSnapshot };
 
 const displayNames: Record<CheckKey, string> = {
@@ -91,6 +91,7 @@ export default function ScanningConsole() {
       setSavedId(null);
 
       async function startScan() {
+        let lastReceivedSnapshot: AssessmentSnapshot | null = null;
         try {
           const response = await fetch(usesGithubConnection ? "/api/scan/private" : "/api/scan/public", {
             method: "POST", cache: "no-store", credentials: "same-origin",
@@ -122,6 +123,7 @@ export default function ScanningConsole() {
               if (latestId && value.runId !== latestId)
                 throw new Error("Scanner switched run IDs unexpectedly.");
               latestId = value.runId;
+              lastReceivedSnapshot = value;
               if (value.status === "completed") {
                 if (value.checks.length !== CHECKS.length ||
                     !CHECKS.every(({ key }) => value.checks.some(check =>
@@ -193,7 +195,8 @@ export default function ScanningConsole() {
         } catch (error) {
           if (stopped || controller.signal.aborted) return;
           try { sessionStorage.removeItem(marker); } catch { /* read-only storage */ }
-          setLoad({ type: "error", message: error instanceof Error ? error.message : "Scan failed." });
+          setLoad({ type: "error", message: error instanceof Error ? error.message : "Scan failed.",
+            snapshot: lastReceivedSnapshot || undefined });
         } finally {
           if (abortRef.current === controller) abortRef.current = null;
         }
@@ -257,7 +260,7 @@ export default function ScanningConsole() {
     };
   }, [router]);
 
-  const snapshot = load.type === "live" ? load.snapshot : null;
+  const snapshot = load.type === "live" ? load.snapshot : load.type === "error" ? load.snapshot || null : null;
   const checks = useMemo(() => CHECKS.map(check => ({
     ...check, status: snapshot?.checks.find(item => item.key === check.key)?.status ?? "queued",
   })), [snapshot]);
