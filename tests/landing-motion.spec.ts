@@ -55,7 +55,7 @@ test("deeper sections reveal distinct motion targets without repeat", async ({ p
   for (const selector of [
     ".value-heading h2", ".value-card .value-card-content",
     ".experience-shell .experience-toolbar", "#security .trust-item",
-    "#pricing .price-card", "#faq .faq-entry", ".final-cta-inner h2", ".footer-identity",
+    "#pricing .price-card", "#faq .faq-list", ".final-cta-inner h2", ".footer-identity",
   ]) {
     const node = page.locator(selector).first();
     await node.scrollIntoViewIfNeeded();
@@ -88,6 +88,54 @@ test("mobile 320 to 430 widths allow deliberate scroll and no horizontal overflo
     expect(x, "overflow at " + width).toBeLessThanOrEqual(1);
     const y = await page.evaluate(() => window.scrollY);
     expect(y, "scroll blocked at " + width).toBeGreaterThan(200);
+    await context.close();
+  }
+});
+
+
+test("FAQ interaction never leaves rows hidden after accordion reflow", async ({ browser }) => {
+  for (const theme of ["light", "dark"] as const) {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    await context.addInitScript(value => localStorage.setItem("secuvora:theme", value), theme);
+    const page = await context.newPage();
+    await page.goto("/");
+    await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
+    await page.evaluate(() => window.dispatchEvent(new Event("touchstart")));
+
+    const list = page.locator("#faq .faq-list");
+    await list.scrollIntoViewIfNeeded();
+    await expect(list).toHaveClass(/ship-motion-revealed/, { timeout: 4000 });
+
+    const entries = page.locator("#faq .faq-entry");
+    expect(await entries.count()).toBeGreaterThan(3);
+    for (let i = 0; i < await entries.count(); i++) {
+      await expect(entries.nth(i)).not.toHaveAttribute("data-ship-motion", /.+/);
+    }
+
+    const third = page.locator("#faq .faq-trigger").nth(2);
+    await third.click();
+    await expect(third).toHaveAttribute("aria-expanded", "true");
+    await page.waitForTimeout(450);
+
+    const states = await entries.evaluateAll(nodes => nodes.map(node => {
+      const css = getComputedStyle(node as HTMLElement);
+      const rect = (node as HTMLElement).getBoundingClientRect();
+      return {
+        opacity: Number.parseFloat(css.opacity || "1"),
+        display: css.display,
+        visibility: css.visibility,
+        height: rect.height,
+      };
+    }));
+    for (const state of states) {
+      expect(state.opacity).toBeGreaterThan(.99);
+      expect(state.display).not.toBe("none");
+      expect(state.visibility).not.toBe("hidden");
+      expect(state.height).toBeGreaterThan(30);
+    }
+
+    await third.click();
+    await expect(third).toHaveAttribute("aria-expanded", "false");
     await context.close();
   }
 });
