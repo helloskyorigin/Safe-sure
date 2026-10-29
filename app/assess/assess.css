@@ -419,3 +419,89 @@
  .connect-workflow-note span:not(:last-child)::after{content:""}
  .connect-subtitle{line-height:1.75}
 }
+
+
+/* Secuvora source onboarding — focused investigation entry, not a second landing.
+   Scope is intentionally limited to /assess; scan/history/legal styles stay intact. */
+.connect-page .connect-main{padding:clamp(35px,5vw,62px) 20px 54px;align-items:flex-start}
+.connect-page .connect-content{width:min(510px,100%);text-align:left;margin:0 auto}
+.connect-page .connect-step{justify-content:flex-start;font-size:9px;letter-spacing:.14em;color:#7894b2}
+.connect-page .connect-content>h1{
+  max-width:530px;font-size:clamp(31px,3.9vw,43px);line-height:1.14;
+  letter-spacing:-.055em;margin:21px 0 11px;font-weight:780;text-wrap:balance
+}
+.connect-page .connect-content>h1 em{color:#273e58;font-style:normal}
+.connect-page .connect-subtitle{
+  max-width:460px;color:#75859b;font-size:13px;line-height:1.62;margin:0 0 27px
+}
+.connect-page .connect-choices{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;
+  text-align:center;background:#f4f7fa;border:1px solid #e1e8f0;
+  border-radius:12px;padding:5px
+}
+.connect-page .connect-choice{
+  min-height:48px;border-radius:8px;border:1px solid transparent;
+  background:transparent;box-shadow:none;transform:none;
+  flex-direction:row;align-items:center;justify-content:center;
+  gap:9px;padding:9px 12px;min-width:0
+}
+.connect-page .connect-choice:hover{background:#eaf0f5;border-color:transparent;box-shadow:none;transform:none}
+.connect-page .connect-choice.selected,.connect-page .connect-choice.selected:hover{
+  background:#fff;border-color:#d2dfeb;box-shadow:0 2px 6px #1e32490d
+}
+.connect-page .connect-choice-icon,.connect-page .connect-choice.selected .connect-choice-icon{
+  width:auto;height:auto;border:0;border-radius:0;box-shadow:none;background:transparent;
+  color:#879ab0;flex:none
+}
+.connect-page .connect-choice.selected .connect-choice-icon{color:#3e719e}
+.connect-page .connect-choice-copy{display:block;padding:0}
+.connect-page .connect-choice-copy strong{font-size:12px;font-weight:750;letter-spacing:-.012em;color:#74859a}
+.connect-page .connect-choice.selected .connect-choice-copy strong{color:#1a334e}
+.connect-page .connect-choice-end{display:none}
+.connect-page .connect-panel{
+  margin:22px 0 0;padding:0;text-align:left;background:transparent;
+  border:0;border-radius:0;box-shadow:none
+}
+.connect-page .connect-public-form,.connect-page .connect-private-panel{gap:11px}
+.connect-page .connect-public-form>label,.connect-page .connect-private-panel>label{
+  color:#253b52;font-size:12px;font-weight:740
+}
+.connect-page .connect-field-hint{font-size:11px;line-height:1.5;margin:-4px 0 2px;color:#8d9bad}
+.connect-page .connect-url-field{
+  height:54px;border-radius:9px;background:#fff;border-color:#d7e1ed;
+  box-shadow:0 1px 2px #16243508;color:#6f89a4
+}
+.connect-page .connect-submit{
+  margin-top:6px;min-height:51px;background:#192333;border-radius:9px;
+  border-color:#192333;font-size:13px;box-shadow:none
+}
+.connect-page .connect-submit:hover{background:#28394f;box-shadow:none;transform:none}
+.connect-page .connect-reassurance{
+  justify-content:center;flex-wrap:wrap;gap:9px;margin:19px 0 0;
+  color:#8492a3;font-size:11px;font-weight:560;line-height:1.5
+}
+.connect-page .connect-reassurance>span{background:#afbecb}
+.connect-page .connect-footer{margin-top:15px}
+@media(max-width:700px){
+ .connect-page .connect-main{padding:36px 18px 34px}
+ .connect-page .connect-content>h1{font-size:clamp(31px,7vw,40px);margin:18px 0 10px}
+ .connect-page .connect-subtitle{margin-bottom:22px}
+}
+@media(max-width:480px){
+ .connect-page .connect-main{padding:33px 18px 28px}
+ .connect-page .connect-content>h1{font-size:clamp(29px,8vw,37px)}
+ .connect-page .connect-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+ .connect-page .connect-choice{min-height:46px;gap:7px;padding:9px 7px}
+ .connect-page .connect-choice-copy strong{font-size:12px}
+ .connect-page .connect-panel{margin-top:21px;padding:0}
+ .connect-page .connect-url-field{height:52px;padding:0 12px}
+ .connect-page .connect-footer{margin-top:10px}
+}
+@media(max-width:350px){
+ .connect-page .connect-main{padding-inline:14px}
+ .connect-page .connect-content>h1{font-size:28px}
+ .connect-page .connect-choice-copy strong{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .connect-page .connect-choice,.connect-page .connect-submit{transition:none!important}
+}
