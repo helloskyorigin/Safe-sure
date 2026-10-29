@@ -296,6 +296,9 @@
 .connect-install-link{display:inline-flex;gap:7px;align-items:center;font-size:11px;color:#557aa6;font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .connect-repo-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#6a7d91;font-size:11px;line-height:1.5}
 .connect-repo-meta .connect-install-link{margin-left:auto}
+.connect-empty-repos{border:1px solid #e2e9f2;border-radius:10px;background:#fbfcfe;padding:12px 13px;color:#5b6f84;font-size:11px;line-height:1.55}
+.connect-empty-repos strong{display:block;color:#354b63;font-size:12px;margin-bottom:2px}
+.connect-empty-repos p{margin:0}
 @media (max-width:520px){.connect-repo-meta{align-items:flex-start;flex-direction:column}.connect-repo-meta .connect-install-link{margin-left:0}}
 .connect-reassurance{display:flex;align-items:center;justify-content:center;gap:11px;color:#91a1b5;font-size:10px;margin:28px 0 0;font-weight:650}
 .connect-reassurance svg{color:#729ac6}
