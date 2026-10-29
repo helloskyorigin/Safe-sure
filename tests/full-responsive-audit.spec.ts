@@ -125,10 +125,10 @@ test("policy pages have real links, a unique primary heading and no fictional co
     expect((await page.locator("main").innerText()).toLowerCase()).not.toContain("placeholder@example.com");
   }
   await page.goto("/privacy");
-  await expect(page.getByText(/system-font stack/)).toBeVisible();
-  await expect(page.getByText(/individual reports from Agent history/)).toBeVisible();
+  await expect(page.getByText(/encrypted using AES-GCM/)).toBeVisible();
+  await expect(page.getByText(/delete connected reports from Agent history/)).toBeVisible();
   await page.goto("/legal");
-  await expect(page.getByText(/Real public-source scanning is available/)).toBeVisible();
+  await expect(page.getByText(/read-only GitHub-connected repository investigations/i)).toBeVisible();
 });
 
 test("repository selector remains visible without client hydration or motion scripts", async ({ browser }) => {
@@ -142,6 +142,6 @@ test("repository selector remains visible without client hydration or motion scr
   await expect(content.getByRole("heading", { level: 1 })).toBeVisible();
   const opacity = await content.evaluate(el => Number.parseFloat(getComputedStyle(el).opacity));
   expect(opacity).toBeGreaterThanOrEqual(.99);
-  await expect(content.getByRole("button", { name: /Public repository/i })).toBeVisible();
+  await expect(content.getByText(/Checking GitHub connection/i)).toBeVisible();
   await ctx.close();
 });

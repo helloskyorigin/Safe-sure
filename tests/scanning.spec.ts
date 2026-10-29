@@ -24,9 +24,11 @@ test("live scanning shows only five backend-driven stage labels", async ({ page 
   await expect(page.getByRole("progressbar")).toHaveCount(0);
 });
 
-test("connection screen has exactly two repository choices", async ({ page }) => {
+test("connection screen uses one GitHub repository flow", async ({ page }) => {
   await page.goto("/assess");
-  await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
+  await expect(page.getByRole("group", { name: "Repository visibility" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: /Choose the codebase to investigate/i })).toBeVisible();
+  await expect(page.getByText(/GitHub connection is not configured/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /Preview scanning workspace/i })).toHaveCount(0);
 });
 

@@ -1,26 +1,26 @@
 # Secuvora — Legal and trust launch checklist
 
 **Prepared:** 28 October 2026  
-**Scope:** Marketing website, operational read-only public repository scanning, and optional unconfigured private repository features.  
+**Scope:** Marketing website and the unified read-only GitHub-connected repository investigation flow, including short-term encrypted report recovery when the deployment services are configured.  
 **Important:** The published policy pages accurately describe the site's current pre-launch functionality. They are not a substitute for confirming actual business facts or obtaining legal advice.
 
 ## Current website: completed
 
 - [x] Public, responsive Privacy Policy, Terms of Use, Payments & Refunds, Security Practices and Contact pages.
 - [x] Central Legal Center and cross-linked footer/navigation.
-- [x] Clear distinction: real bounded public scanning is implemented; private repository authorization requires operator configuration; checkout is not enabled.
+- [x] Product copy and policies describe one read-only GitHub-connected flow for repositories explicitly granted to the installed GitHub App; checkout is not enabled.
 - [x] No fabricated certification, registered company, private support address, performance claim or refund transaction.
 - [x] Descriptions of routine hosting metadata, third-party links, demo data and limitations.
 - [x] Navigation, print styling, section links and plain-language summaries.
 
-## Before activating private scans or accepting sensitive customer data (not yet complete)
+## Before broad external use with sensitive customer repositories (not yet complete)
 
 1. **Operator identity.** Specify the actual person or registered entity acting as seller/controller, legal or business name as applicable, an authentic business address/contact and applicable legal jurisdiction. Do not describe the business as incorporated if it is not.
 2. **Private channels.** Establish and test a working support email or private request portal for privacy, report access and security issues; add a responsible vulnerability disclosure route. Public GitHub issues are *not* a safe private reporting channel.
 3. **Hosting and data inventory.** Verify the production provider(s), countries of processing, log settings, subprocessors, analytics and cookie use. Update the privacy policy based on what is actually deployed.
 4. **Data governance.** Document retention/deletion periods for uploaded code, temporary scanning workers, logs and reports. Define access control, recovery flows, breach handling, and who can access raw data.
 5. **Security.** Implement selected-repository/explicit user authorization, isolated untrusted-code inspection, protections against SSRF, redaction, rate limits and detailed scan coverage. Test before asserting these controls as live.
-6. **Report delivery.** Confirm access controls, deletion/recovery options, delivery scope, report accuracy and limitations. Full reports are currently planned to be free. If payments are introduced in a different offering later, publish verified operator details and commercial policies first.
+6. **Report delivery.** Confirm access controls, deletion/recovery options, delivery scope, report accuracy and limitations against the real deployed GitHub App and Redis configuration. If payments are introduced later, publish verified operator details and commercial policies first.
 7. **Contact and grievances.** Depending on actual services, geography and legal category, set up any mandatory grievance contact, response timelines and notices.
 8. **Legal review.** Have an appropriately qualified reviewer verify applicability of Indian and other relevant privacy/consumer/e-commerce requirements before collecting source code or money. Applicable Indian law includes the Digital Personal Data Protection framework with phased commencement and consumer protection/e-commerce requirements depending on activities.
 9. **Truth-in-marketing checks.** Ensure every claim about encryption, secure storage, uptime, scanner capabilities, processing time, certification, customer logos and testimonials has evidence.

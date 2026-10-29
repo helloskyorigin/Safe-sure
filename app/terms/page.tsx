@@ -4,12 +4,12 @@ import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Terms of Use | Secuvora",
-  description: "The conditions for visiting Secuvora, using its interactive demonstrations and understanding the scope of future assessments.",
+  description: "Terms for Secuvora's read-only GitHub repository investigations, authorized use, report limitations and external services.",
 };
 
 const sections: LegalSection[] = [
   { id: "agreement", title: "About these terms" },
-  { id: "availability", title: "What is available today" },
+  { id: "availability", title: "What Secuvora provides" },
   { id: "acceptable-use", title: "Acceptable use" },
   { id: "authorization", title: "Authorized security testing" },
   { id: "results", title: "Reliability of information" },
@@ -24,58 +24,66 @@ export default function TermsPage() {
     <LegalPage
       eyebrow="POLICY / TERMS"
       title="Terms of use."
-      lead="A straightforward explanation of what Secuvora offers today, how the preview may be used and what to expect as private integrations are activated."
+      lead="The rules for connecting a repository, using Secuvora's findings and understanding what an automated investigation can—and cannot—establish."
       sections={sections}
       summary={[
-        "Read-only public source scanning is available. Private scanning and owner-scoped encrypted seven-day reports are conditional on GitHub App and database configuration.",
-        "Example assessments are illustrative, not results from your website or source code.",
-        "Only applications you own or are expressly authorized to test may be assessed using the public or configured private scanner.",
+        "Secuvora uses read-only GitHub authorization and only analyzes repositories made available through the connected GitHub App.",
+        "You may submit only repositories you own or are authorized to assess.",
+        "Automated findings are evidence for review, not a penetration test, certification or guarantee of security.",
       ]}
     >
       <section id="agreement" className="legal-section">
         <h2>About these terms</h2>
-        <p>These terms apply to access to the Secuvora website and its publicly available product demonstrations. “Secuvora” means the project presented on this website; this wording does not assert that a separately incorporated company exists. Additional operator identification and private support details will be published before handling sensitive application data.</p>
-        <p>By using this preview, you agree to use it lawfully and respect the restrictions below. If you do not agree, you should not use the website. Where mandatory legal rights apply, nothing here is intended to remove them.</p>
+        <p>These terms apply to access to the Secuvora website and its repository investigation features. “Secuvora” means the software project presented here; this wording does not assert that a separately incorporated company exists.</p>
+        <p>By using the service, you agree to use it lawfully and within the authorization boundaries below. Mandatory rights that cannot legally be excluded remain unaffected.</p>
       </section>
+
       <section id="availability" className="legal-section">
-        <h2>What is available today</h2>
-        <p>The website provides a public GitHub source scanner, interactive fictional sample results and informational pages. <strong>Public scans check supported source files and pinned dependencies only. Private GitHub authorization requires deployed operator credentials; runtime penetration testing and payment processing are not enabled.</strong> Sample results remain fictional and are labeled.</p>
-        <p>Public-source scans currently provide the full detected findings and remediation without a report paywall. Scope, permission requirements and service-specific conditions will be disclosed before accessing an application.</p>
+        <h2>What Secuvora provides</h2>
+        <p>Secuvora provides a read-only GitHub repository investigation workflow, encrypted short-term report recovery for connected scans, an illustrative sample report and supporting documentation. The current scanner applies bounded static source/configuration rules and published dependency-advisory checks. It does not execute repository code or perform active runtime penetration testing.</p>
+        <p>GitHub-connected features depend on valid GitHub App authorization and deployment infrastructure. If those dependencies are unavailable, Secuvora may refuse or interrupt a scan rather than fabricate progress or results.</p>
       </section>
+
       <section id="acceptable-use" className="legal-section">
         <h2>Acceptable use</h2>
-        <p>You may browse and share links to the public website for legitimate evaluation and feedback. Do not interfere with its availability, bypass access controls, attempt unauthorized extraction of information, impersonate others, introduce malicious code or use the site in violation of applicable law.</p>
-        <p>Do not misrepresent sample findings as verified results, claim an official audit or security certification on the basis of this website, or submit private credentials through public issues or other unprotected channels.</p>
+        <p>Do not interfere with service availability, bypass access controls, abuse rate limits, impersonate another user, submit malicious requests intended to attack the service, or use Secuvora in violation of applicable law.</p>
+        <p>Do not represent a Secuvora report as an official audit, penetration-test engagement, compliance certification or proof that software is free of vulnerabilities.</p>
       </section>
+
       <section id="authorization" className="legal-section">
         <h2>Authorized security testing</h2>
-        <p>The planned security product is intended for testing applications or code you own or have explicit authority to assess. Merely knowing a URL or having access to a public repository does not automatically grant permission to perform intrusive testing.</p>
-        <p>You must be entitled to analyze the public repository you submit; this tool retrieves publicly available content and performs passive static checks, not intrusive tests. Private source assessments require explicit GitHub App authorization. Active/runtime testing is not included. The service will document its permitted scan scope, access model, restrictions and any additional rules before being activated. Nothing in this website grants permission to attack third-party services.</p>
+        <p>You must own the repository you submit or have explicit authority to assess it. GitHub authorization establishes technical access through the connected account and App installation; it does not by itself resolve every contractual or legal right to test a codebase.</p>
+        <p>Secuvora requests read-only repository access and does not request permission to push code. Nothing on this website grants permission to attack third-party infrastructure or perform intrusive testing outside the bounded product workflow.</p>
       </section>
+
       <section id="results" className="legal-section">
         <h2>Reliability of information</h2>
-        <p>Software security assessments are inherently limited by available code or endpoints, implemented checks, configuration and context. Automated findings may be incomplete, may require manual review or may be false positives. A low finding count does not establish that an application is safe.</p>
-        <p>Examples shown in the current report preview are fabricated solely to illustrate the intended interface and must not be treated as factual vulnerability findings. Future authorized reports must disclose their assessment scope and supporting evidence.</p>
+        <p>Automated security analysis is limited by available source, implemented rules, package metadata and application context. Findings may be incomplete, may contain false positives or may require manual verification. A low finding count does not establish that a project is secure.</p>
+        <p>The sample results experience is fictional and labeled as illustrative. Real connected reports should be interpreted together with their evidence, coverage information and stated limitations.</p>
       </section>
+
       <section id="ownership" className="legal-section">
         <h2>Intellectual property</h2>
-        <p>Secuvora's original brand presentation, content, illustrations and interface are part of the project. Third-party components, libraries, trademarks and materials remain subject to their respective licenses and rights. Access to the website does not transfer ownership of any intellectual property.</p>
-        <p>Future application submissions will remain the responsibility of their respective owners. Secuvora fetches public repository code only when a public scan is requested. In a configured private flow, it reads only repositories the signed-in user is authorized to select through a GitHub App and does not request the user's GitHub password.</p>
+        <p>Secuvora's original brand presentation, interface and written product content remain part of the project. Third-party software, trademarks and materials remain subject to their own rights and licenses.</p>
+        <p>Connecting a repository does not transfer ownership of that repository to Secuvora. The service reads source only for the requested investigation and does not intentionally retain a complete source archive.</p>
       </section>
+
       <section id="third-party" className="legal-section">
         <h2>External services</h2>
-        <p>Links to GitHub or other external resources are provided for convenience. These services are operated independently and apply their own terms, privacy statements and policies. We are not responsible for content or practices on sites outside our control.</p>
+        <p>GitHub, OSV.dev, the deployment host and report-storage provider operate independently and apply their own terms and policies. Availability of those services can affect Secuvora's operation.</p>
       </section>
+
       <section id="disclaimers" className="legal-section">
         <h2>Disclaimers and liability</h2>
-        <p>The public website, limited on-demand scanner and illustrative sample are provided for general information and evaluation, without a promise of uninterrupted availability or error-free information. The examples do not constitute a security certification, penetration-test engagement, legal opinion or professional assurance of system safety.</p>
-        <p>To the extent permitted by applicable law, the project does not accept responsibility for decisions made solely on the basis of illustrative content or for third-party products linked here. Nothing in these terms limits liability or remedies that cannot lawfully be excluded.</p>
+        <p>Secuvora is provided for automated security review and developer evaluation without a promise of uninterrupted availability, complete vulnerability coverage or error-free output. Findings should be reviewed before consequential remediation or release decisions.</p>
+        <p>To the extent permitted by applicable law, the project does not accept responsibility for losses caused solely by treating an automated or illustrative result as a comprehensive professional security assurance. Nothing here limits rights or liabilities that cannot lawfully be limited.</p>
       </section>
+
       <section id="revisions" className="legal-section">
         <h2>Updates and questions</h2>
-        <p>We may update these website terms as the preview evolves. If a commercial service is ever offered, its operator identity, support contacts, complete purchase terms and mandatory rights must be disclosed before a transaction.</p>
-        <p>For ordinary non-sensitive feedback see <Link href="/contact">Contact</Link>. For information about the present data practices and planned security controls, see <Link href="/privacy">Privacy</Link> and <Link href="/security">Security</Link>.</p>
-        <p className="legal-note"><strong>Important:</strong> These terms govern the currently published preview. They do not claim a configured or independently audited private-scanning deployment, registered corporate identity or staffed private customer-support desk.</p>
+        <p>These terms may change when repository permissions, scan scope, report retention, support or commercial terms materially change. If a paid service is introduced, seller identity, pricing, tax, cancellation/refund terms and appropriate support details must be disclosed before purchase.</p>
+        <p>For ordinary non-sensitive feedback see <Link href="/contact">Contact</Link>. For data and security details see <Link href="/privacy">Privacy</Link> and <Link href="/security">Security</Link>.</p>
+        <p className="legal-note"><strong>Important:</strong> No SOC 2, ISO 27001, penetration-test certification or staffed support commitment is claimed unless it is explicitly documented and verifiable.</p>
       </section>
     </LegalPage>
   );

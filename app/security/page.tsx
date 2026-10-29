@@ -4,17 +4,17 @@ import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Security & Responsible Use | Secuvora",
-  description: "Secuvora's security commitments, assessment scope, responsible-use requirements, reporting boundaries and current service status.",
+  description: "Secuvora's repository permissions, scan boundaries, report protection, accuracy limits and responsible reporting guidance.",
 };
 
 const sections: LegalSection[] = [
   { id: "status", title: "Current security scope" },
   { id: "permissions", title: "Authorization and permissions" },
-  { id: "scanning", title: "Safe assessment design" },
+  { id: "scanning", title: "Assessment design" },
   { id: "secrets", title: "Secrets, retention and reports" },
   { id: "limitations", title: "Accuracy and limitations" },
   { id: "reporting", title: "Reporting a security issue" },
-  { id: "incidents", title: "Incident readiness and changes" },
+  { id: "incidents", title: "Operational readiness" },
 ];
 
 export default function SecurityPage() {
@@ -22,56 +22,62 @@ export default function SecurityPage() {
     <LegalPage
       eyebrow="TRUST / SECURITY"
       title="Security practices."
-      lead="Security claims should match the system that actually exists. Learn the principles guiding Secuvora and the boundaries of its current preview."
+      lead="Security claims should match the system that actually exists. These are Secuvora's current controls and explicit boundaries."
       sections={sections}
       summary={[
-        "Public read-only scanning is available. Optional private GitHub authorization and encrypted reports require configured credentials; runtime penetration testing is not performed.",
-        "The planned assessment will prioritize explicit authorization, least privilege and evidence-based findings.",
-        "No certification, zero-risk guarantee or private vulnerability-reporting inbox is claimed.",
+        "Repository access is granted through a GitHub App and used read-only; Secuvora does not request permission to push code.",
+        "The scanner performs bounded static checks and dependency-advisory matching without executing customer source.",
+        "Connected reports are encrypted at rest with limited retention, but no third-party security certification or zero-risk guarantee is claimed.",
       ]}
     >
       <section id="status" className="legal-section">
         <h2>Current security scope</h2>
-        <p>Secuvora now includes a read-only public GitHub source scanner. It fetches a pinned revision, applies supported static rules and optionally checks pinned dependencies against OSV. Separately, the fictional report remains a demonstration. Private repository authorization and seven-day encrypted report recovery are implemented but unavailable until the operator configures the GitHub App and database. Active penetration testing and payments are not enabled.</p>
-        <p>This page documents current boundaries and future engineering requirements. It does not claim SOC 2, ISO 27001, a completed penetration test, an audit certification or any other third-party security attestation.</p>
+        <p>Secuvora performs read-only GitHub source investigations against repositories explicitly available through the connected GitHub App. It fetches repository content, applies supported source/configuration rules and checks supported pinned dependencies against published OSV advisories.</p>
+        <p>The current product is not an active penetration-testing platform and does not execute customer application code. The fictional sample report is separate from real findings and remains labeled. Secuvora does not claim SOC 2, ISO 27001, an independent penetration-test certification or another third-party security attestation.</p>
       </section>
+
       <section id="permissions" className="legal-section">
         <h2>Authorization and permissions</h2>
-        <p>Public source scanning is initiated by submitting a public repository address. No write access is requested. Private repository connections will require user authorization. Where access to a source repository is needed, the intended design is to request selected-resource read permissions rather than unrestricted access or write permission.</p>
-        <p>Users must own the application or have demonstrable authorization for the relevant assessment. Access to a public website or open-source project is not, by itself, permission to conduct disruptive or intrusive testing.</p>
+        <p>The GitHub App is intended to request repository Contents read access and required repository Metadata access. Users choose which repositories are granted through GitHub. Secuvora does not request repository write permission as part of this flow.</p>
+        <p>Users remain responsible for ensuring they own or are authorized to assess the selected repository. Technical access through GitHub is not permission to conduct intrusive testing against unrelated infrastructure.</p>
       </section>
+
       <section id="scanning" className="legal-section">
-        <h2>Safe assessment design</h2>
-        <p>Public scanning has bounded file counts, source sizes and execution time, and does not execute customer code. Before broader commercial/private use, further security validation is required:</p>
+        <h2>Assessment design</h2>
+        <p>The current scanner bounds source sizes, file counts and execution time, and it does not install dependencies or run project build scripts. Security checks are intended to stay passive and evidence-led.</p>
         <ul>
-          <li>Isolated processing environments with appropriate time, memory and network restrictions.</li>
-          <li>No arbitrary execution of a customer's project installation or build scripts as part of a passive assessment.</li>
-          <li>Controls to avoid accessing internal network services, localhost resources and cloud metadata endpoints.</li>
-          <li>Request throttling, bounded scan scope and explicit confirmation for any deeper active tests.</li>
-          <li>Rules and dependency advisories that have traceable sources and identifiable version or configuration evidence.</li>
+          <li>Repository source is read through authenticated GitHub APIs for the requested investigation.</li>
+          <li>Customer code is not intentionally executed.</li>
+          <li>Supported findings include file/line evidence, rule identifiers, confidence and coverage information where available.</li>
+          <li>Dependency checks use pinned versions and published advisory data rather than guessing package risk.</li>
+          <li>Mutation endpoints enforce same-origin request checks and connected scans use shared quotas when durable storage is configured.</li>
         </ul>
-        <p>These are implementation and validation requirements. They should not be interpreted as deployed security features until the real scan service has been built and tested.</p>
+        <p>Broader commercial or enterprise use would still benefit from dedicated isolated workers, operational monitoring, edge abuse controls and independent security testing.</p>
       </section>
+
       <section id="secrets" className="legal-section">
         <h2>Secrets, retention and reports</h2>
-        <p>A production assessment should avoid logging or reproducing complete credentials in user-facing reports. Findings should mask suspected secrets, restrict report access to the entitled recipient and state whether sensitive content is stored at all.</p>
-        <p>Public source is processed transiently in a scan request, and validated public reports are stored in the browser's localStorage for up to 30 days. Private reports, when configured, use owner-scoped AES-GCM authenticated encryption in a server-side Redis store with seven-day expiry and delete support. No complete source archive is intentionally retained. Hosting logs may exist separately; actual operational policies and independent testing must be confirmed before enabling private scans.</p>
+        <p>Suspected credential values are masked in report evidence. A complete source-code archive is not intentionally retained by the application.</p>
+        <p>Connected reports are encrypted with AES-GCM before server-side storage, associated with the authenticated GitHub user, expire after up to seven days and can be deleted earlier from Agent history. GitHub user access tokens are kept inside encrypted HttpOnly session cookies rather than report storage. Hosting-level request logs may exist separately under provider settings.</p>
       </section>
+
       <section id="limitations" className="legal-section">
         <h2>Accuracy and limitations</h2>
-        <p>Automated findings may be false positives, low impact in context or incomplete. Some categories of vulnerability require manual testing, application credentials, active interaction or deeper system access. Severity should be supported by evidence, not inflated to increase sales.</p>
-        <p>No security assessment can establish that an application is free of all security risks. A completed scan, when available, should clearly disclose what was checked, which targets and versions were covered, what could not be assessed and which items require review.</p>
+        <p>Automated findings can be incomplete, context-dependent or false positives. Some vulnerabilities require runtime behavior, secrets, infrastructure access, business logic or manual testing that the current scanner cannot observe.</p>
+        <p>A completed report should be treated as one security input, not proof that an application is safe. Severity should remain tied to evidence and context rather than inflated to create urgency.</p>
       </section>
+
       <section id="reporting" className="legal-section">
         <h2>Reporting a security issue</h2>
-        <p><strong>Do not publish sensitive vulnerability reports in public GitHub issues.</strong> Public issues are appropriate only for non-sensitive bugs and product feedback. Never post exploit details, credentials, customer information or vulnerable private endpoints there.</p>
-        <p>A dedicated private vulnerability-reporting method should be configured before accepting private source code or sensitive security disclosures. We do not invent a security email address or claim an unverified private inbox exists today. See <Link href="/contact">Contact</Link> for the currently available public feedback channel.</p>
+        <p><strong>Do not publish sensitive vulnerabilities in public GitHub issues.</strong> Public issues are suitable only for non-sensitive product bugs and feedback. Never post credentials, customer data, working exploits or private repository content there.</p>
+        <p>A dedicated confidential vulnerability-reporting address is not currently published. Until one is available, do not send sensitive disclosures through the public feedback channel. See <Link href="/contact">Contact</Link> for current non-sensitive options.</p>
       </section>
+
       <section id="incidents" className="legal-section">
-        <h2>Incident readiness and changes</h2>
-        <p>Before handling sensitive data, Secuvora must establish incident triage, response ownership, a private communication channel, log-review practices and applicable regulatory reporting procedures. Response guarantees and certification statements will only be displayed once supported by actual operating procedures.</p>
-        <p>Material changes to access permissions, hosting, scan coverage, report retention or payments should be reflected in the <Link href="/privacy">privacy notice</Link>, <Link href="/terms">terms</Link> and this page before the affected functionality goes live.</p>
-        <p className="legal-note"><strong>Security is not a badge.</strong> Secuvora's aim is accurate, explainable application security guidance—not misleading scores, false guarantees or unverified compliance claims.</p>
+        <h2>Operational readiness</h2>
+        <p>Production operation should maintain access control, report deletion, log review, credential rotation, abuse monitoring and incident-response procedures appropriate to the actual deployment. Response-time or certification claims should only be published when supported by real operating processes.</p>
+        <p>Material changes to permissions, providers, retention, scan coverage or commercial terms should be reflected in <Link href="/privacy">Privacy</Link>, <Link href="/terms">Terms</Link> and this page.</p>
+        <p className="legal-note"><strong>Security is not a badge.</strong> Secuvora's goal is explainable evidence and useful remediation—not an unverified promise that software is secure.</p>
       </section>
     </LegalPage>
   );

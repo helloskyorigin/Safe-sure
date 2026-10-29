@@ -28,8 +28,14 @@ export async function userInstalledRepositories(session: GithubSession) {
     if (installations.length < 50) break;
   }
   return Array.from(new Map(output.map(r => [r.fullName.toLowerCase(), r])).values())
-    .slice(0, 300);
+    .slice(0, 1000);
 }
+export async function authorizeRepository(session: GithubSession, target: string) {
+  const available = await userInstalledRepositories(session);
+  return available.some(r => r.fullName.toLowerCase() === target.toLowerCase());
+}
+
+// Backward-compatible alias for any older internal caller.
 export async function authorizePrivateRepo(session: GithubSession, target: string) {
   const available = await userInstalledRepositories(session);
   return available.some(r => r.private && r.fullName.toLowerCase() === target.toLowerCase());

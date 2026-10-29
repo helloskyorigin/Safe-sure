@@ -1,46 +1,31 @@
 import { test, expect } from "@playwright/test";
 
-test("landing starts a real public scan without an extra selector click", async ({ page }) => {
+test("landing opens one GitHub repository connection flow", async ({ page }) => {
+  await page.route("**/api/auth/github/status", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ configured: true, connected: false, login: null }),
+  }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator(".hero-action").getByRole("link", { name: /Start investigation/i }).click();
   await expect(page).toHaveURL(/\/assess$/);
-  await expect(page.getByRole("heading", { level: 1, name: /What should Secuvora investigate/i })).toBeVisible();
-  await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
-  await expect(page.getByRole("button", { name: /Public repository/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Private repository/i })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: /GitHub repository URL/i })).toBeVisible();
-  await expect(page.getByText(/Explore the flow|What comes after connection|What will Secuvora look for/i)).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 1, name: /Choose the codebase to investigate/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Connect GitHub/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Public repository/i })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Private repository/i })).toHaveCount(0);
+  await expect(page.locator(".connect-reassurance")).toContainText("No source changes");
 });
 
-test("public choice reveals one URL field, validates, then opens scanning", async ({ page }) => {
-  await page.goto("/assess");
-  const publicChoice = page.getByRole("button", { name: /Public repository/i });
-  await publicChoice.click();
-  await expect(publicChoice).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
-  await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://evil.example/my/repo");
-  await page.getByRole("button", { name: "Begin analysis" }).click();
-  await expect(page.locator("#connect-url-error")).toContainText("Enter a valid GitHub URL");
-  await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("github.com/vercel/ms");
-  await page.getByRole("button", { name: "Begin analysis" }).click();
-  await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
-});
-
-test("private choice only shows its connection state when GitHub is unconfigured", async ({ page }) => {
+test("connection fails closed when GitHub deployment configuration is unavailable", async ({ page }) => {
   await page.route("**/api/auth/github/status", route => route.fulfill({
     status: 200, contentType: "application/json",
     body: JSON.stringify({ configured: false, connected: false, login: null }),
   }));
   await page.goto("/assess");
-  const privateChoice = page.getByRole("button", { name: /Private repository/i });
-  await privateChoice.click();
-  await expect(privateChoice).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText(/Private GitHub access isn't configured/i)).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toHaveCount(0);
-  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByText(/GitHub connection is not configured/i)).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Repository" })).toHaveCount(0);
 });
 
-test("private connected account selects a real authorized repo and continues to scan", async ({ page }) => {
+test("connected account shows every authorized public and private repository", async ({ page }) => {
   await page.route("**/api/auth/github/status", route => route.fulfill({
     status: 200, contentType: "application/json",
     body: JSON.stringify({ configured: true, connected: true, login: "founder" }),
@@ -48,73 +33,74 @@ test("private connected account selects a real authorized repo and continues to 
   await page.route("**/api/github/repositories", route => route.fulfill({
     status: 200, contentType: "application/json",
     body: JSON.stringify({ repositories: [
-      { fullName: "founder/alpha", private: true },
-      { fullName: "founder/beta", private: true },
-      { fullName: "founder/open", private: false },
+      { fullName: "founder/private-one", private: true },
+      { fullName: "founder/public-one", private: false },
+      { fullName: "founder/private-two", private: true },
     ] }),
   }));
   await page.goto("/assess");
-  await page.getByRole("button", { name: /Private repository/i }).click();
   await expect(page.getByText(/Connected as/)).toBeVisible();
-  const select = page.getByRole("combobox", { name: "Choose repository" });
-  await expect(select.locator("option")).toHaveCount(2);
-  await select.selectOption("founder/beta");
+  const select = page.getByRole("combobox", { name: "Repository" });
+  await expect(select.locator("option")).toHaveCount(3);
+  await expect(select.locator("option").filter({ hasText: "founder/public-one" })).toHaveCount(1);
+  await expect(select.locator("option").filter({ hasText: "founder/private-one" })).toContainText("Private");
+  await select.selectOption("founder/public-one");
   await page.getByRole("button", { name: "Begin analysis" }).click();
-  await expect(page).toHaveURL(/\/assess\/scanning\?private=founder%2Fbeta/);
+  await expect(page).toHaveURL(/\/assess\/scanning\?github=founder%2Fpublic-one/);
 });
 
-test("returning from GitHub OAuth opens private choice automatically", async ({ page }) => {
+test("connected source screen exposes GitHub repository access management", async ({ page }) => {
   await page.route("**/api/auth/github/status", route => route.fulfill({
     status: 200, contentType: "application/json",
-    body: JSON.stringify({ configured: true, connected: false, login: null }),
+    body: JSON.stringify({ configured: true, connected: true, login: "founder" }),
   }));
-  await page.goto("/assess?connected=1");
-  await expect(page.getByRole("button", { name: /Private repository/i })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("link", { name: /Continue with GitHub/i })).toBeVisible();
+  await page.route("**/api/github/repositories", route => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify({ repositories: [] }),
+  }));
+  await page.goto("/assess");
+  await expect(page.locator(".connect-empty-repos")).toContainText("No authorized repositories");
+  const manage = page.getByRole("link", { name: /Manage repository access/i });
+  await expect(manage).toHaveAttribute("href", "https://github.com/settings/installations");
+  await expect(page.getByText(/add repositories in GitHub/i)).toBeVisible();
 });
 
-test("mobile connection fits at 320, 375 and 430px with both flows", async ({ browser }) => {
+test("mobile GitHub connection fits at 320, 375 and 430px", async ({ browser }) => {
   for (const width of [320, 375, 430]) {
     const context = await browser.newContext({ viewport: { width, height: 812 }, isMobile: true, hasTouch: true });
     const page = await context.newPage();
+    await page.route("**/api/auth/github/status", route => route.fulfill({
+      status: 200, contentType: "application/json",
+      body: JSON.stringify({ configured: true, connected: false, login: null }),
+    }));
     await page.goto("/assess");
-    await page.getByRole("button", { name: /Public repository/i }).click();
-    await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
-    let overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    expect(overflow, "public mode overflow at " + width).toBeLessThanOrEqual(1);
-    await page.getByRole("button", { name: /Private repository/i }).click();
-    await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toHaveCount(0);
-    overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
-    expect(overflow, "private mode overflow at " + width).toBeLessThanOrEqual(1);
+    await expect(page.getByRole("link", { name: /Connect GitHub/i })).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    expect(overflow, "GitHub connection overflow at " + width).toBeLessThanOrEqual(1);
     await page.getByRole("link", { name: "Back" }).click();
     await expect(page).toHaveURL(/\/$/);
     await context.close();
   }
 });
 
-test("minimal source selector has reachable 44px tabs and a single dominant CTA at narrow widths", async ({ browser }) => {
+test("single repository panel keeps one dominant action at narrow and desktop widths", async ({ browser }) => {
   for (const width of [320, 375, 430, 768, 1024]) {
     const context = await browser.newContext({ viewport: { width, height: 820 }, reducedMotion: "reduce" });
     const page = await context.newPage();
+    await page.route("**/api/auth/github/status", route => route.fulfill({
+      status: 200, contentType: "application/json",
+      body: JSON.stringify({ configured: true, connected: true, login: "founder" }),
+    }));
+    await page.route("**/api/github/repositories", route => route.fulfill({
+      status: 200, contentType: "application/json",
+      body: JSON.stringify({ repositories: [{ fullName: "founder/project", private: true }] }),
+    }));
     await page.goto("/assess");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("What should Secuvora investigate?");
-    const choices = page.locator(".connect-choices");
-    const publicTab = page.getByRole("button", { name: "Public repository" });
-    const privateTab = page.getByRole("button", { name: "Private repository" });
-    await expect(publicTab).toHaveAttribute("aria-pressed", "true");
-    await expect(privateTab).toHaveAttribute("aria-pressed", "false");
-    for (const tab of [publicTab, privateTab]) {
-      const box = await tab.boundingBox();
-      expect(box?.height, "touch height at " + width).toBeGreaterThanOrEqual(44);
-    }
-    const grid = await choices.evaluate(element => getComputedStyle(element).gridTemplateColumns.split(" ").length);
-    expect(grid).toBe(2);
-    await expect(page.locator(".connect-workflow-note")).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Begin analysis" })).toBeVisible();
-    await privateTab.click();
-    await expect(privateTab).toHaveAttribute("aria-pressed", "true");
-    await publicTab.click();
-    await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Choose the codebase to investigate.");
+    await expect(page.getByRole("combobox", { name: "Repository" })).toBeVisible();
+    const action = page.getByRole("button", { name: "Begin analysis" });
+    await expect(action).toBeVisible();
+    const box = await action.boundingBox();
+    expect(box?.height, "CTA touch height at " + width).toBeGreaterThanOrEqual(44);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, "horizontal overflow at " + width).toBeLessThanOrEqual(2);
     await context.close();

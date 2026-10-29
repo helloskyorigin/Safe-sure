@@ -284,7 +284,7 @@ export default function ResultsExperience() {
         <section className="result-repo-card" aria-label="Scanned repository">
           <div className="result-app-icon"><Github size={20}/></div>
           <div className="result-repo-info">
-            <span>{isSample ? "DEMONSTRATION REPOSITORY" : state.kind === "live" && state.source === "private" ? "AUTHORIZED PRIVATE REPOSITORY" : "PUBLIC REPOSITORY"}</span>
+            <span>{isSample ? "DEMONSTRATION REPOSITORY" : state.kind === "live" && state.source === "private" ? "AUTHORIZED GITHUB REPOSITORY" : "SAVED REPOSITORY REPORT"}</span>
             <h2>{report.appName}</h2>
             <p><GitCommitHorizontal size={14}/> <span title={report.revision || "Unknown commit"}>{isSample ? "Example revision" : report.revision ? report.revision.slice(0, 12) : "Revision unavailable"}</span> <span aria-hidden="true">·</span> Read-only source assessment</p>
             {report.scanMetrics && <p className="result-scanned-metrics">

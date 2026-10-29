@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 
-test("private source and saved report APIs fail closed before GitHub authentication", async ({ request }) => {
+test("connected source and saved report APIs fail closed before GitHub authentication", async ({ request }) => {
   const repos = await request.get("/api/github/repositories");
-  expect([401, 503]).toContain(repos.status()); // 503 when GitHub App not configured
+  expect([401, 503]).toContain(repos.status());
   expect(repos.headers()["cache-control"]).toContain("no-store");
 
   const reports = await request.get("/api/reports");
@@ -18,22 +18,22 @@ test("private source and saved report APIs fail closed before GitHub authenticat
   expect(deletion.status()).toBe(401);
 });
 
-test("private assessment only advertises real GitHub installation when configured", async ({ page }) => {
+test("assessment advertises only a real GitHub connection", async ({ page }) => {
   await page.goto("/assess");
-  await page.getByRole("button", { name: /Private repository/i }).click();
-  await expect(page.getByText(/Private GitHub access isn't configured/i)).toBeVisible();
-  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByText(/GitHub connection is not configured/i)).toBeVisible();
+  await expect(page.getByRole("button", { name: /Public repository/i })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Private repository/i })).toHaveCount(0);
 });
 
-test("saved reports screen never fabricates history without login", async ({ page }) => {
+test("saved reports screen never fabricates GitHub history without login", async ({ page }) => {
   await page.goto("/assess/history");
   await expect(page.getByRole("heading", { name: /Agent history/i })).toBeVisible();
   await expect(page.getByText(/GitHub sign-in required/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /Connect GitHub/i })).toBeVisible();
 });
 
-test("unauthenticated direct private scan URL cannot reveal findings", async ({ page }) => {
-  await page.goto("/assess/scanning?private=someowner%2Fsomeprivate");
+test("unauthenticated direct connected scan URL cannot reveal findings", async ({ page }) => {
+  await page.goto("/assess/scanning?github=someowner%2Fsomeprivate");
   await expect(page.getByText(/GitHub sign-in required/i)).toBeVisible();
   await expect(page.getByRole("button", { name: /Retry analysis/i })).toBeVisible();
   await expect(page).not.toHaveURL(/\/assess\/results/);

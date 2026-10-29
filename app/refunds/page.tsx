@@ -4,58 +4,58 @@ import LegalPage, { type LegalSection } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Pricing & Billing Status | Secuvora",
-  description: "Full Secuvora security reports are planned to be free. No checkout, subscriptions or payment collection are active.",
+  description: "Secuvora's current report access and billing status. The service does not currently process customer payments.",
 };
 
 const sections: LegalSection[] = [
-  { id: "current", title: "Current status" },
-  { id: "free", title: "Full reports without a paywall" },
+  { id: "current", title: "Current access" },
   { id: "delivery", title: "Report access and delivery" },
-  { id: "payments", title: "No payments or refunds" },
-  { id: "changes", title: "Future policy changes" },
+  { id: "payments", title: "Billing and refunds" },
+  { id: "changes", title: "Future commercial changes" },
   { id: "questions", title: "Questions and contact" },
 ];
 
 export default function RefundsPage() {
   return (
-    <LegalPage eyebrow="POLICY / PRICING" title="Pricing & billing."
-      lead="Clear terms, even while the product is still in development. Secuvora's current plan is to provide the complete security report without a payment gate."
+    <LegalPage
+      eyebrow="POLICY / BILLING"
+      title="Pricing & billing."
+      lead="The current product does not ask for payment. This page explains report access now and what would need to change before any future paid offering."
       sections={sections}
       summary={[
-        "The complete report experience—including findings, evidence, impact and fixes—is planned to be free.",
-        "The current site does not accept payment, collect billing details or issue invoices.",
-        "Sample results are freely viewable, and public repository source scans can now generate complete reports.",
+        "Secuvora currently does not collect payment-card details, create customer orders or issue invoices.",
+        "Connected GitHub investigations can produce a complete report without a separate paid-results gate.",
+        "Any future paid offering must publish its price, seller details, renewal or one-time terms, refund rules and support route before checkout.",
       ]}
     >
       <section id="current" className="legal-section">
-        <h2>Current status</h2>
-        <p>Secuvora is currently a public product preview. You can view a clearly labeled, fictional full-report example at <Link href="/assess/results">Results</Link>, including findings, code locations, evidence, remediation and verification. The example is not an assessment of your application.</p>
-        <p>Read-only public source scanning is available. Private GitHub authorization, durable report storage and authenticated report recovery have not launched. No customer security data or payment card details are collected through the preview.</p>
+        <h2>Current access</h2>
+        <p>The current Secuvora experience lets an authorized GitHub user run a bounded repository investigation and view the resulting findings, evidence, impact context, remediation and verification guidance. The sample report remains fictional and clearly labeled.</p>
+        <p>There is no active subscription, report purchase or premium-results unlock in the current application.</p>
       </section>
-      <section id="free" className="legal-section">
-        <h2>Full reports without a paywall</h2>
-        <p>Our current product direction is to show the full security report without a paid upgrade. When a real report is available, the intended experience is to include severity summaries, affected locations, evidence, possible impact, fix steps, verification guidance, and explicit scan limitations together.</p>
-        <p>There is no subscription, one-time report charge or premium unlock in the current website experience.</p>
-      </section>
+
       <section id="delivery" className="legal-section">
         <h2>Report access and delivery</h2>
-        <p>Completed public scan reports can be reopened from local browser history for up to 30 days. Cross-device cloud recovery is not provided. Private report recovery requires authorized GitHub access and configured server storage. Future private report access will require verified authorization. The system must show whether checks completed, failed or were skipped. Report details must not be fabricated to fill gaps in analysis.</p>
-        <p>A sample report is downloadable from the preview for demonstration purposes, clearly identified as synthetic example data.</p>
+        <p>Connected reports are associated with the authenticated GitHub user and can be reopened from Agent history while the encrypted report record remains within its retention period. Users can delete individual connected reports from that history.</p>
+        <p>Legacy browser-only reports created by older public-scan flows may remain local to the device. Report output must reflect completed checks and must not invent findings to fill gaps in analysis.</p>
       </section>
+
       <section id="payments" className="legal-section">
-        <h2>No payments or refunds</h2>
-        <p>The current service does not process payments or issue paid reports, so no order can be placed and no refund can be requested for a Secuvora report. If someone asks you to pay for access to the current sample or claims a payment is required here, treat that as suspicious.</p>
-        <p>If Secuvora later introduces a separately priced product, the price, tax disclosures, seller identity, refund eligibility and a private support route must be published before any purchase is requested. Applicable mandatory consumer protections will remain in effect.</p>
+        <h2>Billing and refunds</h2>
+        <p>Secuvora does not currently process customer payments, so there is no Secuvora order to cancel or refund. The application should never ask for payment-card information unless a separately documented checkout is introduced.</p>
+        <p>If a future offering becomes paid, applicable consumer protections remain in effect and the commercial policy must explain price, taxes where relevant, seller identity, delivery, cancellation or refund eligibility and a private support method before purchase.</p>
       </section>
+
       <section id="changes" className="legal-section">
-        <h2>Future policy changes</h2>
-        <p>Any future paid offering would require an updated policy and appropriate checkout disclosures. Nothing on this page authorizes a charge or creates an ongoing payment obligation.</p>
-        <p>Changes affecting the product's scope or data collection will also be reflected in our <Link href="/privacy">privacy</Link> and <Link href="/terms">terms</Link> pages.</p>
+        <h2>Future commercial changes</h2>
+        <p>Any future checkout, subscription or paid report would require updated user-facing terms and billing disclosures before it goes live. Nothing on this page creates a recurring payment obligation.</p>
+        <p>Material changes to data handling would also be reflected in <Link href="/privacy">Privacy</Link> and <Link href="/terms">Terms</Link>.</p>
       </section>
+
       <section id="questions" className="legal-section">
         <h2>Questions and contact</h2>
-        <p>For non-sensitive product feedback, visit <Link href="/contact">Contact</Link>. Please do not post private application code, credentials or personal records in public support channels.</p>
-        <p className="legal-note"><strong>Current service:</strong> Public GitHub source scans can generate real, bounded reports today. Private repository scanning and durable recovery require operator configuration; the example remains illustrative.</p>
+        <p>For non-sensitive product feedback, see <Link href="/contact">Contact</Link>. Do not place private source code, credentials, personal records or undisclosed vulnerabilities in a public support channel.</p>
+        <p className="legal-note"><strong>Current billing status:</strong> No customer checkout or payment collection is enabled.</p>
       </section>
     </LegalPage>
   );

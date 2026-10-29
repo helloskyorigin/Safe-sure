@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     const response = await fetch("https://github.com/login/oauth/access_token", {
       method: "POST",
       headers: { Accept: "application/json", "Content-Type": "application/json",
-        "User-Agent": "ShipSafe-RepositoryAssessment/1.0" },
+        "User-Agent": "Secuvora-RepositoryAssessment/1.0" },
       body: JSON.stringify({
         client_id: process.env.GITHUB_APP_CLIENT_ID,
         client_secret: process.env.GITHUB_APP_CLIENT_SECRET,
