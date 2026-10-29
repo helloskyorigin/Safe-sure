@@ -26,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <Script id="secuvora-disable-scroll-restore" strategy="beforeInteractive">{"try { history.scrollRestoration = 'manual'; } catch (e) {}"}</Script>
+        <Script id="secuvora-theme-init" strategy="beforeInteractive">{"try { const t = localStorage.getItem('secuvora:theme'); const theme = t === 'dark' ? 'dark' : 'light'; document.documentElement.dataset.theme = theme; const meta = document.querySelector('meta[name=\"theme-color\"]'); if (meta) meta.setAttribute('content', theme === 'dark' ? '#090d14' : '#fcfdff'); } catch (e) { document.documentElement.dataset.theme = 'light'; }"}</Script>
         <meta name="theme-color" content="#fcfdff" />
       </head>
       <body>{children}</body>
