@@ -4,7 +4,7 @@ test("landing starts a real public scan without an extra selector click", async 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator(".hero-action").getByRole("link", { name: /Start investigation/i }).click();
   await expect(page).toHaveURL(/\/assess$/);
-  await expect(page.getByRole("heading", { level: 1, name: /Start your investigation/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /What should Secuvora investigate/i })).toBeVisible();
   await expect(page.getByRole("group", { name: "Repository visibility" }).getByRole("button")).toHaveCount(2);
   await expect(page.getByRole("button", { name: /Public repository/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /Private repository/i })).toBeVisible();
@@ -19,10 +19,10 @@ test("public choice reveals one URL field, validates, then opens scanning", asyn
   await expect(publicChoice).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("textbox", { name: "GitHub repository URL" })).toBeVisible();
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("https://evil.example/my/repo");
-  await page.getByRole("button", { name: "Start investigation" }).click();
+  await page.getByRole("button", { name: "Begin analysis" }).click();
   await expect(page.locator("#connect-url-error")).toContainText("Enter a valid GitHub URL");
   await page.getByRole("textbox", { name: "GitHub repository URL" }).fill("github.com/vercel/ms");
-  await page.getByRole("button", { name: "Start investigation" }).click();
+  await page.getByRole("button", { name: "Begin analysis" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?repo=vercel%2Fms/);
 });
 
@@ -59,7 +59,7 @@ test("private connected account selects a real authorized repo and continues to 
   const select = page.getByRole("combobox", { name: "Choose repository" });
   await expect(select.locator("option")).toHaveCount(2);
   await select.selectOption("founder/beta");
-  await page.getByRole("button", { name: "Run security agent" }).click();
+  await page.getByRole("button", { name: "Begin analysis" }).click();
   await expect(page).toHaveURL(/\/assess\/scanning\?private=founder%2Fbeta/);
 });
 
