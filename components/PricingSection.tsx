@@ -59,7 +59,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             data-start
             className="button button-dark price-cta"
           >
-            Check my application <span aria-hidden="true">→</span>
+            Start investigation <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
             Public-source checks are available now. Private GitHub access requires configured authorization.
