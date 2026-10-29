@@ -1143,3 +1143,21 @@ html[data-theme="light"] .landing-page .faq-answer-wrap[data-open="true"] .faq-a
 @media(prefers-reduced-motion:reduce){
   .faq-answer-wrap,.faq-plus,.top-cta svg,.mobile-nav .button svg{transition:none!important}
 }
+
+
+/* Exact uploaded Secuvora mark: preserve clean fills, never inherit generic SVG strokes. */
+.secuvora-mark,
+.secuvora-mark *{
+  stroke:none!important;
+}
+.secuvora-mark-shell{fill:var(--secuvora-shell)}
+.secuvora-mark-core{fill:var(--secuvora-core)}
+
+/* Accordion rows are interactive content and must never be individually scroll-hidden. */
+.faq-list .faq-entry{
+  opacity:1;
+  translate:none;
+  scale:1;
+  filter:none;
+  will-change:auto;
+}
