@@ -1058,3 +1058,16 @@ html[data-theme="dark"] :is(.legal-section,.legal-aside,.legal-summary,.legal-fo
 html[data-theme="dark"] :is(.legal-section h2,.legal-heading h1,.legal-aside h2,.legal-footer nav strong){color:#edf3fa}
 html[data-theme="dark"] :is(.legal-section p,.legal-section li,.legal-heading p,.legal-aside a,.legal-footer nav a){color:#a7b6c9}
 html[data-theme="dark"] .legal-aside{background:#121c29}
+
+html[data-theme="dark"] .legal-site{background:#090e16;color:#e6edf7}
+html[data-theme="dark"] .legal-site :is(header,footer,aside){background:#111a26;border-color:#2b394b}
+html[data-theme="dark"] .legal-site :is(h1,h2,h3,strong){color:#eaf1fa}
+html[data-theme="dark"] .legal-site :is(p,li,small){color:#a5b5c8}
+html[data-theme="dark"] .legal-site :is(a,button){border-color:#33445a}
+html[data-theme="dark"] .theme-icon-toggle{background:#182335;color:#c6dcf6;border-color:#35465d}
+html[data-theme="dark"] .landing-page .preview-top *{visibility:visible}
+@media print{
+ html[data-theme="dark"] .result-page{background:#fff!important;color:#20324a!important;color-scheme:light}
+ html[data-theme="dark"] .result-page :is(h1,h2,h3,h4,h5,strong,p,small){color:#20324a!important}
+ html[data-theme="dark"] .result-page :is(.result-repo-card,.result-severity,.delta-panel,.delta-metric){background:#fff!important;border-color:#dbe4ee!important}
+}
