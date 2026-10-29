@@ -24,7 +24,7 @@ test("completed public report survives refresh, tab navigation and appears in ha
   await page.goto("/");
   await page.getByRole("link", { name: "History" }).first().click();
   await expect(page).toHaveURL(/\/assess\/history/);
-  await expect(page.getByRole("heading", { name: /Investigations/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Investigations/i })).toBeVisible();
   await expect(page.locator(".history-report-row")).toHaveCount(1);
   await expect(page.getByText("acme/testapp")).toBeVisible();
   await page.getByRole("link", { name: "Open report" }).click();
@@ -79,7 +79,7 @@ test("mobile hamburger has Scan history without requiring GitHub login", async (
   const nav = page.getByRole("navigation", { name: "Mobile navigation" });
   await nav.getByRole("link", { name: "History" }).click();
   await expect(page).toHaveURL(/\/assess\/history/);
-  await expect(page.getByRole("heading", { name: /Investigations/i })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Investigations/i })).toBeVisible();
   await expect(page.getByText("No agent reports saved yet.")).toBeVisible();
   await context.close();
 });
