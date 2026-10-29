@@ -3,8 +3,8 @@ import AssessmentStart from "@/components/AssessmentStart";
 import "./assess.css";
 
 export const metadata: Metadata = {
-  title: "Run your security agent | Secuvora",
-  description: "Start your Secuvora security agent on a public GitHub repository, or authorize private source access when configured. Get evidence-backed findings, free.",
+  title: "Start an investigation | Secuvora",
+  description: "Choose a public GitHub source or authorize private access when configured. Begin a read-only, evidence-based security review.",
   robots: { index: false, follow: true },
 };
 
