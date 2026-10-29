@@ -43,12 +43,60 @@ test("top CTA and report cards use the same premium UI font stack", async ({ pag
   expect(fonts.cta).toBe(fonts.report);
 });
 
-test("FAQ starts fully collapsed and opens only after interaction", async ({ page }) => {
+test("FAQ starts collapsed and opened answers stay visible in both themes", async ({ browser }) => {
+  for (const theme of ["light", "dark"] as const) {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    await context.addInitScript(value => localStorage.setItem("secuvora:theme", value), theme);
+    const page = await context.newPage();
+    await page.goto("/");
+    const triggers = page.locator("#faq .faq-trigger");
+    await expect(triggers.first()).toHaveAttribute("aria-expanded", "false");
+    const count = await triggers.count();
+    for (let i = 0; i < count; i++) await expect(triggers.nth(i)).toHaveAttribute("aria-expanded", "false");
+
+    await triggers.first().scrollIntoViewIfNeeded();
+    await triggers.first().click();
+    await expect(triggers.first()).toHaveAttribute("aria-expanded", "true");
+
+    const wrap = page.locator("#faq-answer-0");
+    const answer = wrap.locator(".faq-answer");
+    await expect(wrap).toHaveAttribute("data-open", "true");
+    await expect(answer).toBeVisible();
+    await page.waitForTimeout(450);
+    await expect(answer).toBeVisible();
+    const state = await wrap.evaluate(el => {
+      const rect = el.getBoundingClientRect();
+      const style = getComputedStyle(el);
+      return { height: rect.height, opacity: Number.parseFloat(style.opacity || "1") };
+    });
+    expect(state.height).toBeGreaterThan(20);
+    expect(state.opacity).toBeGreaterThan(.95);
+    await context.close();
+  }
+});
+
+test("landing header uses the icon plus dotless Secuvora wordmark", async ({ page }) => {
   await page.goto("/");
-  const triggers = page.locator("#faq .faq-trigger");
-  await expect(triggers.first()).toHaveAttribute("aria-expanded", "false");
-  const count = await triggers.count();
-  for (let i = 0; i < count; i++) await expect(triggers.nth(i)).toHaveAttribute("aria-expanded", "false");
-  await triggers.first().click();
-  await expect(triggers.first()).toHaveAttribute("aria-expanded", "true");
+  const brand = page.locator(".header .secuvora-brand").first();
+  await expect(brand).toBeVisible();
+  await expect(brand.locator(".secuvora-mark")).toBeVisible();
+  await expect(brand.locator(".secuvora-wordmark")).toHaveText("secuvora");
+  await expect(page.locator(".preview-top .secuvora-wordmark")).toHaveText("secuvora");
+});
+
+test("top navigation CTA uses tuned deterministic premium typography", async ({ page }) => {
+  await page.goto("/");
+  const style = await page.locator(".top-cta").evaluate(el => {
+    const css = getComputedStyle(el);
+    return {
+      family: css.fontFamily,
+      weight: Number.parseInt(css.fontWeight, 10),
+      spacing: css.letterSpacing,
+      radius: css.borderRadius,
+    };
+  });
+  expect(style.family).toMatch(/system-ui|Segoe UI|Roboto|Arial|ui-sans-serif/i);
+  expect(style.weight).toBeGreaterThanOrEqual(700);
+  expect(Number.parseFloat(style.spacing)).toBeLessThan(0);
+  expect(Number.parseFloat(style.radius)).toBeGreaterThanOrEqual(8);
 });
