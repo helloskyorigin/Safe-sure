@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Github, ShieldCheck } from "lucide-react";
 import PrivateRepoConnector from "@/components/PrivateRepoConnector";
 import ThemeToggle from "@/components/ThemeToggle";
+import Brand from "@/components/Brand";
 
 export default function AssessmentStart() {
   return (
@@ -11,7 +12,7 @@ export default function AssessmentStart() {
       <a href="#connect-main" className="skip-link">Skip to repository selection</a>
       <header className="assess-header connect-header">
         <div className="assess-container assess-header-inner">
-          <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
+          <Brand />
           <span className="connect-header-mark"><span/> SECUVORA · SECURITY AGENT</span>
           <div className="connect-header-actions">
             <ThemeToggle />
