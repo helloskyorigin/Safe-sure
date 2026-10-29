@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 type Props = {
-  href?: string;
+  href?: string | null;
   compact?: boolean;
   className?: string;
   label?: string;
@@ -28,6 +28,7 @@ export default function Brand({ href = "/", compact = false, className = "", lab
       {!compact && <span className="secuvora-wordmark">secuvora</span>}
     </>
   );
+  if (href === null) return <span className={"brand secuvora-brand " + className} aria-label={label}>{content}</span>;
   return href.startsWith("#")
     ? <a href={href} className={"brand secuvora-brand " + className} aria-label={label}>{content}</a>
     : <Link href={href} className={"brand secuvora-brand " + className} aria-label={label}>{content}</Link>;
