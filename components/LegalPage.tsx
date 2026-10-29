@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, CheckCircle2, FileText, LockKeyhole } from "lucide-react";
 import LegalActions from "@/components/LegalActions";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export type LegalSection = { id: string; title: string };
 
@@ -33,7 +34,7 @@ export default function LegalPage({
       <header className="legal-nav">
         <div className="container legal-nav-inner">
           <Link href="/" className="brand" aria-label="Secuvora homepage">secuvora<span>.</span></Link>
-          <Link href="/" className="legal-back"><ArrowLeft size={16} aria-hidden="true"/> Back to Secuvora</Link>
+          <div className="legal-nav-actions"><ThemeToggle/><Link href="/" className="legal-back"><ArrowLeft size={16} aria-hidden="true"/> Back to Secuvora</Link></div>
         </div>
       </header>
 

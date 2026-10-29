@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { Moon, Sun } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface HeaderProps {
   onOpenAssessment: () => void;
@@ -11,15 +11,7 @@ interface HeaderProps {
 export default function Header({ onOpenAssessment }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
   const headerRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    document.body.classList.add("landing-theme-active");
-    const current = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    setTheme(current);
-    return () => document.body.classList.remove("landing-theme-active");
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,15 +55,6 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
-  };
-
-  const toggleTheme = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.dataset.theme = next;
-    try { window.localStorage.setItem("secuvora:theme", next); } catch {}
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    if (meta) meta.content = next === "dark" ? "#090d14" : "#fcfdff";
   };
 
   const handleAssessmentClick = (e: React.MouseEvent) => {
@@ -145,21 +128,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             FAQ
           </a>
           <Link href="/assess/history" onClick={closeMenu}>Agent history</Link>
-          <button
-            type="button"
-            className="theme-menu-row"
-            onClick={toggleTheme}
-            aria-pressed={theme === "dark"}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            <span className="theme-menu-copy">
-              <span className="theme-menu-icon" aria-hidden="true">
-                {theme === "dark" ? <Moon size={17}/> : <Sun size={17}/>}
-              </span>
-              <span><strong>Appearance</strong><small>{theme === "dark" ? "Dark mode" : "Light mode"}</small></span>
-            </span>
-            <span className="theme-switch" aria-hidden="true"><span /></span>
-          </button>
+          <ThemeToggle variant="menu" />
           <a
             href="/assess"
             onClick={handleAssessmentClick}

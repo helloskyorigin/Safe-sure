@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, Github, ShieldCheck } from "lucide-react";
 import PrivateRepoConnector from "@/components/PrivateRepoConnector";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AssessmentStart() {
   return (
@@ -13,6 +14,7 @@ export default function AssessmentStart() {
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
           <span className="connect-header-mark"><span/> SECUVORA · SECURITY AGENT</span>
           <div className="connect-header-actions">
+            <ThemeToggle />
             <Link href="/assess/history" className="assess-back"><Github size={16}/> <span>Agent history</span></Link>
             <Link href="/" aria-label="Back to homepage" className="assess-back"><ArrowLeft size={16}/> <span>Back</span></Link>
           </div>
