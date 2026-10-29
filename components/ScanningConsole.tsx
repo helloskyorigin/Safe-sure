@@ -178,7 +178,7 @@ export default function ScanningConsole() {
             if (!check.ok) throw new Error("Scan finished, but the saved report could not be opened. Retry from Agent history.");
             const persisted: unknown = await check.json();
             if (!isAssessmentReport(persisted, completedId) ||
-                persisted.appName.toLowerCase() !== repo.toLowerCase())
+                persisted.appName.toLowerCase() !== repo!.toLowerCase())
               throw new Error("Saved report did not match the selected repository.");
           }
           if (stopped || controller.signal.aborted) return;
