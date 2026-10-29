@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("idle scanning page stays minimal and never invents progress", async ({ page }) => {
   await page.goto("/assess/scanning");
   await expect(page.getByRole("heading", { name: "Ready to investigate" })).toBeVisible();
-  await expect(page.getByText("Awaiting repository")).toBeVisible();
+  await expect(page.getByText("Awaiting source")).toBeVisible();
   await expect(page.getByText("No repository selected")).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
   await expect(page.locator(".scan-check")).toHaveCount(5);
