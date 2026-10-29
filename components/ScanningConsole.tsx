@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Circle, CircleAlert,
-  FileCheck2, Github, LoaderCircle, RefreshCw, Bot,
+  FileCheck2, Github, LoaderCircle, RefreshCw, ScanSearch,
   ShieldCheck, Square,
 } from "lucide-react";
 import { isAssessmentReport } from "@/lib/report-contract";
@@ -38,7 +38,7 @@ const repoPattern = /^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9_.-]{1,100}$/;
 function statusName(status: CheckStatus): string {
   switch (status) {
     case "complete": return "Done";
-    case "running": return "Scanning";
+    case "running": return "Checking";
     case "skipped": return "Skipped";
     case "failed": return "Failed";
     default: return "Waiting";
@@ -247,10 +247,10 @@ export default function ScanningConsole() {
      : snapshot?.status === "completed" ? (savedId ? "Opening your full report…" : "Preparing your full report…")
     : load.type === "loading" ? (restartNote ? "Reconnecting after refresh · starting a new scan…" : "Connecting to the scanner…")
     : snapshot?.status === "queued" ? "Waiting for the scanner…"
-    : "Analyzing your repository…";
-  const stateLabel = isFailure ? "Scan interrupted" :
-    isFinishing ? (savedId ? "Opening results" : "Finalizing report") : ongoing ? "Live scanning" :
-    snapshot?.status === "completed" ? "Finalizing report" : "Awaiting repository";
+    : "Waiting for source analysis…";
+  const stateLabel = isFailure ? "Analysis interrupted" :
+    isFinishing ? (savedId ? "Opening results" : "Preparing report") : ongoing ? "Analysis in progress" :
+    snapshot?.status === "completed" ? "Preparing report" : "Awaiting source";
   const message = load.type === "error" ? load.message :
     load.type === "invalid" ? "Repository or run reference is invalid." :
     load.type === "unavailable" ? "This scan service is not configured." :
@@ -284,33 +284,30 @@ export default function ScanningConsole() {
 
   return (
     <div className="scan-page">
-      <a href="#scan-main" className="skip-link">Skip to scan</a>
+      <a href="#scan-main" className="skip-link">Skip to analysis</a>
       <header className="scan-nav">
         <div className="scan-container scan-nav-inner">
           <Link href="/" className="brand" aria-label="Secuvora home">secuvora<span>.</span></Link>
-          <span className="scan-nav-center"><span/> {ongoing ? "LIVE SOURCE REVIEW" : "READ-ONLY SOURCE REVIEW"}</span>
+          <span className="scan-nav-center"><span/> SECUVORA / ANALYSIS</span>
           <Link href="/assess" className="scan-nav-return"><ArrowLeft size={16}/> Back</Link>
         </div>
       </header>
 
       <main className="scan-container scan-main" id="scan-main">
         <section className="scan-card" aria-labelledby="scan-heading">
+          <div className="scan-step-label">02 / ANALYSIS</div>
           <div className={"scan-state-tag" + (isFailure ? " is-error" : "")} role="status" aria-live="polite">
             <span className="scan-state-dot"/>{stateLabel}
           </div>
 
-          <div className={"scan-orbit-scene" + (ongoing && !isFailure ? " is-active" : "")} aria-hidden="true">
-            <div className="scan-orbit-ring scan-ring-outer"/>
-            <div className="scan-orbit-ring scan-ring-inner"/>
-            <div className="scan-orbit-core"><Bot size={44} strokeWidth={1.4}/></div>
-          </div>
+          <div className="scan-analysis-icon" aria-hidden="true"><ScanSearch size={29} strokeWidth={1.6}/></div>
 
           <div className="scan-visual-bottom">
-            <h1 id="scan-heading">{isFailure ? "Scan interrupted" :
-              isFinishing ? (savedId ? "Opening your results" : "Finalizing your report") :
-              hasSource ? "Agent investigating" : "Ready to scan"}</h1>
-            <p className="scan-repo-name">{source?.name || "No repository selected"}</p>
-            {hasSource && <p className="scan-source-type">{source?.private ? "Authorized private repository" : "Public GitHub repository"} · Read-only</p>}
+            <h1 id="scan-heading">{isFailure ? "Analysis interrupted" :
+              isFinishing ? (savedId ? "Opening your report" : "Preparing your report") :
+              hasSource ? "Reviewing security signals" : "Ready to investigate"}</h1>
+            <p className="scan-repo-name"><Github size={14} aria-hidden="true"/> <span>{source?.name || "No source selected"}</span></p>
+            {hasSource && <p className="scan-source-type">{source?.private ? "Authorized private source" : "Public GitHub source"} · Read-only</p>}
             {!isFailure && <p className="scan-current-action" aria-live="polite">
               {ongoing && <LoaderCircle size={15} className="scan-inline-spinner"/>}
               {hasSource ? liveDescription : "Select a repository to begin."}
@@ -320,22 +317,23 @@ export default function ScanningConsole() {
 
           <div className="scan-progress">
             <div className="scan-progress-row">
-              <span>Verified check progress</span>
-              <strong>{snapshot?.progress ? snapshot.progress.done + " of " + snapshot.progress.total + " checks" : "—"}</strong>
+              <span>Checks completed</span>
+              <strong>{snapshot?.progress ? snapshot.progress.done + " / " + snapshot.progress.total : "—"}</strong>
             </div>
             <div className="scan-progress-track"
               role={percent === null ? undefined : "progressbar"}
-              aria-label={percent === null ? undefined : "Assessment progress"}
+              aria-label={percent === null ? undefined : "Analysis progress"}
               aria-valuenow={percent === null ? undefined : percent}
               aria-valuemin={percent === null ? undefined : 0}
               aria-valuemax={percent === null ? undefined : 100}>
               <motion.div className="scan-progress-fill" animate={{ width: percent === null ? "0%" : percent + "%" }}
                 transition={{ duration: reducedMotion ? 0 : .45 }}/>
             </div>
-            <span className="scan-progress-caption">{count === null ? "Waiting for real scan updates…" : count + " of " + checks.length + " stages resolved"}</span>
+            <span className="scan-progress-caption">{count === null ? "Waiting for source updates…" : count + " of " + checks.length + " stages resolved"}</span>
           </div>
 
           <div className="scan-check-list" aria-label="Security checks">
+            <div className="scan-check-list-header"><span>CHECKS</span><span>STATUS</span></div>
             {checks.map(check => {
               const state = check.status;
               return <div key={check.key} className={"scan-check status-" + state}>
@@ -356,12 +354,12 @@ export default function ScanningConsole() {
               <div className="scan-retry-actions">
                 <button className="scan-primary-link" type="button" onClick={() => {
                   window.location.assign("/assess/scanning?" + (source.private ? "private=" : "repo=") + encodeURIComponent(source.name));
-                }}><RefreshCw size={17}/> Retry this scan <ArrowRight size={17}/></button>
-                <Link href="/assess" className="scan-change-target">Choose another repository</Link>
+                }}><RefreshCw size={17}/> Retry analysis <ArrowRight size={17}/></button>
+                <Link href="/assess" className="scan-change-target">Change source</Link>
               </div>
             ) : ongoing && hasSource ? (
               <button className="scan-cancel" type="button" onClick={() => void cancelScan()} disabled={cancelBusy}>
-                <Square size={13}/>{cancelBusy ? "Cancelling…" : "Cancel scan"}
+                <Square size={13}/>{cancelBusy ? "Cancelling…" : "Cancel analysis"}
               </button>
             ) : isFinishing ? (
               <p className="scan-finishing"><FileCheck2 size={16}/>{savedId ? "Your full report is opening…" : "Preparing your full report…"}</p>
@@ -369,7 +367,7 @@ export default function ScanningConsole() {
               <Link href="/assess" className="scan-primary-link"><Github size={17}/> Start a new investigation <ArrowRight size={17}/></Link>
             )}
             {actionError && <p role="alert" className="scan-action-error">{actionError}</p>}
-            <p className="scan-honesty"><ShieldCheck size={15}/> Bounded source checks · No code execution · Findings need verification</p>
+            <p className="scan-honesty"><ShieldCheck size={15}/> Read-only checks · No code execution · Findings require review</p>
           </div>
         </section>
       </main>
