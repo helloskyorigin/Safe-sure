@@ -270,13 +270,7 @@ export function analyzeSourceDetailed(files: Source[], mode: "all" | "secrets" |
       const limiter = /\b(?:const|let)\s+([A-Za-z_$][\w$]*(?:recent|rate|limit|throttle)[\w$]*|(?:RECENT|RATE_LIMITS|LIMITS|THROTTLE))\s*=\s*new\s+Map\s*\(/ig;
       for (const match of file.content.matchAll(limiter)) {
         const name = match[1];
-        const literal = name.replace(/[.*+?^${}()|[\]\\]/g, "\\    }
-  }
-  return { findings, truncated, inspectedLines, rulesRun: 14 };
-}");
-        const access = new RegExp("\\b" + literal + "\\.get\\s*\\(");
-        const write = new RegExp("\\b" + literal + "\\.set\\s*\\(");
-        if (!access.test(file.content) || !write.test(file.content)) continue;
+        if (!file.content.includes(name + ".get(") || !file.content.includes(name + ".set(")) continue;
         const row = file.content.slice(0, match.index).split(/\r?\n/).length;
         add({
           id:"SS-RATE-001", title:"Process-local API rate limiting needs distributed review",
