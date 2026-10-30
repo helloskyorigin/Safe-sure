@@ -209,6 +209,7 @@ export default function ResultsExperience() {
       downloadText(isSample ? "secuvora-sample-fix-plan.md" : "secuvora-fix-plan.md",
         remediationMarkdown(report, isSample), "text/markdown;charset=utf-8");
     }
+    document.querySelector(".result-export-menu")?.removeAttribute("open");
     setExportFeedback(kind === "sarif" ? "SARIF file downloaded" :
       kind === "json" ? "JSON report downloaded" : "Fix plan downloaded");
     window.setTimeout(() => setExportFeedback(""), 6500);
@@ -327,7 +328,7 @@ export default function ResultsExperience() {
                 report.scanMetrics.filesInspected + " eligible files inspected. " : ""}
                 {report.coverage.some(item => item.id === "dependencies" && item.status !== "complete")
                   ? "Dependency advisories were not fully checked. " : ""}
-                Zero findings does not prove the codebase is secure.</p>
+                Zero findings does not prove the application is secure.</p>
             </div>
           </section>
         ) : (
