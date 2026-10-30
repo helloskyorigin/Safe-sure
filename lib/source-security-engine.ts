@@ -63,6 +63,33 @@ function finding(signal: Signal, file: string, row: number, line: string): Repor
   };
 }
 
+function countApplicableRules(files: Source[]): number {
+  const applied = new Set<string>();
+  for (const file of files) {
+    if (!CODE.test(file.path) && !CONFIG.test(file.path)) continue;
+    applied.add("SS-SECRET-001");
+    if (CODE.test(file.path) || /(?:^|\/)\.env(?:\.[^/]+)?$/i.test(file.path)) {
+      applied.add("SS-SECRET-002");
+      applied.add("SS-SECRET-003");
+    }
+    if (/\.(?:js|jsx|ts|tsx|cjs|mjs)$/i.test(file.path)) {
+      for (const key of ["SS-TLS-001","SS-INJECT-001","SS-XSS-001","SS-EXEC-002"])
+        applied.add(key);
+    }
+    if (/\.py$/i.test(file.path)) {
+      for(const key of ["SS-TLS-001","SS-CONFIG-001","SS-EXEC-001","SS-AGENT-001","SS-AGENT-002","SS-DESER-001"])
+        applied.add(key);
+    }
+    if (/\.(?:php|rb)$/i.test(file.path)) applied.add("SS-TLS-001");
+    if (/\.ya?ml$/i.test(file.path) && /(?:^|\/)\.github\/workflows\//i.test(file.path))
+      applied.add("SS-CI-001");
+    if (/\.tf$/i.test(file.path)) applied.add("SS-IAC-001");
+    if (/(?:^|\/)(?:app\/api\/.+\/route|pages\/api\/.+)\.(?:ts|tsx|js|mjs)$/i.test(file.path))
+      applied.add("SS-RATE-001");
+  }
+  return applied.size;
+}
+
 export function analyzeSourceDetailed(files: Source[], mode: "all" | "secrets" | "patterns" = "all"): { findings: ReportFinding[]; truncated: boolean; inspectedLines: number; rulesRun: number } {
   const findings: ReportFinding[] = [];
   const seen = new Set<string>();
@@ -289,7 +316,7 @@ export function analyzeSourceDetailed(files: Source[], mode: "all" | "secrets" |
       }
     }
   }
-  return { findings, truncated, inspectedLines, rulesRun: 15 };
+  return { findings, truncated, inspectedLines, rulesRun: countApplicableRules(files) };
 }
 
 export function analyzeSource(files: Source[]): ReportFinding[] {
