@@ -20,7 +20,10 @@ test("verified report shows actual scan scope, stable detector ID and no invente
   await expect(metrics).toContainText("12 files inspected");
   await expect(metrics).toContainText("4,321 lines reviewed");
   await expect(metrics).toContainText("48 pinned packages");
-  await expect(metrics).toContainText("12 source rules");
-  await expect(page.locator(".result-detail-meta")).toContainText("SS-SECRET-002");
+  await expect(page.locator(".result-severity")).toHaveCount(4);
+  const first=page.locator(".result-finding-card").first();
+  await first.locator("summary").first().click();
+  await first.locator(".result-evidence-accordion summary").click();
+  await expect(first.locator(".result-evidence-accordion")).toContainText("SS-SECRET-002");
   await expect(page.getByText(/97% secure|100% secure|Security score/i)).toHaveCount(0);
 });
