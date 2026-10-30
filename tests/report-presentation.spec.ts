@@ -41,8 +41,9 @@ test("server-verified private report renders real details and guarded source lin
   await page.goto("/assess/results?run=" + runId);
   await expect(page.getByText("AUTHORIZED GITHUB REPOSITORY")).toBeVisible();
   await expect(page.getByText("AGENT REVIEW COMPLETE")).toBeVisible();
-  await expect(page.locator(".result-finding-item")).toHaveCount(6);
-  await expect(page.getByRole("link", { name: "Open source" })).toHaveAttribute("href",
+  await expect(page.locator(".result-finding-card")).toHaveCount(6);
+  await page.locator(".result-finding-card").first().locator("summary").first().click();
+  await expect(page.getByRole("link", { name: "Open source" }).first()).toHaveAttribute("href",
     "https://github.com/acme/private-project/blob/"+revision+"/src/lib/client.ts#L18");
   await expect(page.getByText("INTERACTIVE SAMPLE")).toHaveCount(0);
   await expect(page.getByText(/\$19|Checkout|Upgrade to Pro/i)).toHaveCount(0);
@@ -54,5 +55,5 @@ test("private report with no authenticated data never shows sample findings", as
   }));
   await page.goto("/assess/results?run=12345678-1234-4321-9999-123456789012");
   await expect(page.getByRole("heading", { name: /A verified report isn't available/i })).toBeVisible();
-  await expect(page.locator(".result-finding-item")).toHaveCount(0);
+  await expect(page.locator(".result-finding-card")).toHaveCount(0);
 });
