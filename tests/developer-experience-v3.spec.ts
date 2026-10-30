@@ -51,35 +51,27 @@ test("scan stages explain what checks do without inventing activity", async ({ p
   expect(opacity).toBeGreaterThanOrEqual(.99);
 });
 
-test("finding pager moves through filtered results and respects disabled bounds", async ({ page }) => {
+test("developer findings expand on demand and severity filtering stays accurate", async ({ page }) => {
   await page.goto("/assess/results");
-  const pager = page.getByRole("navigation", { name: "Move between filtered findings" });
-  await expect(pager).toContainText("Finding 1 of 6");
-  await expect(pager.getByRole("button", {name:"Previous finding"})).toBeDisabled();
-  await pager.getByRole("button", {name:"Next finding"}).click();
-  await expect(pager).toContainText("Finding 2 of 6");
-  await pager.getByRole("button", {name:"Previous finding"}).click();
-  await expect(pager).toContainText("Finding 1 of 6");
-  await page.locator(".result-filter-pills").getByRole("button", { name:"High" }).click();
-  await expect(pager).toContainText("Finding 1 of 2");
-  await pager.getByRole("button", {name:"Next finding"}).click();
-  await expect(pager).toContainText("Finding 2 of 2");
-  await expect(pager.getByRole("button", {name:"Next finding"})).toBeDisabled();
-  await expect(page.getByRole("link", {name:/Review findings/})).toHaveAttribute("href","#findings");
-  await expect(page.getByRole("link", {name:"Coverage", exact:true})).toHaveAttribute("href","#coverage");
+  await expect(page.locator(".result-finding-card")).toHaveCount(6);
+  const high=page.getByRole("button",{name:"Show High findings"});
+  await high.click();
+  await expect(page.locator(".result-finding-card")).toHaveCount(2);
+  await page.locator(".result-finding-card").first().locator("summary").first().click();
+  await expect(page.locator(".result-finding-card").first().getByRole("heading",{name:"How to fix"})).toBeVisible();
+  await page.getByRole("button",{name:"Show all findings"}).click();
+  await expect(page.locator(".result-finding-card")).toHaveCount(6);
 });
 
-test("mobile report pagination remains tappable without overflowing", async ({ browser }) => {
-  for (const width of [320, 375, 768]) {
-    const context = await browser.newContext({viewport:{width,height:810},isMobile:width<500,hasTouch:width<500});
-    const page = await context.newPage();
-    await page.goto("/assess/results");
-    const nav = page.getByRole("navigation", {name:"Move between filtered findings"});
-    await expect(nav.getByRole("button", {name:"Next finding"})).toBeVisible();
-    await nav.getByRole("button", {name:"Next finding"}).click();
-    await expect(nav).toContainText("Finding 2 of 6");
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(overflow, "report pager horizontal overflow at "+width).toBeLessThanOrEqual(2);
+test("mobile report finding cards are tappable without overflow", async ({ browser }) => {
+  for(const width of [320,375,768]){
+    const context=await browser.newContext({viewport:{width,height:810},isMobile:width<500,hasTouch:width<500});
+    const page=await context.newPage();await page.goto("/assess/results");
+    const card=page.locator(".result-finding-card").first();
+    await card.locator("summary").first().click();
+    await expect(card.getByRole("heading",{name:"Potential impact"})).toBeVisible();
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+    expect(overflow,"report horizontal overflow at "+width).toBeLessThanOrEqual(2);
     await context.close();
   }
 });
