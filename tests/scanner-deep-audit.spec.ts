@@ -40,7 +40,7 @@ test("real scan visibly advances file fetch progress before separate detector pa
     {path:"app/api/analyze/route.ts",body:rateRoute,sha:"c".repeat(40)},
     {path:"app/config.ts",body:"export const hello = true;",sha:"d".repeat(40)},
   ];
-  globalThis.fetch = (async (url, _options) => {
+  globalThis.fetch = (async (url: RequestInfo | URL, _options?: RequestInit) => {
     const path = String(url);
     const json = (data: unknown) => new Response(JSON.stringify(data), {
       status:200,headers:{"content-type":"application/json"},
