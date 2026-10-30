@@ -7,8 +7,8 @@ type Signal = {
   category: string; overview: string; why: string; steps: string[]; verify: string;
   limitations: string; evidence: string; redacted?: boolean;
 };
-const CODE = /\.(?:js|jsx|ts|tsx|cjs|mjs|py|php|rb|go)$/i;
-const CONFIG = /(?:^|\/)(?:Dockerfile(?:\.[\w-]+)?|[\w.-]+\.tf|[\w.-]+\.ya?ml)$/i;
+const CODE = /\.(?:js|jsx|ts|tsx|cjs|mjs|py|php|rb|go|java|kt|kts|cs|rs|sh|bash|vue|svelte)$/i;
+const CONFIG = /(?:^|\/)(?:Dockerfile(?:\.[\w-]+)?|[\w.-]+\.tf|[\w.-]+\.ya?ml|\.env(?:\.[\w.-]+)?)$/i;
 const FIXTURE = /(?:^|\/)(?:__tests__|tests?|specs?|fixtures?|examples?|mocks?|samples?|\.storybook)(?:\/|$)|(?:\.test|\.spec|_test)\.[\w]+$|(?:^|\/)test_[^/]+\.py$|(?:^|\/)[^/]+_test\.go$/i;
 const COMMENT = /^\s*(?:\/\/|#|\*|\/\*|<!--)/;
 const PLACEHOLDER = /(?:example|dummy|placeholder|changeme|replace[_-]?me|your[_-]?(?:key|token|secret)|fake|not[_-]?real|test[_-]?only|sample|xxx{3,})/i;
@@ -63,13 +63,42 @@ function finding(signal: Signal, file: string, row: number, line: string): Repor
   };
 }
 
-export function analyzeSourceDetailed(files: Source[]): { findings: ReportFinding[]; truncated: boolean; inspectedLines: number; rulesRun: number } {
+function countApplicableRules(files: Source[]): number {
+  const applied = new Set<string>();
+  for (const file of files) {
+    if (!CODE.test(file.path) && !CONFIG.test(file.path)) continue;
+    applied.add("SS-SECRET-001");
+    if (CODE.test(file.path) || /(?:^|\/)\.env(?:\.[^/]+)?$/i.test(file.path)) {
+      applied.add("SS-SECRET-002");
+      applied.add("SS-SECRET-003");
+    }
+    if (/\.(?:js|jsx|ts|tsx|cjs|mjs)$/i.test(file.path)) {
+      for (const key of ["SS-TLS-001","SS-INJECT-001","SS-XSS-001","SS-EXEC-002"])
+        applied.add(key);
+    }
+    if (/\.py$/i.test(file.path)) {
+      for(const key of ["SS-TLS-001","SS-CONFIG-001","SS-EXEC-001","SS-AGENT-001","SS-AGENT-002","SS-DESER-001"])
+        applied.add(key);
+    }
+    if (/\.(?:php|rb)$/i.test(file.path)) applied.add("SS-TLS-001");
+    if (/\.ya?ml$/i.test(file.path) && /(?:^|\/)\.github\/workflows\//i.test(file.path))
+      applied.add("SS-CI-001");
+    if (/\.tf$/i.test(file.path)) applied.add("SS-IAC-001");
+    if (/(?:^|\/)(?:app\/api\/.+\/route|pages\/api\/.+)\.(?:ts|tsx|js|mjs)$/i.test(file.path))
+      applied.add("SS-RATE-001");
+  }
+  return applied.size;
+}
+
+export function analyzeSourceDetailed(files: Source[], mode: "all" | "secrets" | "patterns" = "all"): { findings: ReportFinding[]; truncated: boolean; inspectedLines: number; rulesRun: number } {
   const findings: ReportFinding[] = [];
   const seen = new Set<string>();
   const byRule = new Map<string, number>();
   let inspectedLines = 0, truncated = false;
 
   function add(signal: Signal, path: string, row: number, line: string) {
+    const isSecret = signal.id.startsWith("SS-SECRET-");
+    if (mode !== "all" && (mode === "secrets") !== isSecret) return;
     const key = signal.id + "\0" + path + "\0" + row;
     if (seen.has(key)) return;
     if (findings.length >= ENGINE_LIMIT || (byRule.get(signal.id) || 0) >= PER_RULE_LIMIT) {
@@ -110,7 +139,7 @@ export function analyzeSourceDetailed(files: Source[]): { findings: ReportFindin
       // Avoid wasting capacity on lines known to be documentation-like examples.
       if (/^\s*(?:console\.log|print\s*\()\s*["']/.test(line)) continue;
 
-      if (CODE.test(file.path)) {
+      if (CODE.test(file.path) || /(?:^|\/)\.env(?:\.[^/]+)?$/i.test(file.path)) {
         const detected = [...line.matchAll(TOKEN_LIKE)].map(m=>m[0]);
         if (detected.length && !PLACEHOLDER.test(line.replace(TOKEN_LIKE,"")) && !/^(?:import|from)\b/.test(line)) {
           add({ id:"SS-SECRET-002", title:"Provider credential pattern in repository", severity:"high",
@@ -260,8 +289,34 @@ export function analyzeSourceDetailed(files: Source[]): { findings: ReportFindin
         // Operational configuration is not a security vulnerability. Do not flag.
       }
     }
+    // A repository-local Map used as an HTTP rate limiter is process-scoped.
+    // Do not call it a bypass or an exploit: only flag an explicit combination
+    // of API route + rate-limiting map + read/write + 429 response.
+    const isApiRoute = /(?:^|\/)(?:app\/api\/.+\/route|pages\/api\/.+)\.(?:ts|tsx|js|mjs)$/i.test(file.path);
+    if (isApiRoute && /\b(?:429|RATE_LIMIT)\b/.test(file.content)) {
+      const limiter = /\b(?:const|let)\s+([A-Za-z_$][\w$]*(?:recent|rate|limit|throttle)[\w$]*|(?:RECENT|RATE_LIMITS|LIMITS|THROTTLE))\s*=\s*new\s+Map(?:<[^>\n]{1,140}>)?\s*\(/ig;
+      for (const match of file.content.matchAll(limiter)) {
+        const name = match[1];
+        if (!file.content.includes(name + ".get(") || !file.content.includes(name + ".set(")) continue;
+        const row = file.content.slice(0, match.index).split(/\r?\n/).length;
+        add({
+          id:"SS-RATE-001", title:"Process-local API rate limiting needs distributed review",
+          severity:"medium",confidence:"low",category:"API abuse protection",
+          overview:"An HTTP API route appears to use an in-memory Map for request-rate tracking.",
+          why:"In multi-instance or serverless deployments, separate processes can maintain different counters, making a local-only rate limit inconsistent.",
+          steps:["Check whether this API is deployed across multiple workers or regions.",
+            "If the limit protects a sensitive or costly endpoint, move counters to a shared atomic store with expiration.",
+            "Test burst traffic across independent instances and enforce limits at an appropriate edge or shared backend."],
+          verify:"Run concurrent requests through independent deployment instances and confirm the shared limit is enforced consistently.",
+          limitations:"Static heuristic only: the Map may be supplemented by an edge limiter or a shared rate limiter. No bypass was tested.",
+          evidence:"Process-local Map with get/set and HTTP 429 response pattern detected.",
+          redacted:false,
+        },file.path,row,match[0]);
+        break;
+      }
+    }
   }
-  return { findings, truncated, inspectedLines, rulesRun: 14 };
+  return { findings, truncated, inspectedLines, rulesRun: countApplicableRules(files) };
 }
 
 export function analyzeSource(files: Source[]): ReportFinding[] {

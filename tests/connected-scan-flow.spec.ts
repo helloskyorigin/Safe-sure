@@ -45,7 +45,7 @@ for (const visibility of ["public", "private"] as const) {
     await page.getByRole("button", { name: "Begin analysis" }).click();
 
     await expect(page).toHaveURL(new RegExp("/assess/results\\?run=" + runId), { timeout: 12000 });
-    await expect(page.locator(".result-finding-item")).toHaveCount(SAMPLE_REPORT.findings.length);
+    await expect(page.locator(".result-finding-card")).toHaveCount(SAMPLE_REPORT.findings.length);
     await expect(page.getByText("AUTHORIZED GITHUB REPOSITORY")).toBeVisible();
     expect(connectedScans).toBe(1);
   });

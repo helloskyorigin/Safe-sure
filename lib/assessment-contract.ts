@@ -36,6 +36,8 @@ export type AssessmentSnapshot = {
   events: AssessmentEvent[];
   /** Optional worker-confirmed progress, not a time-based guess. */
   progress?: { done: number; total: number };
+  /** Actual source fetch progress from GitHub, independent of the five check stages. */
+  fileProgress?: { loaded: number; total: number };
   error?: string;
 };
 
@@ -63,6 +65,12 @@ export function isAssessmentSnapshot(value: unknown, expectedId: string): value 
     !value.events.every((event: unknown) => record(event) &&
       shortText(event.id, 90) && shortText(event.at, 80) &&
       shortText(event.message, 300))) return false;
+  if (value.fileProgress !== undefined) {
+    const f = value.fileProgress;
+    if (!record(f) || !Number.isInteger(f.loaded) || !Number.isInteger(f.total) ||
+      (f.total as number) < 1 || (f.total as number) > 100000 ||
+      (f.loaded as number) < 0 || (f.loaded as number) > (f.total as number)) return false;
+  }
   if (value.progress !== undefined) {
     const p = value.progress;
     if (!record(p) || typeof p.done !== "number" || typeof p.total !== "number" ||

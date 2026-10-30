@@ -14,7 +14,7 @@ test("v2 produces stable reproducible evidence and never returns credential mate
   const first = analyzeSourceDetailed(files);
   const again = analyzeSourceDetailed(files);
   expect(first.findings).toHaveLength(5);
-  expect(first.rulesRun).toBe(14);
+  expect(first.rulesRun).toBe(7);
   expect(first.inspectedLines).toBe(5);
   expect(first.findings.map(f => f.id)).toEqual(again.findings.map(f => f.id));
   expect(new Set(first.findings.map(f => f.ruleId)).size).toBe(5);
@@ -84,5 +84,5 @@ test("agent integration bypass flags are reported with bounded evidence and expl
   expect(result.findings.every(f => f.confidence === "medium" &&
     f.limitations?.toLowerCase().includes("not") || false)).toBe(true);
   expect(result.findings.every(f => !f.evidence.includes("FAISS.load_local"))).toBe(true);
-  expect(result.rulesRun).toBe(14);
+  expect(result.rulesRun).toBe(9);
 });

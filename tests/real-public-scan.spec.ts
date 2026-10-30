@@ -46,13 +46,13 @@ test("public source scan streams worker snapshots into full report experience", 
   // No extra click: completed, validated stream must navigate automatically.
   await expect(page).toHaveURL(/\/assess\/results\?local=/, { timeout: 12000 });
   await expect(page.getByText("SAVED REPOSITORY REPORT")).toBeVisible();
-  await expect(page.locator(".result-finding-item")).toHaveCount(6);
+  await expect(page.locator(".result-finding-card")).toHaveCount(6);
 });
 
 test("real report id without tab-held report does not leak or invent findings", async ({ page }) => {
   await page.goto("/assess/results?local=12345678-1234-4321-9999-123456789012");
   await expect(page.getByRole("heading", { name: /A verified report isn't available/i })).toBeVisible();
-  await expect(page.locator(".result-finding-item")).toHaveCount(0);
+  await expect(page.locator(".result-finding-card")).toHaveCount(0);
 });
 
 
@@ -111,8 +111,7 @@ test("zero real findings is not mislabeled a clean security certificate", async 
   }));
   await page.goto("/assess/scanning?repo=example%2Fno-findings");
   await expect(page).toHaveURL(/\/assess\/results\?local=/);
-  await expect(page.getByText(/No candidates detected in supported checks/i)).toBeVisible();
-  await expect(page.getByText("No findings flagged by these rules")).toBeVisible();
+  await expect(page.locator(".result-clean-zero")).toContainText("No findings from supported rules");
   await expect(page.getByText(/does not prove the application is secure/i)).toBeVisible();
-  await expect(page.locator(".result-no-findings").getByRole("link", { name: "Review coverage" })).toBeVisible();
+  await expect(page.locator(".result-clean-coverage")).toBeVisible();
 });

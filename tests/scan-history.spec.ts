@@ -29,7 +29,7 @@ test("completed public report survives refresh, tab navigation and appears in ha
   await expect(page.getByText("acme/testapp")).toBeVisible();
   await page.getByRole("link", { name: "Open report" }).click();
   await expect(page).toHaveURL(/\/assess\/results\?local=/);
-  await expect(page.locator(".result-finding-item")).toHaveCount(6);
+  await expect(page.locator(".result-finding-card")).toHaveCount(6);
 });
 
 test("saved public history survives new tab and can be deleted", async ({ browser }) => {

@@ -274,8 +274,9 @@ export default function ScanningConsole() {
     snapshot?.status === "failed" || snapshot?.status === "cancelled";
   const isFinishing = snapshot?.status === "completed";
   const latestRunning = checks.find(check => check.status === "running");
+  const latestEvent = snapshot?.events.at(-1)?.message;
   const liveDescription = latestRunning
-    ? displayNames[latestRunning.key]
+    ? (latestEvent || displayNames[latestRunning.key])
      : snapshot?.status === "completed" ? (savedId ? "Opening your full report…" : "Verifying saved report…")
     : load.type === "loading" ? (restartNote ? "Reconnecting after refresh · starting a new scan…" : "Connecting to the scanner…")
     : snapshot?.status === "queued" ? "Waiting for the scanner…"
@@ -362,6 +363,11 @@ export default function ScanningConsole() {
                 transition={{ duration: reducedMotion ? 0 : .45 }}/>
             </div>
             <span className="scan-progress-caption">{count === null ? "Waiting for source updates…" : count + " of " + checks.length + " stages resolved"}</span>
+            {snapshot?.fileProgress && <p className="scan-file-count" role="status">
+              <FileCheck2 size={14} aria-hidden="true"/>
+              {snapshot.fileProgress.loaded} / {snapshot.fileProgress.total} source files fetched
+              {snapshot.fileProgress.loaded < snapshot.fileProgress.total ? " · checking GitHub source" : " · source inventory processed"}
+            </p>}
           </div>
 
           <div className="scan-check-list" aria-label="Security checks">

@@ -26,8 +26,8 @@ export function parsePublicRepo(raw: string) {
   return { owner: m[1], repo: m[2] };
 }
 const IGNORED = /(^|\/)(node_modules|vendor|dist|build|coverage|\.next|\.venv|venv|__pycache__|target|generated|fixtures|\.git|\.cache)(\/|$)/i;
-const CODE = /\.(js|jsx|ts|tsx|cjs|mjs|py|php|rb|go)$/i;
-const CONFIG = /(?:^|\/)(?:Dockerfile(?:\.[\w-]+)?|[\w.-]+\.tf|[\w.-]+\.ya?ml)$/i;
+const CODE = /\.(js|jsx|ts|tsx|cjs|mjs|py|php|rb|go|java|kt|kts|cs|rs|sh|bash|vue|svelte)$/i;
+const CONFIG = /(?:^|\/)(?:Dockerfile(?:\.[\w-]+)?|[\w.-]+\.tf|[\w.-]+\.ya?ml|\.env(?:\.[\w.-]+)?)$/i;
 const MANIFEST = /(^|\/)(package-lock\.json|requirements(?:-[\w-]+)?\.txt|Pipfile\.lock)$/i;
 const parseJson = (s: string): unknown => JSON.parse(s);
 async function download(url: string, signal: AbortSignal, limit: number, opts: RequestInit = {}) {
@@ -197,11 +197,12 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   const keys: CheckKey[] = ["access","secrets","dependencies","patterns","evidence"];
   const checks: AssessmentCheck[] = keys.map(key => ({ key, status: "queued" }));
   const events: AssessmentSnapshot["events"] = [];
+  let fileProgress: AssessmentSnapshot["fileProgress"];
   const send = (key: CheckKey, status: AssessmentCheck["status"], message: string) => {
     checks.find(c => c.key === key)!.status = status;
     events.push({ id: String(events.length+1), at: new Date().toISOString(), message });
     emit({ runId, target: { name: target }, status: "running", updatedAt: new Date().toISOString(),
-      checks: checks.map(c => ({ ...c })), events: events.slice(-25),
+      checks: checks.map(c => ({ ...c })), events: events.slice(-25), fileProgress,
       progress: { done: checks.filter(c => ["complete","skipped","failed"].includes(c.status)).length, total: 5 } });
   };
   const ghHeaders = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "Secuvora-SecurityAgent/1.0",
@@ -226,9 +227,12 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
       return score(a.path) - score(b.path) || a.path.localeCompare(b.path);
     });
   const chosen = eligible.filter(x => typeof x.size === "number" && x.size <= (MANIFEST.test(x.path)?MANIFEST_LIMIT:SOURCE_LIMIT)).slice(0, FILE_LIMIT);
-  if (!chosen.length) throw new ScanError("No supported source files were found.", 422);
+  if (!chosen.length) throw new ScanError("No eligible source/configuration files could be inspected. Supported formats include JS/TS, Python, Java, Go, shell, YAML, Terraform and Dockerfile; inspect size or access exclusions.", 422);
   let incomplete = !!tree.truncated || chosen.length < eligible.length;
   const files: Source[] = [];
+  let attempted = 0;
+  fileProgress = { loaded: 0, total: chosen.length };
+  send("access","running","Selected " + chosen.length + " eligible files at pinned commit " + sha.slice(0,12));
   // Bounded concurrency. Only source on a trusted, fixed GitHub raw host is retrieved.
   for (let i=0; i<chosen.length; i+=5) {
     const group = await Promise.allSettled(chosen.slice(i,i+5).map(async x => {
@@ -254,16 +258,21 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
       return { path: x.path, content };
     }));
     for (const result of group) {
+      attempted++;
       if (result.status === "fulfilled") files.push(result.value);
       else { if (signal.aborted) throw new ScanError("Scan cancelled.",408); incomplete = true; }
+      fileProgress = { loaded: attempted, total: chosen.length };
+      send("access","running","Read " + attempted + "/" + chosen.length +
+        " selected files; " + files.length + " successfully loaded");
     }
   }
   if (!files.length) throw new ScanError("GitHub source files could not be retrieved.", 502);
   send("access","complete","Loaded "+files.length+" source files at commit "+sha.slice(0,12));
   send("secrets","running","Inspecting source for potential secrets and unsafe patterns");
-  const analyzed = analyzeSourceDetailed(files);
-  const findings = analyzed.findings;
-  send("secrets","complete","Analyzed source and configuration rules; findings remain candidates until verified");
+  const secrets = analyzeSourceDetailed(files, "secrets");
+  const findings = [...secrets.findings];
+  send("secrets","complete","Reviewed " + files.length +
+    " source/config files; " + secrets.findings.length + " credential candidates identified");
   send("dependencies","running","Reading dependency versions and consulting OSV");
   const deps = parseDependencies(files);
   let osvFailed = false, osvPartial = false;
@@ -274,17 +283,20 @@ export async function scanPublicRepository(input: string, signal: AbortSignal, e
   send("dependencies", !deps.deps.length ? "skipped" : osvFailed ? "failed" : "complete",
     !deps.deps.length ? "No supported pinned lockfile packages found" : osvFailed ? "OSV database query failed" :
     "Compared "+deps.deps.length+" pinned packages with OSV advisories");
-  send("patterns","running","Finalizing source-pattern coverage");
-  send("patterns","complete","Static review finished (no application code executed)");
+  send("patterns","running","Running code, API and configuration detectors on fetched source");
+  const analyzed = analyzeSourceDetailed(files, "patterns");
+  findings.push(...analyzed.findings);
+  send("patterns","complete","Executed static detectors on " + analyzed.inspectedLines +
+    " eligible lines; " + analyzed.findings.length + " source-pattern candidates");
   send("evidence","running","Compiling evidence and explicit scan limitations");
-  incomplete ||= deps.truncated || osvPartial || analyzed.truncated;
+  incomplete ||= deps.truncated || osvPartial || analyzed.truncated || secrets.truncated;
   const coverage: CoverageItem[] = [
     { id:"access", label:githubAccessToken ? "Authorized GitHub source snapshot" : "Public source snapshot", status:"complete",
       note:files.length+" of "+eligible.length+" eligible files loaded at "+sha+". "+(incomplete?"Some files or checks were omitted by safety limits.":"Other file formats were outside this scan's scope.") },
-    { id:"secrets", label:"Credential-like source patterns", status:"complete", note:"High-signal provider token and credential-pattern review. Secret values are redacted; token validity is never tested." },
+    { id:"secrets", label:"Credential-like source patterns", status:"complete", note:"Actual static secret detection on " + files.length + " loaded source/configuration files. Values are redacted; token validity is not tested." },
     { id:"dependencies", label:"Pinned npm/PyPI dependency advisories", status:!deps.deps.length?"skipped":osvFailed?"failed":"complete",
-      note: deps.deps.length ? deps.deps.length+" pinned package versions checked against OSV." : "No supported pinned versions were available." },
-    { id:"patterns", label:"Supported static code/config rules", status:"complete", note:analyzed.inspectedLines+" eligible code/config lines inspected against "+analyzed.rulesRun+" high-signal rules. Matching is syntactic, not complete taint analysis." },
+      note: deps.deps.length ? (osvFailed ? "OSV provider failed; " + deps.deps.length + " versions could not be verified." : deps.deps.length + " pinned package versions checked against OSV.") : "No supported lockfile or pinned dependencies were available; package vulnerabilities were not evaluated." },
+    { id:"patterns", label:"Supported static code/config rules", status:"complete", note:analyzed.inspectedLines+" eligible code/config lines assessed using up to "+analyzed.rulesRun+" supported detector families, depending on language and file type. No runtime or full taint analysis." },
     { id:"runtime", label:"Runtime and authenticated penetration testing", status:"skipped", note:"Not performed. This scan does not run untrusted code or visit deployed app endpoints." },
   ];
   if (incomplete) coverage.push({ id:"limits", label:"Exhaustive repository coverage", status:"skipped", note:"File count, finding caps, source size or advisory limits prevented a full repository review." });
