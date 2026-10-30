@@ -11,14 +11,13 @@ type Props = {
   eyebrow: string;
   title: string;
   lead: string;
-  sections?: LegalSection[];
-  summary?: string[];
+  sections: LegalSection[];
+  summary: string[];
   children: ReactNode;
   updated?: string;
-  related?: { href: string; label: string }[];
 };
 
-const defaultRelated = [
+const related = [
   { href: "/legal", label: "Legal center" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
@@ -28,7 +27,7 @@ const defaultRelated = [
 ];
 
 export default function LegalPage({
-  eyebrow, title, lead, sections = [], summary = ["Read-only source analysis", "Transparent privacy practices", "No unverified claims"], children, updated = "28 October 2026", related = defaultRelated,
+  eyebrow, title, lead, sections, summary, children, updated = "28 October 2026",
 }: Props) {
   return (
     <div className="legal-site">
@@ -52,37 +51,31 @@ export default function LegalPage({
           </div>
         </div>
 
-        {summary.length > 0 && (
-          <div className="legal-quick" aria-label="At a glance">
-            <div className="legal-quick-top"><LockKeyhole size={16} aria-hidden="true"/><strong>At a glance</strong><span>Plain-language summary</span></div>
-            <ul>{summary.map(item => <li key={item}><CheckCircle2 size={17} aria-hidden="true"/><span>{item}</span></li>)}</ul>
-          </div>
-        )}
+        <div className="legal-quick" aria-label="At a glance">
+          <div className="legal-quick-top"><LockKeyhole size={16} aria-hidden="true"/><strong>At a glance</strong><span>Plain-language summary</span></div>
+          <ul>{summary.map(item => <li key={item}><CheckCircle2 size={17} aria-hidden="true"/><span>{item}</span></li>)}</ul>
+        </div>
 
-        {sections.length > 0 && (
-          <nav aria-label="Policy sections on smaller screens" className="legal-mobile-outline">
-            <details>
-              <summary>In this document <span>{sections.length} sections</span></summary>
-              <ol>
-                {sections.map((section, i) => <li key={section.id}>
-                  <a href={"#" + section.id}>
-                    <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                    {section.title}
-                  </a>
-                </li>)}
-              </ol>
-            </details>
-          </nav>
-        )}
+        <nav aria-label="Policy sections on smaller screens" className="legal-mobile-outline">
+          <details>
+            <summary>In this document <span>{sections.length} sections</span></summary>
+            <ol>
+              {sections.map((section, i) => <li key={section.id}>
+                <a href={"#" + section.id}>
+                  <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  {section.title}
+                </a>
+              </li>)}
+            </ol>
+          </details>
+        </nav>
         <div className="legal-grid">
           <aside className="legal-aside">
-            {sections.length > 0 && (
-              <nav aria-label="On this page" className="legal-toc">
-                <strong>ON THIS PAGE</strong>
-                {sections.map((section, i) => <a key={section.id} href={"#" + section.id}><span>{String(i + 1).padStart(2, "0")}</span>{section.title}</a>)}
-              </nav>
-            )}
-            {sections.length > 0 && <div className="legal-aside-divider"/>}
+            <nav aria-label="On this page" className="legal-toc">
+              <strong>ON THIS PAGE</strong>
+              {sections.map((section, i) => <a key={section.id} href={"#" + section.id}><span>{String(i + 1).padStart(2, "0")}</span>{section.title}</a>)}
+            </nav>
+            <div className="legal-aside-divider"/>
             <LegalActions />
           </aside>
           <article className="legal-content" id="legal-body">{children}</article>

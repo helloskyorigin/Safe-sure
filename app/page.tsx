@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
@@ -8,7 +8,6 @@ import SecuritySection from "@/components/SecuritySection";
 import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
-import AssessmentDialog from "@/components/AssessmentDialog";
 import ReportExperience from "@/components/ReportExperience";
 import ValueSection from "@/components/ValueSection";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -17,11 +16,10 @@ import LandingMotionDirector from "@/components/LandingMotionDirector";
 import FinalCTA from "@/components/FinalCTA";
 
 export default function Home() {
-  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+  const router = useRouter();
+  const openAssessment = () => router.push("/assess");
 
-  const openAssessment = () => {
-    setIsAssessmentOpen(true);
-  };
+
 
   return (
     <div className="landing-page">
@@ -43,10 +41,6 @@ export default function Home() {
         <FinalCTA onOpenAssessment={openAssessment} />
       </main>
       <Footer onOpenAssessment={openAssessment} />
-      <AssessmentDialog
-        isOpen={isAssessmentOpen}
-        onClose={() => setIsAssessmentOpen(false)}
-      />
     </div>
   );
 }
