@@ -294,7 +294,7 @@ export function analyzeSourceDetailed(files: Source[], mode: "all" | "secrets" |
     // of API route + rate-limiting map + read/write + 429 response.
     const isApiRoute = /(?:^|\/)(?:app\/api\/.+\/route|pages\/api\/.+)\.(?:ts|tsx|js|mjs)$/i.test(file.path);
     if (isApiRoute && /\b(?:429|RATE_LIMIT)\b/.test(file.content)) {
-      const limiter = /\b(?:const|let)\s+([A-Za-z_$][\w$]*(?:recent|rate|limit|throttle)[\w$]*|(?:RECENT|RATE_LIMITS|LIMITS|THROTTLE))\s*=\s*new\s+Map\s*\(/ig;
+      const limiter = /\b(?:const|let)\s+([A-Za-z_$][\w$]*(?:recent|rate|limit|throttle)[\w$]*|(?:RECENT|RATE_LIMITS|LIMITS|THROTTLE))\s*=\s*new\s+Map(?:<[^>\n]{1,140}>)?\s*\(/ig;
       for (const match of file.content.matchAll(limiter)) {
         const name = match[1];
         if (!file.content.includes(name + ".get(") || !file.content.includes(name + ".set(")) continue;
