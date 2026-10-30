@@ -6,6 +6,7 @@ import { Moon, Sun } from "lucide-react";
 type Theme = "light" | "dark";
 
 function readTheme(): Theme {
+  if (typeof document === "undefined") return "light";
   return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
 
@@ -19,8 +20,10 @@ function applyTheme(next: Theme) {
 
 export default function ThemeToggle({ variant = "icon" }: { variant?: "icon" | "menu" }) {
   const [theme, setTheme] = useState<Theme>("light");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setTheme(readTheme());
     const sync = (event: Event) => {
       const custom = event as CustomEvent<Theme>;
@@ -37,7 +40,7 @@ export default function ThemeToggle({ variant = "icon" }: { variant?: "icon" | "
     };
   }, []);
 
-  const dark = theme === "dark";
+  const dark = mounted && theme === "dark";
   const label = dark ? "Switch to light mode" : "Switch to dark mode";
 
   if (variant === "menu") {
