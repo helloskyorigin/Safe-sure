@@ -263,12 +263,12 @@ export default function ResultsExperience() {
               </span>
               <span className="result-date">{isSample ? "Fictional data" : readableDate(report.finishedAt)}</span>
             </div>
-            <h1>{isSample ? "Explore a sample report" : "Security assessment complete"}<span>.</span></h1>
-            <p>{isSample ? "Explore a fictional example of the developer workflow. No repository was scanned." : "Review detected security signals, source evidence and the next actions that matter."}</p>
+            <h1>{isSample ? "Explore a sample report" : "Security report"}</h1>
+            <p>{isSample ? "Explore a fictional example of the developer workflow. No repository was scanned." : "Findings, impact and steps to review — grounded in the scanned source."}</p>
           </div>
           <div className="result-toolbar">
             <details className="result-export-menu">
-              <summary><Download size={16}/> Export report <ChevronDown size={15}/></summary>
+              <summary><Download size={16}/> Export <ChevronDown size={15}/></summary>
               <div className="result-export-options">
                 <button type="button" onClick={() => saveExport("plan")}><ClipboardCheck size={15}/> Fix plan (.md)</button>
                 <button type="button" onClick={() => window.print()}><Printer size={15}/> Save PDF</button>
@@ -284,272 +284,120 @@ export default function ResultsExperience() {
           <p><strong>Sample report, not a security assessment.</strong> All findings and evidence below are fictional. No application was connected, scanned or found vulnerable.</p>
         </div>}
 
+
         <section className="result-repo-card" aria-label="Scanned repository">
-          <div className="result-app-icon"><Github size={20}/></div>
           <div className="result-repo-info">
-            <span>{isSample ? "DEMONSTRATION REPOSITORY" : state.kind === "live" && state.source === "private" ? "AUTHORIZED GITHUB REPOSITORY" : "SAVED REPOSITORY REPORT"}</span>
+            <span>{isSample ? "ILLUSTRATIVE DATA" : state.kind === "live" && state.source === "private" ?
+              "AUTHORIZED GITHUB REPOSITORY" : "SAVED REPOSITORY REPORT"}</span>
             <h2>{report.appName}</h2>
-            <p><GitCommitHorizontal size={14}/> <span title={report.revision || "Unknown commit"}>{isSample ? "Example revision" : report.revision ? report.revision.slice(0, 12) : "Revision unavailable"}</span> <span aria-hidden="true">·</span> Read-only source assessment</p>
+            <p><GitCommitHorizontal size={14}/> {isSample ? "Example revision" :
+              report.revision ? report.revision.slice(0, 12) : "Revision unavailable"}
+              <span aria-hidden="true">·</span> Read-only source review</p>
             {report.scanMetrics && <p className="result-scanned-metrics">
               <span>{report.scanMetrics.filesInspected} files inspected</span>
               <span>{report.scanMetrics.linesInspected.toLocaleString()} lines reviewed</span>
               <span>{report.scanMetrics.dependencyVersions} pinned packages</span>
-              <span>{report.scanMetrics.rulesExecuted} source rules</span>
             </p>}
           </div>
-          <span className="result-included"><CheckCircle2 size={15}/> Full available report · no paywall</span>
         </section>
 
-        <section className={"result-scope-summary" + (partialCoverage ? " partial" : "")} aria-label="Actual assessment coverage">
-          <div className="result-scope-intro">
-            {partialCoverage ? <AlertCircle size={19}/> : <FileSearch size={19}/>}
-            <div>
-              <strong>{partialCoverage ? "Partial source coverage" : "Assessment scope"}</strong>
-              <p>{report.scanMetrics
-                ? report.scanMetrics.filesInspected + " of " + report.scanMetrics.eligibleFiles + " eligible files inspected · " +
-                  report.scanMetrics.rulesExecuted + " source rules executed"
-                : "Review the coverage details below for the checks performed."}</p>
-            </div>
-          </div>
-          <p>{partialCoverage
-            ? "Some eligible files, advisory checks or findings were omitted. Treat this report as incomplete."
-            : "Read-only source checks only. Runtime behavior and exploitability have not been tested."}</p>
-          <a href="#coverage">Full coverage <ArrowRight size={14}/></a>
-        </section>
-
-        {priority && <section className="result-priority" aria-label="Priority finding">
-          <div className="result-priority-icon"><ShieldAlert size={21}/></div>
-          <div className="result-priority-body">
-            <span>RECOMMENDED FIRST REVIEW · {labels[priority.severity].toUpperCase()} · {priority.confidence.toUpperCase()} CONFIDENCE</span>
-            <h2>{priority.title}</h2>
-            <p>{priority.overview}</p>
-            <small>{priority.location.path}{priority.location.line ? ":" + priority.location.line : ""} · Candidate finding, not a confirmed exploit</small>
-          </div>
-          <button type="button" onClick={() => {
-            selectFinding(priority);
-            window.requestAnimationFrame(() => document.getElementById("finding-detail")?.scrollIntoView({
-              behavior: reduceMotion ? "instant" : "smooth", block: "start",
-            }));
-          }}>Review finding <ArrowRight size={15}/></button>
-        </section>}
-
-        <section className="result-overview" aria-labelledby="result-overview-title">
-          <div className="result-section-head">
-            <h2 id="result-overview-title">Findings overview</h2>
-            <span>{report.findings.length} candidate {report.findings.length === 1 ? "finding" : "findings"}</span>
-          </div>
-          <div className="result-severities" aria-label="Severity summary">
-            {(["critical", "high", "medium", "low"] as Severity[]).map(level => {
+        <section className="result-overview" aria-label="Findings by severity">
+          <div className="result-severities">
+            {(["critical","high","medium","low"] as Severity[]).map(level => {
               const Icon = severityIcons[level];
-              return <button type="button" key={level} className={"result-severity " + level + (filter === level ? " selected" : "")}
-                aria-pressed={filter === level} aria-label={"Show " + labels[level] + " findings"}
-                disabled={counts![level] === 0} onClick={() => {
-                  setFilter(current => current === level ? "all" : level);
-                  setSearch("");
-                  document.getElementById("findings")?.scrollIntoView({behavior: reduceMotion ? "instant" : "smooth"});
-                }}>
-                <span className="result-severity-name"><Icon size={17}/>{labels[level]}</span>
-                <strong>{String(counts![level]).padStart(2, "0")}</strong>
-                <span className="result-severity-action">Filter findings <ArrowRight size={12}/></span>
+              return <button type="button" key={level}
+                className={"result-severity " + level + (filter === level ? " selected" : "")}
+                aria-pressed={filter === level}
+                aria-label={"Show " + labels[level] + " findings"}
+                disabled={counts![level] === 0}
+                onClick={() => setFilter(current => current === level ? "all" : level)}>
+                <span className="result-severity-name"><Icon size={18}/>{labels[level]}</span>
+                <strong>{String(counts![level]).padStart(2,"0")}</strong>
               </button>;
             })}
           </div>
-          <div className={"result-risk-note" + (report.findings.length === 0 ? " zero" : "")}>
-            {report.findings.length === 0 ? <ShieldCheck size={19}/> : <ShieldAlert size={19}/>}
-            <p><strong>{report.findings.length === 0 ? "No candidates detected in supported checks." :
-              counts!.critical + counts!.high > 0 ? "Start with critical and high-priority findings." : "Review detected findings before drawing conclusions."}</strong>
-              {" "}{report.findings.length === 0
-                ? "Zero findings does not prove the repository is secure."
-                : "Static findings and advisory matches need manual context; they are not confirmed exploits."}</p>
-            <div className="result-overview-actions"><a href="#findings">Review findings <ArrowRight size={14}/></a><a href="#coverage">Coverage <ArrowRight size={14}/></a></div>
-          </div>
         </section>
 
-        {state.kind === "live" && <ReportDeltaPanel report={state.report} source={state.source}/>}
-        <section className="result-workspace" aria-label="Detailed report">
-          <div className="result-finding-panel" id="findings">
-            <div className="result-panel-head">
-              <div><h2>Findings <span>{found.length}/{report.findings.length}</span></h2><small>Highest priority first</small></div>
-              <button type="button" className="result-clear" onClick={() => { setFilter("all"); setSearch(""); }}
-                disabled={filter === "all" && !search}>Reset filters</button>
+        {report.findings.length === 0 ? (
+          <section className="result-clean-zero" role="status">
+            <ShieldCheck size={21}/>
+            <div>
+              <h2>No findings from supported rules</h2>
+              <p>{report.scanMetrics ?
+                report.scanMetrics.filesInspected + " eligible files inspected. " : ""}
+                {report.coverage.some(item => item.id === "dependencies" && item.status !== "complete")
+                  ? "Dependency advisories were not fully checked. " : ""}
+                Zero findings does not prove the codebase is secure.</p>
             </div>
-            <label className="result-search">
-              <Search size={16}/>
-              <span className="result-visually-hidden">Search findings</span>
-              <input ref={searchRef} type="search" placeholder="Search finding or file…" value={search}
-                onChange={event => setSearch(event.target.value)}/>
-              {search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={15}/></button>}
-            </label>
-            <p className="result-keyboard-hint">Shortcuts <kbd>/</kbd> search · <kbd>J</kbd>/<kbd>K</kbd> navigate findings</p>
-            <div className="result-filter-pills" aria-label="Severity filters">
-              {levels.map(level => <button type="button" key={level} aria-pressed={filter === level}
-                onClick={() => setFilter(level)} className={filter === level ? "active" : ""}>{labels[level]} <span aria-hidden="true" className="result-filter-count">{level === "all" ? report.findings.length : counts![level]}</span></button>)}
+          </section>
+        ) : (
+          <section className="result-simple-findings" aria-label="Detected findings" id="findings">
+            <div className="result-simple-heading">
+              <h2>Findings <span>{found.length}/{report.findings.length}</span></h2>
+              {filter !== "all" && <button type="button" onClick={() => setFilter("all")}>Show all findings</button>}
             </div>
-            <div className="result-finding-list">
-              {found.length === 0 ? <div className="result-no-findings">
-                <FileSearch size={24}/>
-                <strong>{report.findings.length === 0 ? "No findings flagged by these rules" : "No matching findings"}</strong>
-                <p>{report.findings.length === 0
-                  ? "Review check coverage and limitations before drawing conclusions."
-                  : "Try a different search or reset the severity filter."}</p>
-                <a href="#coverage">Review coverage</a>
-              </div> : found.map(finding => {
-                const Icon = severityIcons[finding.severity];
-                return <button type="button" className={"result-finding-item" + (active?.id === finding.id ? " active" : "")}
-                  aria-pressed={active?.id === finding.id} onClick={() => selectFinding(finding)} key={finding.id}>
-                  <span className={"result-finding-icon " + finding.severity}><Icon size={18}/></span>
+            {found.map(finding => {
+              const Icon = severityIcons[finding.severity];
+              const fileLink = !isSample
+                ? githubSourceUrl(report, finding.location.path, finding.location.line) : null;
+              return <details className="result-finding-card" key={finding.id}>
+                <summary>
+                  <span className={"result-finding-icon " + finding.severity}><Icon size={20}/></span>
                   <span className="result-finding-copy">
                     <small>{finding.category} · {finding.confidence} confidence</small>
                     <strong>{finding.title}</strong>
-                    <span><FileCode2 size={12}/>{finding.location.path}{finding.location.line ? ":" + finding.location.line : ""}</span>
+                    <span><FileCode2 size={13}/>{finding.location.path}
+                      {finding.location.line ? ":" + finding.location.line : ""}</span>
                   </span>
                   <span className={"result-item-level " + finding.severity}>{labels[finding.severity]}</span>
-                </button>;
-              })}
-            </div>
-          </div>
-
-          <div className="result-detail-panel" id="finding-detail" aria-live="polite">
-            {active ? <article className="result-detail-inner" key={active.id}>
-              <div className="result-detail-heading">
-                <a className="result-mobile-back" href="#findings"><ArrowLeft size={14}/> All findings</a>
-                <div className="result-detail-top"><span>FINDING / {active.id}</span>
-                  <span className={"result-detail-level " + active.severity}>{labels[active.severity]}</span></div>
-                <h2>{active.title}</h2>
-                <p>{active.overview}</p>
-                <nav className="result-finding-nav" aria-label="Move between filtered findings">
-                  <span>Finding {activeIndex + 1} of {found.length}</span>
-                  <div>
-                    <button type="button" onClick={() => selectFinding(found[activeIndex - 1])}
-                      disabled={activeIndex <= 0} aria-label="Previous finding"><ArrowLeft size={14}/> Previous</button>
-                    <button type="button" onClick={() => selectFinding(found[activeIndex + 1])}
-                      disabled={activeIndex >= found.length - 1} aria-label="Next finding">Next <ArrowRight size={14}/></button>
+                  <ChevronDown className="result-card-chevron" size={17}/>
+                </summary>
+                <div className="result-finding-content">
+                  <div className="result-finding-fact">
+                    <h3>Why flagged</h3><p>{finding.overview}</p>
                   </div>
-                </nav>
-                <div className="result-detail-ticket">
-                  <small>Ready for your issue tracker</small>
-                  <CopyButton label="Copy issue-ready finding" value={[
-                    "## [" + active.severity.toUpperCase() + "] " + active.title,
-                    "",
-                    "**Repository:** " + report.appName,
-                    "**Location:** " + active.location.path + (active.location.line ? ":" + active.location.line : ""),
-                    "**Confidence:** " + active.confidence,
-                    "**Rule:** " + (active.ruleId || "Unspecified"),
-                    "",
-                    active.overview,
-                    "",
-                    "### Evidence (scanner output)",
-                    "```text",
-                    active.evidence,
-                    "```",
-                    "",
-                    "### Recommended review",
-                    ...active.steps.map(s => "- [ ] " + s),
-                    "",
-                    "### Verification",
-                    active.verification,
-                    "",
-                    "**Note:** Static detection is not a confirmed exploit. Review scan coverage before closing.",
-                  ].join("\n")}/>
+                  <div className="result-finding-fact">
+                    <h3>Potential impact</h3><p>{finding.whyItMatters}</p>
+                  </div>
+                  <div className="result-finding-fact">
+                    <h3>How to fix</h3>
+                    <ol>{finding.steps.map((step, i) => <li key={i}>{step}</li>)}</ol>
+                  </div>
+                  <div className="result-finding-fact">
+                    <h3>How to verify</h3><p>{finding.verification}</p>
+                  </div>
+                  <details className="result-evidence-accordion">
+                    <summary>Source evidence &amp; detector limits <ChevronDown size={15}/></summary>
+                    <div>
+                      <p><strong>Rule:</strong> {finding.ruleId || "Source rule"}
+                        {finding.ruleEngine ? " · " + finding.ruleEngine : ""}</p>
+                      <pre>{finding.evidence}</pre>
+                      {finding.limitations && <p>{finding.limitations}</p>}
+                    </div>
+                  </details>
+                  {fileLink && <a className="result-open-source" href={fileLink} target="_blank" rel="noopener noreferrer">
+                    Open source <ExternalLink size={14}/>
+                  </a>}
                 </div>
-                <div className="result-detail-meta"><span><Code2 size={14}/>{active.category}</span>
-                  <span><ShieldCheck size={14}/>{active.confidence} confidence</span>
-                  {active.ruleId && <span><FileSearch size={14}/> Rule {active.ruleId}</span>}
-                  {active.ruleEngine && <span><Info size={14}/>{active.ruleEngine}</span>}</div>
-              </div>
+              </details>;
+            })}
+          </section>
+        )}
 
-              <div className="result-file-location">
-                <div><small>AFFECTED FILE</small><code>{active.location.path}{active.location.line ? ":" + active.location.line : ""}</code></div>
-                <div className="result-file-actions">
-                  <CopyButton value={active.location.path + (active.location.line ? ":" + active.location.line : "")}
-                    label="Copy file location"/>
-                  {sourceUrl && <a href={sourceUrl} target="_blank" rel="noopener noreferrer"
-                    className="result-open-source">Open source <ExternalLink size={14}/></a>}
-                </div>
-              </div>
-
-              <section className="result-detail-section">
-                <h3>Observed evidence</h3>
-                <p className="result-evidence-lead">Detector output from the scanned source or published advisory. It is not proof that the issue is exploitable.</p>
-                <div className="result-code">
-                  <div className="result-code-head"><span>SCANNER EVIDENCE</span><span>{active.redacted ? "SENSITIVE VALUES MASKED" : "SOURCE / ADVISORY EVIDENCE"}</span></div>
-                  <pre><code>{active.evidence}</code></pre>
-                </div>
-                {active.redacted && <p className="result-evidence-note"><LockKeyhole size={14}/> Sensitive values are masked in this report.</p>}
-                <p className="result-evidence-context"><FileSearch size={14}/> {active.ruleId
-                  ? "Matched detector: " + active.ruleId + ". Verify the finding in the actual repository context."
-                  : "Verify the affected file and advisory details before taking action."}</p>
-              </section>
-
-              <section className="result-detail-section">
-                <h3>Potential impact</h3><p>{active.whyItMatters}</p>
-              </section>
-
-              <section className="result-detail-section result-fixes">
-                <div className="result-section-title"><h3>Recommended next steps</h3><CopyButton
-                  value={active.steps.map((step, index) => (index + 1) + ". " + step).join("\n")}
-                  label="Copy remediation checklist"/></div>
-                <p className="result-checklist-intro">Review these steps before rescan. Checkmarks track your review only — no code is changed or verified.</p>
-                <div className="result-checklist">
-                  {active.steps.map((step, index) => {
-                    const key = active.id + ":" + index;
-                    return <label key={key} className={"result-check-step" + (reviewed[key] ? " done" : "")}>
-                      <input type="checkbox" checked={Boolean(reviewed[key])}
-                        onChange={event => setReviewed(old => ({ ...old, [key]: event.target.checked }))}/>
-                      <span className="result-checkmark"><Check size={13}/></span><span>{step}</span>
-                    </label>;
-                  })}
-                </div>
-                <p className="result-reviewed-count">{reviewedCount}/{active.steps.length} marked reviewed · not automatically fixed or verified</p>
-              </section>
-
-              <section className="result-detail-section result-verification">
-                <h3><ClipboardCheck size={18}/> How to verify</h3>
-                <p>{active.verification}</p>
-              </section>
-
-              {active.limitations && <div className="result-limitations">
-                <ShieldQuestion size={17}/><p><strong>Important limitation.</strong> {active.limitations}</p>
-              </div>}
-            </article> : <div className="result-no-detail">
-              <FileSearch size={28}/>
-              <h2>{report.findings.length === 0 ? "No finding details to display." : "No finding selected."}</h2>
-              <p>{report.findings.length === 0
-                ? "No supported findings were reported. This does not prove the application is secure."
-                : "Select a finding or reset the search filters."}</p>
-              <a href="#coverage">Review coverage and limitations</a>
-            </div>}
+        <details className={"result-clean-coverage" + (partialCoverage ? " partial" : "")} id="coverage">
+          <summary>Coverage &amp; limitations <ChevronDown size={16}/></summary>
+          <div className="result-clean-coverage-body">
+            <p>{report.scanMetrics ?
+              report.scanMetrics.filesInspected + " of " + report.scanMetrics.eligibleFiles +
+              " eligible files inspected. " : ""}{report.scopeNote}</p>
+            <p>Runtime behavior and exploitability were not tested.</p>
+            <ul>{report.coverage.map(item => <li key={item.id}>
+              <span className={"result-coverage-tag " + item.status}>{item.status}</span>
+              <strong>{item.label}</strong>
+              <p>{item.note}</p>
+            </li>)}</ul>
           </div>
-        </section>
-
-        <section className="result-coverage" id="coverage">
-          <div className="result-coverage-header">
-            <div><h2>Scan coverage</h2><p>{report.scopeNote}</p></div>
-            <button type="button" onClick={() => setCoverageOpen(open => !open)}
-              aria-expanded={coverageOpen} aria-controls="result-coverage-table">
-              {coverageOpen ? "Hide coverage" : "Show coverage"}
-              {coverageOpen ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
-            </button>
-          </div>
-          <div className="result-coverage-metrics">
-            <span><CheckCircle2 size={16}/> {doneCoverage} checks complete</span>
-            <span><AlertCircle size={16}/> {otherCoverage} skipped / failed</span>
-          </div>
-          {coverageOpen && <div className="result-coverage-list" id="result-coverage-table">
-            {report.coverage.map(item => <div key={item.id}>
-              <span className={"result-coverage-status " + item.status}>
-                {item.status === "complete" ? <CheckCircle2 size={17}/> : <AlertCircle size={17}/>}
-              </span>
-              <div><strong>{item.label}</strong><p>{item.note}</p></div>
-              <span className="result-coverage-tag">{item.status}</span>
-            </div>)}
-          </div>}
-        </section>
-
-        <div className="result-bottom">
-          <p><ShieldCheck size={15}/> All available findings and fix guidance included. Detection does not certify security.</p>
-          <Link href="/assess">Scan another repository <ArrowRight size={16}/></Link>
-        </div>
+        </details>
 
         <div className="result-print-all" aria-hidden="true">
           <h2>All findings and recommended fixes</h2>
