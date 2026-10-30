@@ -8,7 +8,7 @@ type Signal = {
   limitations: string; evidence: string; redacted?: boolean;
 };
 const CODE = /\.(?:js|jsx|ts|tsx|cjs|mjs|py|php|rb|go|java|kt|kts|cs|rs|sh|bash|vue|svelte)$/i;
-const CONFIG = /(?:^|\/)(?:Dockerfile(?:\.[\w-]+)?|[\w.-]+\.tf|[\w.-]+\.ya?ml)$/i;
+const CONFIG = /(?:^|\/)(?:Dockerfile(?:\.[\w-]+)?|[\w.-]+\.tf|[\w.-]+\.ya?ml|\.env(?:\.[\w.-]+)?)$/i;
 const FIXTURE = /(?:^|\/)(?:__tests__|tests?|specs?|fixtures?|examples?|mocks?|samples?|\.storybook)(?:\/|$)|(?:\.test|\.spec|_test)\.[\w]+$|(?:^|\/)test_[^/]+\.py$|(?:^|\/)[^/]+_test\.go$/i;
 const COMMENT = /^\s*(?:\/\/|#|\*|\/\*|<!--)/;
 const PLACEHOLDER = /(?:example|dummy|placeholder|changeme|replace[_-]?me|your[_-]?(?:key|token|secret)|fake|not[_-]?real|test[_-]?only|sample|xxx{3,})/i;
