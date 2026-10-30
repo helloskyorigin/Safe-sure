@@ -176,3 +176,8 @@
 @media(prefers-reduced-motion:reduce){
  .scan-progress-fill{transition:none}
 }
+
+/* Source progress is based on actual fetched GitHub blobs, never a timer. */
+.scan-file-count{display:flex;align-items:center;justify-content:center;gap:7px;margin:10px 0 0;font-size:12px;line-height:1.5;color:#7595b9;font-variant-numeric:tabular-nums}
+html[data-theme="dark"] .scan-file-count{color:#a1b7d2}
+@media(max-width:440px){.scan-file-count{font-size:11px;flex-wrap:wrap;text-align:center}}
