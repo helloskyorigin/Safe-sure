@@ -46,8 +46,6 @@ const examples: Record<FindingKey, {
   },
 };
 
-const ease = [0.22, 1, 0.36, 1] as const;
-
 export default function ReportExperience({ onOpenAssessment }: { onOpenAssessment: () => void }) {
   const [view, setView] = useState<View>("free");
   const [selected, setSelected] = useState<FindingKey>("credential");
@@ -58,13 +56,13 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
     <section className="experience-section section" id="product" aria-labelledby="experience-title">
       <div className="container">
         <div className="experience-intro">
-          <motion.div initial={{ y: 22 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: reduceMotion ? 0 : .72, ease }}>
-            <p className="eyebrow">THE AGENT REPORT</p>
-            <h2 id="experience-title">Less guesswork.<br/><span>More clarity.</span></h2>
-          </motion.div>
+          <div>
+            <p className="eyebrow">REAL SIGNALS. CLEAR NEXT STEPS.</p>
+            <h2 id="experience-title">Know what the scanner found.<br/><span>Know what to check next.</span></h2>
+          </div>
           <p>See more than severity labels. Explore the affected code, the supporting evidence and the exact questions to resolve before treating a finding as fixed.</p>
         </div>
-        <motion.div className="experience-shell" initial={{ y: 26 }} whileInView={{ y: 0 }} viewport={{ once: true, amount: 0.13 }} transition={{ duration: reduceMotion ? 0 : .8, ease }}>
+        <div className="experience-shell">
           <div className="experience-toolbar">
             <div className="experience-app"><span className="app-symbol"><SecuvoraMark /></span><div><strong>Secuvora findings report</strong><small>example-application / illustrative demo</small></div></div>
             <span className="experience-example">INTERACTIVE EXAMPLE · NOT A REAL SCAN</span>
@@ -115,8 +113,8 @@ export default function ReportExperience({ onOpenAssessment }: { onOpenAssessmen
               )}
             </AnimatePresence>
           </div>
-          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Start investigation <ArrowRight size={16}/></button></div>
-        </motion.div>
+          <div className="experience-bottom"><span>Explore complete example findings and fixes. No locked sections.</span><button type="button" className="experience-action" onClick={onOpenAssessment}>Check my app — free <ArrowRight size={16}/></button></div>
+        </div>
       </div>
     </section>
   );
