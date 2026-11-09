@@ -3,11 +3,11 @@ import { test, expect } from "@playwright/test";
 test("application-first hero is concise and does not repeat agent language", async ({ page }) => {
   await page.goto("/");
   const hero=page.locator(".hero");
-  await expect(hero.getByRole("heading",{level:1})).toContainText("Security risks.");
-  await expect(hero.getByRole("heading",{level:1})).toContainText("Under investigation.");
-  await expect(hero.locator(".eyebrow")).toHaveText("SECUVORA / SECURITY AGENT");
-  await expect(hero.locator(".hero-sub")).toContainText("examines security signals");
-  await expect(hero.locator(".hero-sub")).toContainText("shows what needs attention");
+  await expect(hero.getByRole("heading",{level:1})).toContainText("Built with AI.");
+  await expect(hero.getByRole("heading",{level:1})).toContainText("Check before you ship.");
+  await expect(hero.locator(".eyebrow")).toHaveText("SECUVORA / AI-BUILT APP SECURITY");
+  await expect(hero.locator(".hero-sub")).toContainText("Scan your GitHub repository");
+  await expect(hero.locator(".hero-sub")).toContainText("actionable next steps");
   await expect(hero.getByRole("link",{name:/Start investigation/i})).toHaveAttribute("href","/assess");
   await expect(hero.getByRole("link",{name:/Explore sample report/i})).toHaveAttribute("href","/assess/results");
   await expect(hero.locator(".preview-overline")).toHaveText("INVESTIGATION SUMMARY");
