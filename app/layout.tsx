@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./enhancements.css";
+import "./landing-polish.css";
 import Script from "next/script";
 
 export const metadata: Metadata = {
