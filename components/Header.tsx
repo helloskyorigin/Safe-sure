@@ -116,6 +116,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
           <a href="#security" onClick={closeMenu}>What we check</a>
           <a href="#product" onClick={closeMenu}>Sample report</a>
           <a href="#faq" onClick={closeMenu}>FAQ</a>
+          <Link href="/assess/history" onClick={closeMenu} className="secondary-nav-item">Saved scans</Link>
           <ThemeToggle variant="menu" />
           <a
             href="/assess"
