@@ -3,9 +3,9 @@ export default function HowItWorks() {
     <section id="how" className="section">
       <div className="container">
         <div className="section-heading ">
-          <p className="eyebrow">THE AGENT WORKFLOW</p>
-          <h2>How your security agent investigates</h2>
-          <p>From repository access to actionable evidence. Secuvora reviews supported security signals, checks published advisories and turns findings into a clear plan of action.</p>
+          <p className="eyebrow">HOW IT WORKS</p>
+          <h2>From GitHub to an actionable report</h2>
+          <p>A focused, read-only workflow. Connect a repository, review supported security signals, then decide what to fix before shipping.</p>
         </div>
         <div className="steps">
           <article className="step ">
@@ -35,7 +35,7 @@ export default function HowItWorks() {
               </div>
               <span>02</span>
             </div>
-            <h3>Agent investigates</h3>
+            <h3>Review supported risks</h3>
             <p>
               Secuvora follows a real workflow: inspect source, check credentials and configurations, query OSV advisories, then organize the evidence.
             </p>
@@ -50,7 +50,7 @@ export default function HowItWorks() {
               </div>
               <span>03</span>
             </div>
-            <h3>Review evidence & fix</h3>
+            <h3>Prioritize the next fix</h3>
             <p>
               Access affected files, supporting evidence, impact and actionable
               fix guidance in the same full report.
