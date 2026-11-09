@@ -31,7 +31,7 @@ test("application check CTA opens the GitHub repository flow", async ({ page }) 
   await expect(page.getByRole("heading",{level:1})).toContainText("Choose the codebase");
   await expect(page.getByRole("link",{name:/Connect GitHub/})).toBeVisible();
   await expect(page.locator(".connect-subtitle")).toContainText("Connect GitHub once");
-  await expect(page.locator(".connect-reassurance")).toContainText("No code changes");
+  await expect(page.locator(".connect-reassurance")).toContainText("No source changes");
 });
 
 test("refined landing layout fits phone, tablet and desktop",async({browser})=>{
