@@ -14,7 +14,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
     <section id="pricing" className="section bordered pricing-section">
       <div className="container pricing-grid">
         <div className="pricing-intro">
-          <p className="eyebrow">COMPLETE REPORT</p>
+          <p className="eyebrow">FREE BETA INVESTIGATION</p>
           <h2>
             See the evidence.
             <br />
@@ -36,7 +36,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
               <h3>Your complete security report.</h3>
             </div>
             <div className="price">
-              FULL<span>report</span>
+              FREE<span>beta</span>
             </div>
           </div>
           <div className="price-divider"></div>
@@ -55,7 +55,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             Start investigation <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
-            Connect GitHub, choose an authorized repository, and review the result without giving Secuvora write access.
+            Connected investigations are currently free. Connect GitHub, select an authorized repository, and review the results with read-only access.
           </p>
         </div>
       </div>
