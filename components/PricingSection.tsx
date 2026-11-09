@@ -16,16 +16,15 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
         <div className="pricing-intro">
           <p className="eyebrow">FREE BETA INVESTIGATION</p>
           <h2>
-            See the evidence.
+            A clearer launch starts
             <br />
-            Know what to fix.
+            with a code check.
           </h2>
           <p>
-            Each completed investigation brings affected files, supporting evidence, risk context,
-            remediation steps and verification guidance into one report.
+            Connect an authorized GitHub repository. Secuvora checks supported risk patterns and matches published dependency advisories, then gives you evidence and next steps in one report.
           </p>
           <div className="no-renew">
-            <span>✓</span> Findings stay tied to evidence and scan coverage.
+            <span>✓</span> Free during beta. No credit card required.
           </div>
         </div>
 
@@ -52,7 +51,7 @@ export default function PricingSection({ onOpenAssessment }: PricingSectionProps
             data-start
             className="button button-dark price-cta"
           >
-            Start investigation <span aria-hidden="true">→</span>
+            Check my app — free <span aria-hidden="true">→</span>
           </a>
           <p className="price-caption">
             Connected investigations are currently free. Connect GitHub, select an authorized repository, and review the results with read-only access.
