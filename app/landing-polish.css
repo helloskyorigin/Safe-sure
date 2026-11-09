@@ -477,7 +477,7 @@
     transition-duration:0s !important;
   }
 }
-html[data-theme="dark"] .landing-page { background:#0b1018; color:#e8eef7; }
+html[data-theme="dark"] .landing-page { background:#090d14; color:#e8eef7; }
 html[data-theme="dark"] .landing-page .hero { background:#0b1018; }
 html[data-theme="dark"] .landing-page .hero .hero-sub,
 html[data-theme="dark"] .landing-page .hero .under-cta { color:#a6b5c9; }
