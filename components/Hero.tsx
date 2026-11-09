@@ -25,15 +25,15 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> SECUVORA / SECURITY AGENT
+            <span className="eyebrow-dash"></span> SECUVORA / AI-BUILT APP SECURITY
           </p>
           <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
-            Security risks.
+            Built with AI.
             <br />
-            <em>Under investigation.</em>
+            <em>Check before you ship.</em>
           </motion.h1>
           <p className="hero-sub animate delay-2">
-            Secuvora examines security signals, surfaces evidence, and shows what needs attention.
+            Scan your GitHub repository for exposed credential patterns, vulnerable dependencies, and unsafe configuration signals. See affected files and actionable next steps.
           </p>
           <div className="hero-action animate delay-3">
             <div className="hero-cta-row">
