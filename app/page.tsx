@@ -10,9 +10,6 @@ import FaqSection from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 import ReportExperience from "@/components/ReportExperience";
 import ValueSection from "@/components/ValueSection";
-import ScrollProgress from "@/components/ScrollProgress";
-import LandingScrollReset from "@/components/LandingScrollReset";
-import LandingMotionDirector from "@/components/LandingMotionDirector";
 import FinalCTA from "@/components/FinalCTA";
 
 export default function Home() {
@@ -23,9 +20,6 @@ export default function Home() {
 
   return (
     <div className="landing-page">
-      <LandingScrollReset />
-      <LandingMotionDirector />
-      <ScrollProgress />
       <Header onOpenAssessment={openAssessment} />
       <main id="main">
         <Hero onOpenAssessment={openAssessment} />
