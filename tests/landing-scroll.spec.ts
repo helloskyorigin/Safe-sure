@@ -1,49 +1,41 @@
 import { test, expect } from "@playwright/test";
 
-test("homepage begins at the hero and ignores late non-user scroll restoration", async ({ page }) => {
+test("homepage starts with its message and respects intentional subsequent scrolling", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: /Security risks./i })).toBeVisible();
-  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeLessThan(15);
-
-  // Simulate an embedded preview restoring a stale scroll position after hydration.
-  await page.waitForTimeout(700);
+  await expect(page.getByRole("heading", { level: 1, name: /Built with AI/i })).toBeVisible();
   await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }));
-  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 3000 }).toBeLessThan(15);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
+  await expect(page.locator(".final-cta-inner")).toBeAttached();
 });
 
-test("intentional navigation still scrolls to the requested section", async ({ page }) => {
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "How it works" }).click();
+test("section links navigate to the requested section without scroll resets", async ({ page }) => {
+  await page.goto("/");
+  const nav = page.getByRole("navigation", { name: "Main navigation" });
+  await nav.getByRole("link", { name: "How it works" }).click();
   await expect(page).toHaveURL(/#how$/);
-  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 5000 }).toBeGreaterThan(100);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+  await nav.getByRole("link", { name: "Sample report" }).click();
+  await expect(page).toHaveURL(/#product$/);
+  await expect(page.locator("#product")).toBeVisible();
 });
 
-test("mobile first paint shows hero and supports real touch scrolling", async ({ browser }) => {
+test("mobile first paint and native touch scroll remain stable", async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
   const page = await context.newPage();
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: /Security risks./i })).toBeVisible();
-  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeLessThan(15);
-  // Verify the client-side restoration guard is ready before dispatching a real user-intent event.
-  await page.waitForFunction(() => document.documentElement.dataset.shipsafeScrollGuard === "active");
-  await page.evaluate(() => {
-    window.dispatchEvent(new Event("touchstart"));
-    window.scrollTo({ top: 550, behavior: "instant" });
-  });
-  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 3000 }).toBeGreaterThan(300);
+  await expect(page.getByRole("heading", { level: 1, name: /Built with AI/i })).toBeVisible();
+  await page.evaluate(() => window.scrollTo({ top: 550, behavior: "instant" }));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300);
   await context.close();
 });
 
-
-test("Secuvora shows confident AI-agent positioning without beta or launch-only language", async ({ page }) => {
+test("marketing clearly states current scan limits rather than claiming full AI pentesting", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1, name: /Under investigation/i })).toBeVisible();
-  await expect(page.locator(".hero .eyebrow")).toContainText("SECUVORA / SECURITY AGENT");
-  await expect(page.locator(".hero-sub")).toContainText("Secuvora examines security signals");
-  await expect(page).toHaveTitle("Secuvora — AI Security Agent for Developers");
-  await expect(page.locator("body")).not.toContainText(/\bbeta\b|not just before launch|before you ship/i);
-  await expect(page.locator(".final-eyebrow")).toHaveText(/APPLICATION SECURITY/);
+  await expect(page).toHaveTitle("Secuvora — Security Checks for AI-Built Apps");
+  await expect(page.locator(".hero .eyebrow")).toContainText("AI-BUILT APP SECURITY");
+  await expect(page.locator(".hero-sub")).toContainText("file-level evidence");
+  await expect(page.locator(".price-card")).toContainText("FREE");
+  await expect(page.locator("#faq")).toContainText("not live penetration testing");
   await page.goto("/assess");
   await expect(page.locator(".connect-header-mark")).toContainText("SECUVORA · SECURITY AGENT");
-  await expect(page.locator("body")).not.toContainText(/\bbeta\b|not just before launch|before you ship/i);
 });

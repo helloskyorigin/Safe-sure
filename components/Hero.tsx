@@ -1,7 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import Brand from "@/components/Brand";
 
 interface HeroProps {
@@ -9,31 +7,27 @@ interface HeroProps {
 }
 
 export default function Hero({ onOpenAssessment }: HeroProps) {
-  const heroRef = useRef<HTMLElement>(null);
-  const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const previewRise = useTransform(scrollYProgress, [0, 1], [0, -45]);
   const handleAssessmentClick = (e: React.MouseEvent) => {
     e.preventDefault();
     onOpenAssessment();
   };
 
   return (
-    <section className="hero" ref={heroRef}>
+    <section className="hero">
       <div className="glow glow-left" aria-hidden="true"></div>
       <div className="glow glow-right" aria-hidden="true"></div>
       <div className="container hero-grid">
         <div className="hero-text">
           <p className="eyebrow animate">
-            <span className="eyebrow-dash"></span> SECUVORA / SECURITY AGENT
+            <span className="eyebrow-dash"></span> SECUVORA / AI-BUILT APP SECURITY
           </p>
-          <motion.h1 initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: reduceMotion ? 0 : .75, delay: reduceMotion ? 0 : .12, ease: "easeOut" }}>
-            Security risks.
+          <h1>
+            Built with AI.
             <br />
-            <em>Under investigation.</em>
-          </motion.h1>
+            <em>Check before you ship.</em>
+          </h1>
           <p className="hero-sub animate delay-2">
-            Secuvora examines security signals, surfaces evidence, and shows what needs attention.
+            Inspect your AI-built app’s GitHub code for exposed secret patterns, vulnerable packages and risky settings. Get file-level evidence and actionable next steps before launch.
           </p>
           <div className="hero-action animate delay-3">
             <div className="hero-cta-row">
@@ -43,20 +37,20 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
               data-start
               className="button button-dark button-primary"
             >
-              Start investigation{" "}
+              Check my app — free{" "}
               <span className="button-arrow" aria-hidden="true">
                 →
               </span>
             </a>
-            <a href="/assess/results" className="hero-preview-link">Explore sample report <span aria-hidden="true">↗</span></a>
+            <a href="#product" className="hero-preview-link">See the sample report <span aria-hidden="true">↗</span></a>
             </div>
             <p className="under-cta">
-              <span className="tiny-check">✓</span> Read-only <span className="dot-separator">·</span> No source changes
+              <span className="tiny-check">✓</span> Read-only GitHub access <span className="dot-separator">·</span> No credit card <span className="dot-separator">·</span> No code changes
             </p>
           </div>
         </div>
 
-        <motion.div className="preview-wrap" style={reduceMotion ? undefined : { y: previewRise }}>
+        <div className="preview-wrap">
           <div className="preview-halo" aria-hidden="true"></div>
           <div className="preview">
             <div className="preview-top">
@@ -149,10 +143,7 @@ export default function Hero({ onOpenAssessment }: HeroProps) {
               </div>
             </div>
           </div>
-          <div className="floating-label" aria-hidden="true">
-            <span>✓</span> Clear findings. Actionable fixes.
-          </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

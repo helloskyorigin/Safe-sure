@@ -16,24 +16,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Bun (committed bun.lock)
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '22'
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund
+          bun-version: latest
+      - name: Install dependencies (locked)
+        run: bun install --frozen-lockfile
       - name: Audit production dependency vulnerabilities
-        run: npm audit --omit=dev --audit-level=high
+        run: bun audit --prod --audit-level=high
       - name: Type-check
-        run: npm run typecheck
+        run: bun run typecheck
       - name: Build Next.js
-        run: npm run build
+        run: bun run build
         env:
           NEXT_TELEMETRY_DISABLED: '1'
       - name: Install Chromium for browser smoke tests
-        run: npx playwright install --with-deps chromium
+        run: bunx playwright install --with-deps chromium
       - name: Verify all product, legal, mobile and desktop routes
-        run: npm run test:e2e
+        run: bun run test:e2e
       - name: Keep responsive QA screenshots for review
         if: always()
         uses: actions/upload-artifact@v4

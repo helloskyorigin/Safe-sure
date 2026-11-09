@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./enhancements.css";
+import "./landing-polish.css";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Secuvora — AI Security Agent for Developers",
+  title: "Secuvora — Security Checks for AI-Built Apps",
   description:
-    "Discover security risks in your GitHub code with Secuvora. Investigate potential exposed credentials, vulnerable dependencies and unsafe configurations with source-level evidence and actionable fixes. Current analysis uses security rules and OSV advisories; model-based reasoning is not yet enabled.",
+    "Review your AI-built app's GitHub repository for credential patterns, vulnerable dependencies and unsafe configurations. Secuvora uses bounded read-only source checks and OSV advisories with file-level evidence. No AI-model reasoning or live penetration testing.",
   openGraph: {
-    title: "Secuvora — AI Security Agent for Developers",
-    description: "Investigate code security with source-level evidence, verified vulnerability advisories and actionable remediation. One agent workflow. Full report free.",
+    title: "Secuvora — Security Checks for AI-Built Apps",
+    description: "Read-only GitHub repository security checks for AI-built apps: credential patterns, vulnerable dependencies and unsafe configurations, with source-level evidence and practical next steps.",
     type: "website",
   },
   icons: {

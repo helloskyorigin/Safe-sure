@@ -78,12 +78,10 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
         <div className="container header-inner">
           <Brand href="#top" />
           <nav className="desktop-nav" aria-label="Main navigation">
-            <a href="#product">Agent report</a>
             <a href="#how">How it works</a>
-            <a href="#security">Security</a>
-            <a href="#pricing">Full report</a>
+            <a href="#security">What we check</a>
+            <a href="#product">Sample report</a>
             <a href="#faq">FAQ</a>
-            <Link href="/assess/history">Agent history</Link>
           </nav>
           <a
             href="/assess"
@@ -91,7 +89,7 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
             data-start
             className="button button-dark top-cta"
           >
-            Start investigation <ArrowUpRight size={15} aria-hidden="true" />
+            Check my app — free <ArrowUpRight size={15} aria-hidden="true" />
           </a>
           <button
             id="menu-toggle"
@@ -114,20 +112,11 @@ export default function Header({ onOpenAssessment }: HeaderProps) {
           inert={!isMenuOpen}
           style={isMenuOpen ? { display: "flex" } : undefined}
         >
-          <a href="#product" onClick={closeMenu}>Agent report</a>
-          <a href="#how" onClick={closeMenu}>
-            How it works
-          </a>
-          <a href="#security" onClick={closeMenu}>
-            Security
-          </a>
-          <a href="#pricing" onClick={closeMenu}>
-            Full report
-          </a>
-          <a href="#faq" onClick={closeMenu}>
-            FAQ
-          </a>
-          <Link href="/assess/history" onClick={closeMenu}>Agent history</Link>
+          <a href="#how" onClick={closeMenu}>How it works</a>
+          <a href="#security" onClick={closeMenu}>What we check</a>
+          <a href="#product" onClick={closeMenu}>Sample report</a>
+          <a href="#faq" onClick={closeMenu}>FAQ</a>
+          <Link href="/assess/history" onClick={closeMenu} className="secondary-nav-item">Saved scans</Link>
           <ThemeToggle variant="menu" />
           <a
             href="/assess"

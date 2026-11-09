@@ -2,15 +2,15 @@ import { test, expect } from "@playwright/test";
 
 test("landing gives both real-scan and explicitly illustrative-report routes", async ({ page }) => {
   await page.goto("/");
-  const primary = page.locator(".hero-action").getByRole("link", { name: /Start investigation/i });
-  const example = page.locator(".hero-action").getByRole("link", { name: /Explore sample report/i });
+  const primary = page.locator(".hero-action").getByRole("link", { name: /Check my app — free/i });
+  const example = page.locator(".hero-action").getByRole("link", { name: /See the sample report/i });
   await expect(primary).toHaveAttribute("href", "/assess");
-  await expect(example).toHaveAttribute("href", "/assess/results");
-  await expect(page.locator(".hero-sub")).toContainText("surfaces evidence");
+  await expect(example).toHaveAttribute("href", "#product");
+  await expect(page.locator(".hero-sub")).toContainText("file-level evidence");
   await example.click();
-  await expect(page).toHaveURL(/\/assess\/results$/);
-  await expect(page.getByText("INTERACTIVE SAMPLE")).toBeVisible();
-  await expect(page.getByText(/No application was connected, scanned or found vulnerable/)).toBeVisible();
+  await expect(page).toHaveURL(/#product$/);
+  await expect(page.locator("#product")).toBeVisible();
+  await expect(page.getByText("INTERACTIVE EXAMPLE · NOT A REAL SCAN")).toBeVisible();
 });
 
 test("GitHub connection is the single source-selection experience", async ({ page }) => {

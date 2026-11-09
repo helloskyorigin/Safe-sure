@@ -1,141 +1,61 @@
 import { test, expect } from "@playwright/test";
 
-test("scroll effects are attached to many landing sections, not only one reveal", async ({ page }) => {
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
-  const effects = await page.locator("[data-ship-motion]").count();
-  expect(effects).toBeGreaterThanOrEqual(40);
-
-  for (const kind of ["rise", "slide-left", "slide-right", "pop", "blur", "scale"]) {
-    await expect(page.locator('[data-ship-motion="' + kind + '"]').first()).toBeAttached();
-  }
-  const target = page.locator("#how .section-heading");
-  await expect(target).toHaveAttribute("data-ship-motion", "rise");
-  // It starts outside the first viewport and must not already be revealed.
-  await expect(target).not.toHaveClass(/ship-motion-revealed/);
-  // CSS transition begins at hydration; let the entrance-to-hidden transition settle.
-  await expect.poll(async () => Number(await target.evaluate(el => getComputedStyle(el).opacity)),
-    { timeout: 2500 }).toBeLessThan(0.1);
-});
-
-test("scroll into view reveals all process steps once per homepage visit", async ({ page }) => {
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
-  // Inform the existing restoration guard that scrolling is intentional.
-  await page.evaluate(() => window.dispatchEvent(new Event("wheel")));
-  const first = page.locator("#how .step").first();
-  await first.scrollIntoViewIfNeeded();
-  await expect(first).toHaveClass(/ship-motion-revealed/);
-  const heading = page.locator("#how .section-heading");
-  await expect(heading).toHaveClass(/ship-motion-revealed/);
-  const motionKey = await first.getAttribute("data-ship-motion-key");
-  expect(motionKey).toBeTruthy();
-
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-  await expect(first).toHaveClass(/ship-motion-revealed/);
-  await first.scrollIntoViewIfNeeded();
-  await expect(first).toHaveClass(/ship-motion-revealed/);
-  await expect(first).toHaveCSS("opacity", "1");
-
-  // A fresh homepage visit gets a fresh reveal sequence.
-  await page.goto("/assess");
+test("landing renders all sections without scroll-triggered hiding or repeat reveals", async ({ page }) => {
   await page.goto("/");
-  await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
-  const revisited = page.locator("#how .step").first();
-  await expect(revisited).not.toHaveClass(/ship-motion-revealed/);
-  await page.evaluate(() => window.dispatchEvent(new Event("wheel")));
-  await revisited.scrollIntoViewIfNeeded();
-  await expect(revisited).toHaveClass(/ship-motion-revealed/);
-});
-
-test("deeper sections reveal distinct motion targets without repeat", async ({ page }) => {
-  await page.goto("/");
-  await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
-  await page.evaluate(() => window.dispatchEvent(new Event("wheel")));
-  for (const selector of [
-    ".value-heading h2", ".value-card .value-card-content",
-    ".experience-shell .experience-toolbar", "#security .trust-item",
-    "#pricing .price-card", "#faq .faq-list", ".final-cta-inner h2", ".footer-identity",
-  ]) {
+  await expect(page.locator("body")).not.toHaveClass(/landing-motion-active/);
+  await expect(page.locator("[data-ship-motion]")).toHaveCount(0);
+  const targets = ["#how .step", ".value-card", ".experience-shell", "#security .trust-item",
+    "#pricing .price-card", "#faq .faq-list", ".final-cta-inner"];
+  for (const selector of targets) {
     const node = page.locator(selector).first();
     await node.scrollIntoViewIfNeeded();
-    await expect(node, "One-shot motion missing on " + selector).toHaveClass(/ship-motion-revealed/, { timeout: 4000 });
+    await expect(node).toBeVisible();
+    await expect(node).toHaveCSS("opacity", "1");
   }
-});
-
-test("reduced-motion readers see everything without hidden content or delayed effects", async ({ browser }) => {
-  const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 375, height: 812 } });
-  const page = await context.newPage();
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "How your security agent investigates" })).toBeAttached();
-  expect(await page.locator("body.landing-motion-active").count()).toBe(0);
-  const target = page.locator("#how .section-heading");
-  await expect(target).toHaveCSS("opacity", "1");
-  await context.close();
-});
-
-test("mobile 320 to 430 widths allow deliberate scroll and no horizontal overflow after reveals", async ({ browser }) => {
-  for (const width of [320, 375, 430]) {
-    const context = await browser.newContext({ viewport: { width, height: 812 }, hasTouch: true, isMobile: true });
-    const page = await context.newPage();
-    await page.goto("/");
-    await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
-    await page.evaluate(() => window.dispatchEvent(new Event("touchstart")));
-    const node = page.locator("#security .trust-item").first();
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  for (const selector of targets) {
+    const node = page.locator(selector).first();
     await node.scrollIntoViewIfNeeded();
-    await expect(node).toHaveClass(/ship-motion-revealed/);
-    const x = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(x, "overflow at " + width).toBeLessThanOrEqual(1);
-    const y = await page.evaluate(() => window.scrollY);
-    expect(y, "scroll blocked at " + width).toBeGreaterThan(200);
+    await expect(node).toHaveCSS("opacity", "1");
+    await expect(node).not.toHaveAttribute("data-ship-motion", /.+/);
+  }
+});
+
+test("hero sample report is flat, not parallaxed, and cards do not overlap on phones", async ({ browser }) => {
+  for (const width of [320, 375, 430, 768, 1024, 1440]) {
+    const context = await browser.newContext({ viewport: { width, height: 840 }, reducedMotion: "reduce" });
+    const page = await context.newPage();
+    await page.goto("/");
+    const preview = page.locator(".hero .preview");
+    await expect(preview).toHaveCSS("transform", "none");
+    const bodyWidth = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(bodyWidth, "horizontal overflow at " + width).toBeLessThanOrEqual(2);
+    const b = await page.locator(".hero-text").boundingBox();
+    const p = await page.locator(".preview-wrap").boundingBox();
+    expect(b).toBeTruthy();
+    expect(p).toBeTruthy();
+    if (width <= 850) {
+      expect(p!.y, "preview overlaps hero text at " + width).toBeGreaterThanOrEqual(b!.y + b!.height - 2);
+    } else {
+      expect(p!.x, "preview overlaps hero column at " + width).toBeGreaterThanOrEqual(b!.x + b!.width - 3);
+    }
     await context.close();
   }
 });
 
-
-test("FAQ interaction never leaves rows hidden after accordion reflow", async ({ browser }) => {
-  for (const theme of ["light", "dark"] as const) {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-    await context.addInitScript(value => localStorage.setItem("secuvora:theme", value), theme);
-    const page = await context.newPage();
-    await page.goto("/");
-    await page.waitForFunction(() => document.body.classList.contains("landing-motion-active"));
-    await page.evaluate(() => window.dispatchEvent(new Event("touchstart")));
-
-    const list = page.locator("#faq .faq-list");
-    await list.scrollIntoViewIfNeeded();
-    await expect(list).toHaveClass(/ship-motion-revealed/, { timeout: 4000 });
-
-    const entries = page.locator("#faq .faq-entry");
-    expect(await entries.count()).toBeGreaterThan(3);
-    for (let i = 0; i < await entries.count(); i++) {
-      await expect(entries.nth(i)).not.toHaveAttribute("data-ship-motion", /.+/);
-    }
-
-    const third = page.locator("#faq .faq-trigger").nth(2);
-    await third.click();
-    await expect(third).toHaveAttribute("aria-expanded", "true");
-    await page.waitForTimeout(450);
-
-    const states = await entries.evaluateAll(nodes => nodes.map(node => {
-      const css = getComputedStyle(node as HTMLElement);
-      const rect = (node as HTMLElement).getBoundingClientRect();
-      return {
-        opacity: Number.parseFloat(css.opacity || "1"),
-        display: css.display,
-        visibility: css.visibility,
-        height: rect.height,
-      };
-    }));
-    for (const state of states) {
-      expect(state.opacity).toBeGreaterThan(.99);
-      expect(state.display).not.toBe("none");
-      expect(state.visibility).not.toBe("hidden");
-      expect(state.height).toBeGreaterThan(30);
-    }
-
-    await third.click();
-    await expect(third).toHaveAttribute("aria-expanded", "false");
-    await context.close();
-  }
+test("FAQ rows remain readable after opening and scrolling away and back", async ({ page }) => {
+  await page.goto("/");
+  const faq = page.locator("#faq");
+  await faq.scrollIntoViewIfNeeded();
+  const rows = faq.locator(".faq-entry");
+  await expect(rows.first()).toBeVisible();
+  const third = faq.locator(".faq-trigger").nth(2);
+  await third.click();
+  await expect(third).toHaveAttribute("aria-expanded", "true");
+  await page.locator("#how").scrollIntoViewIfNeeded();
+  await faq.scrollIntoViewIfNeeded();
+  await expect(third).toHaveAttribute("aria-expanded", "true");
+  await expect(rows.first()).toHaveCSS("opacity", "1");
+  await third.click();
+  await expect(third).toHaveAttribute("aria-expanded", "false");
 });

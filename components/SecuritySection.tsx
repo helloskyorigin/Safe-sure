@@ -4,15 +4,15 @@ export default function SecuritySection() {
       <div className="container">
         <div className="split-heading ">
           <div>
-            <p className="eyebrow">SECURITY BY DESIGN</p>
+            <p className="eyebrow">WHAT WE CHECK</p>
             <h2>
-              Built for trust
+              Focused checks.
               <br />
-              from the first click.
+              Clear evidence.
             </h2>
           </div>
           <p>
-            Security investigation should earn your trust. Secuvora analyzes supported source signals read-only, preserves clear evidence and makes the boundaries of every assessment visible.
+            Secuvora inspects authorized GitHub source for supported credential, dependency and configuration signals. Every result shows its evidence and scope—not a promise that the entire app is secure.
           </p>
         </div>
         <div className="trust-grid">
@@ -23,10 +23,9 @@ export default function SecuritySection() {
                 <path d="m9 12 2 2 4-4" />
               </svg>
             </div>
-            <h3>Read-only access</h3>
+            <h3>Potential exposed credentials</h3>
             <p>
-              Only selected source needs to be read. Secuvora's agent does not need permission
-              to modify your code.
+              Find supported hard-coded secret patterns and review masked evidence before deciding whether rotation is needed.
             </p>
           </article>
           <article className="trust-item ">
@@ -36,10 +35,9 @@ export default function SecuritySection() {
                 <path d="M15 3v6h6M7 13h10M7 17h7" />
               </svg>
             </div>
-            <h3>Evidence-backed findings</h3>
+            <h3>Known vulnerable dependencies</h3>
             <p>
-              Review the basis for each potential issue rather than relying on
-              unexplained security scores.
+              Match supported locked package versions against published OSV vulnerability advisories, with version and source context.
             </p>
           </article>
           <article className="trust-item ">
@@ -49,10 +47,9 @@ export default function SecuritySection() {
                 <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" />
               </svg>
             </div>
-            <h3>Clear scope and limits</h3>
+            <h3>Risky configuration signals</h3>
             <p>
-              No automated agent can guarantee a secure application. We distinguish actual
-              findings from further review.
+              Identify supported unsafe source settings, including security-bypass patterns. Static checks do not replace runtime or database-access testing.
             </p>
           </article>
         </div>

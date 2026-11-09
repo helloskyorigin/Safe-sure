@@ -3,19 +3,19 @@ import { test, expect } from "@playwright/test";
 test("application-first hero is concise and does not repeat agent language", async ({ page }) => {
   await page.goto("/");
   const hero=page.locator(".hero");
-  await expect(hero.getByRole("heading",{level:1})).toContainText("Security risks.");
-  await expect(hero.getByRole("heading",{level:1})).toContainText("Under investigation.");
-  await expect(hero.locator(".eyebrow")).toHaveText("SECUVORA / SECURITY AGENT");
-  await expect(hero.locator(".hero-sub")).toContainText("examines security signals");
-  await expect(hero.locator(".hero-sub")).toContainText("shows what needs attention");
-  await expect(hero.getByRole("link",{name:/Start investigation/i})).toHaveAttribute("href","/assess");
-  await expect(hero.getByRole("link",{name:/Explore sample report/i})).toHaveAttribute("href","/assess/results");
+  await expect(hero.getByRole("heading",{level:1})).toContainText("Built with AI.");
+  await expect(hero.getByRole("heading",{level:1})).toContainText("Check before you ship.");
+  await expect(hero.locator(".eyebrow")).toHaveText("SECUVORA / AI-BUILT APP SECURITY");
+  await expect(hero.locator(".hero-sub")).toContainText("Inspect your AI-built app’s GitHub code");
+  await expect(hero.locator(".hero-sub")).toContainText("actionable next steps");
+  await expect(hero.getByRole("link",{name:/Check my app — free/i})).toHaveAttribute("href","/assess");
+  await expect(hero.getByRole("link",{name:/See the sample report/i})).toHaveAttribute("href","#product");
   await expect(hero.locator(".preview-overline")).toHaveText("INVESTIGATION SUMMARY");
   await expect(hero.locator(".preview-heading h2")).toHaveText("Security findings");
   await expect(hero.locator(".example-tag")).toContainText("ILLUSTRATIVE REPORT");
   await expect(hero.locator(".preview-bottom")).toContainText("Fictional example");
-  await expect(hero.locator(".under-cta")).toContainText("No source changes");
-  await expect(hero.locator(".under-cta")).not.toContainText("Free");
+  await expect(hero.locator(".under-cta")).toContainText("No code changes");
+  await expect(hero.locator(".under-cta")).toContainText("No credit card");
   const after=await hero.locator(".hero-text h1 em").evaluate(el=>getComputedStyle(el,"::after").content);
   expect(after).toBe("none");
 });
@@ -26,7 +26,7 @@ test("application check CTA opens the GitHub repository flow", async ({ page }) 
     body: JSON.stringify({ configured: true, connected: false, login: null }),
   }));
   await page.goto("/");
-  await page.locator(".hero").getByRole("link",{name:"Start investigation"}).click();
+  await page.locator(".hero").getByRole("link",{name:"Check my app — free"}).click();
   await expect(page).toHaveURL(/\/assess$/);
   await expect(page.getByRole("heading",{level:1})).toContainText("Choose the codebase");
   await expect(page.getByRole("link",{name:/Connect GitHub/})).toBeVisible();
@@ -34,7 +34,7 @@ test("application check CTA opens the GitHub repository flow", async ({ page }) 
   await expect(page.locator(".connect-reassurance")).toContainText("No source changes");
 });
 
-test("same unchanged layout fits phone, tablet and desktop with new copy",async({browser})=>{
+test("refined landing layout fits phone, tablet and desktop",async({browser})=>{
   for(const width of [320,375,430,768,1024,1440]){
     const context=await browser.newContext({viewport:{width,height:810},reducedMotion:"reduce"});
     const page=await context.newPage();
