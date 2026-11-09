@@ -467,6 +467,9 @@
   .landing-page .experience-tabs button { white-space:nowrap; }
   .landing-page .price-top h3 { line-height:1.45; }
 }
+/* Saved scans remains available without cluttering the primary desktop navigation. */
+.landing-page .mobile-nav .secondary-nav-item { border-top:1px solid #e8edf4; margin-top:5px; padding-top:16px; color:#6a7e99; }
+html[data-theme="dark"] .landing-page .mobile-nav .secondary-nav-item { border-top-color:#26374c; color:#a7b7cb; }
 /* Keep the site calmer on pointer devices and accessible on reduced motion. */
 @media (prefers-reduced-motion:reduce) {
   .landing-page *,
