@@ -21,6 +21,18 @@ const faqs = [
     answer: "Not yet. Secuvora currently uses deterministic security checks and OSV vulnerability intelligence to produce evidence-backed findings. Model-powered reasoning is planned; no report is presented as AI-verified.",
   },
   {
+    question: "What does Secuvora check in an AI-built app?",
+    answer: "Secuvora reviews selected GitHub repository source for supported credential and configuration patterns and checks pinned dependencies against OSV advisories. It does not claim to test every class of vulnerability.",
+  },
+  {
+    question: "Does Secuvora test live databases, payments, or running APIs?",
+    answer: "No. The current workflow is a bounded read-only source investigation, not live penetration testing. Database access controls, payment flows and runtime behavior require separate verification.",
+  },
+  {
+    question: "Are investigations free during the beta?",
+    answer: "Yes. The current connected investigation flow does not collect payments. You authorize repository access through GitHub, and Secuvora only reads selected source for analysis.",
+  },
+  {
     question: "Does the agent guarantee my code is secure?",
     answer: "No. Automated static rules and dependency advisories can miss issues or require human verification. A completed investigation is evidence for review, not a security certification.",
   },
