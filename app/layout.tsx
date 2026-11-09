@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Review your AI-built app's GitHub repository for credential patterns, vulnerable dependencies and unsafe configurations. Secuvora uses bounded read-only source checks and OSV advisories with file-level evidence. No AI-model reasoning or live penetration testing.",
   openGraph: {
-    title: "Secuvora — AI Security Agent for Developers",
+    title: "Secuvora — Security Checks for AI-Built Apps",
     description: "Read-only GitHub repository security checks for AI-built apps: credential patterns, vulnerable dependencies and unsafe configurations, with source-level evidence and practical next steps.",
     type: "website",
   },
