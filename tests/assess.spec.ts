@@ -6,7 +6,7 @@ test("landing opens one GitHub repository connection flow", async ({ page }) => 
     body: JSON.stringify({ configured: true, connected: false, login: null }),
   }));
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await page.locator(".hero-action").getByRole("link", { name: /Start investigation/i }).click();
+  await page.locator(".hero-action").getByRole("link", { name: /Check my app — free/i }).click();
   await expect(page).toHaveURL(/\/assess$/);
   await expect(page.getByRole("heading", { level: 1, name: /Choose the codebase to investigate/i })).toBeVisible();
   await expect(page.getByRole("link", { name: /Connect GitHub/i })).toBeVisible();
